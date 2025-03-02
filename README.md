@@ -22,9 +22,10 @@ As part of my Python learning journey, I wanted to strengthen my understanding o
     - [-] Task class
         - Inherit from token and adds priority
         - update task, print
-    - [] Task input parser
+    - [-] Input parser
         - Regex parade
         - ~NLP for parsing the input and create the token for the tasks object
+    - [] Task maker
     - [] Task heap
     - [] ToDo manager class
         - invoke task methods

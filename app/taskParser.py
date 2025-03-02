@@ -4,8 +4,8 @@ from fileLoaders import load_json
 
 class RegexFactory:
     def __init__(self, lang):
-        self.globals = load_json("./data/lang/regex", "globals.json")
-        self.locals = load_json("./data/lang/regex", f"{lang}.json")
+        self.globals = load_json("./data/config/lang/regex", "globals.json")
+        self.locals = load_json("./data/config/lang/regex", f"{lang}.json")
         self.date_patterns = []
         patterns = {
             "week": "|".join(self.locals.get("week", [])),

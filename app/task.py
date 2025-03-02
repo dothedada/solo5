@@ -3,6 +3,8 @@ class TaskToken:
         "id",
         "task",
         "dificulty",
+        "creation_date",
+        "lang",
         "due_date",
         "dependencies",
         "project",
