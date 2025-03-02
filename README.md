@@ -42,6 +42,7 @@ As part of my Python learning journey, I wanted to strengthen my understanding o
     - [] Interfase printer
         - set day
         - check (day, next day, all)
+        - search task for: done,update, remove
         - add task
         - mark done
         - edit task
