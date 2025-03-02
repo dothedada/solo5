@@ -1,6 +1,3 @@
-from datetime import date
-
-
 class TaskToken:
     keys_allowed = (
         "id",
@@ -45,19 +42,3 @@ class Task(TaskToken):
             output += f"\t{key}: {value}\n"
         output += "}"
         return output
-
-
-test_dict = {
-    "id": "666asd",
-    "task": "test task",
-}
-
-token = TaskToken(**test_dict)
-
-my_task = Task(test_dict)
-my_task.set_priority(666)
-print(token)
-print(my_task)
-my_task.update_properties(laksjdlkajsd="blabalblablabla")
-my_task.update_properties(id="blabalblablabla")
-print(my_task)

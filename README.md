@@ -17,10 +17,13 @@ As part of my Python learning journey, I wanted to strengthen my understanding o
 ## to-do of the to-do
 
     - [-] Infrastructure design
-    - [] Task class
-        - Task object and properties
-        - add, update
+    - [-] Task Token class
+        - Basic task properties
+    - [-] Task class
+        - Inherit from token and adds priority
+        - update task, print
     - [] Task input parser
+        - Regex parade
         - ~NLP for parsing the input and create the token for the tasks object
     - [] Task heap
     - [] ToDo manager class
@@ -35,6 +38,7 @@ As part of my Python learning journey, I wanted to strengthen my understanding o
         - import - export task batches
     - [] CSV manager
         - Create, read, write task in CSV
+        - Second CSV with all the tasks that has a prerequisite
     - [] Interfase printer
         - set day
         - check (day, next day, all)
