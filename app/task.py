@@ -1,34 +1,63 @@
-class Task:
-    def __init__(self, task):
-        self.id = task.id
-        self.task = task.task
-        self.dificulty = task.dificulty
-        self.dueDate = task.dueDate
-        self.dependencies = task.dependencies
-        self.project = task.project
-        self.priority = 0
+from datetime import date
 
-    def set_priority(self, value):
-        self.priority = value
-        return self
+
+class TaskToken:
+    keys_allowed = (
+        "id",
+        "task",
+        "dificulty",
+        "due_date",
+        "dependencies",
+        "project",
+    )
+
+    def __init__(self, **kwargs):
+        if "id" not in kwargs or "task" not in kwargs:
+            raise TypeError("id and task are mandatory to create token")
+        for key, value in kwargs.items():
+            if key not in TaskToken.keys_allowed:
+                continue
+            setattr(self, key, value)
+
+
+class Task(TaskToken):
+    keys_allowed = TaskToken.keys_allowed + ("priority",)
+
+    def __init__(self, token):
+        super().__init__(**token)
+
+    def set_priority(self, priority):
+        self.priority = priority
 
     def update_properties(self, **kwargs):
         for key, value in kwargs.items():
-            if hasattr(self, key):
-                setattr(self, key, value)
+            if key == "id":
+                raise Exception("Id cannot be updated")
+            if key not in Task.keys_allowed:
+                print(f"The key '{key}' does not exist in the Task object")
+                continue
+            setattr(self, key, value)
         return self
 
     def __repr__(self):
-        output = "Task {"
-        output += f"id: { self.id }, "
-        output += f"priority: { self.priority }, "
-        output += f"task: { self.task }, "
-        output += f"dificulty: { self.dificulty }, "
-        if self.dueDate:
-            output += f"dueDate: { self.dueDate }, "
-        if self.dependencies:
-            output += f"dependencies: { self.dependencies }, "
-        if self.project:
-            output += f"project: { self.project }, "
+        output = "Task { \n"
+        for key, value in self.__dict__.items():
+            output += f"\t{key}: {value}\n"
         output += "}"
         return output
+
+
+test_dict = {
+    "id": "666asd",
+    "task": "test task",
+}
+
+token = TaskToken(**test_dict)
+
+my_task = Task(test_dict)
+my_task.set_priority(666)
+print(token)
+print(my_task)
+my_task.update_properties(laksjdlkajsd="blabalblablabla")
+my_task.update_properties(id="blabalblablabla")
+print(my_task)
