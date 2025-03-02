@@ -1,28 +1,17 @@
+from enum import Enum
 import re
 
-global_markers = {
-    "project": "@",
-    "dificulty": "!",
-    "task_separator": "//",
-}
 
-global_regex = {
-    "project": rf"{global_markers.project}(\w+)",
-    "dificulty": rf"{global_markers.dificulty}([1-5])",
-}
+class Markers(Enum):
+    PROJECT = "@"
+    DIFICULTY = "!"
+    TASK_SEPARATOR = "//"
 
-lang_strings = {
-    "esp": {
-        "week": [
-            "lunes",
-            "martes",
-            "miercoles",
-            "jueves",
-            "viernes",
-            "sabado",
-            "domingo",
-        ],
-        "months": [
+
+class Esp(Enum):
+    WEEK = "lunes|martes|miercoles|jueves|viernes|sabado|domingo"
+    MONTH = "|".join(
+        [
             "enero",
             "febrero",
             "marzo",
@@ -35,14 +24,22 @@ lang_strings = {
             "octubre",
             "noviembre",
             "diciembre",
-        ],
-    }
+        ]
+    )
+    DATE_1 = rf"([0-9]{{1,2}})(\/[0-9]{{1,2}}| de ({MONTH}))"
+    DATE_2 = rf"(de (hoy|ma[nñ]ana|este ({WEEK})) en |en )([0-9]+ )"
+    DATE_3 = r"(dentro de )([0-9]+ )(dia(?:s)?|semana(?:s)?)"
+    DATE_4 = rf"(hoy|ma[nñ]ana)|(el |este |el pr[oó]ximo )({WEEK})"
+    DATE_REGX = "|".join([DATE_1, DATE_2, DATE_3, DATE_4])
+
+
+global_regex = {
+    "project": rf"{Markers.PROJECT.value}([a-zA-Z]+)",
+    "dificulty": rf"{Markers.DIFICULTY.value}([1-5])",
+    "date_esp": rf"{Esp.DATE_REGX.value}",
 }
 
-esp_regex = {
-    "due_date": rf"(pasado )?(hoy|ma.ana)|(el |este |el proximo )({lang_strings.esp.week.join('|')})|(dentro de |de (hoy|ma.ana|este (lunes|martes|miercoles|jueves|viernes|sabado|domingo)) en |en )([0-9]+ )(dia.|semana.)|([0-9]{1,2})(\/[0-9]{1,2}| de (enero|febrero|marzo|abril|mayo|junio|julio|agosto|septiembre|octubre|noviembre|diciembre))",
-}
 
-eng_regex = {
-    "due_date": r"(pasado )?(hoy|ma.ana)|(el |este |el proximo )(lunes|martes|miercoles|jueves|viernes|sabado|domingo)|(dentro de |de (hoy|ma.ana|este (lunes|martes|miercoles|jueves|viernes|sabado|domingo)) en |en )([0-9]+ )(dia.|semana.)|([0-9]{1,2})(\/[0-9]{1,2}| de (enero|febrero|marzo|abril|mayo|junio|julio|agosto|septiembre|octubre|noviembre|diciembre))",
-}
+string = "el próximo martes me explotaré la cabez"
+match = re.match(global_regex["date_esp"], string)
+print(match)
