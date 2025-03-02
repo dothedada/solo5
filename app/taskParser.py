@@ -1,91 +1,97 @@
 import re
 
-
-ui_patterns = {
-    "global": {
-        "ui": {
-            "hi": "carajo",
-        },
-        "pattern": {
-            "task_separator": "//",
-            "important": "\\*",
-            "project": "@([a-zA-Z]+)",
-            "dificulty": "!([1-5])",
-        },
+g_ui_and_patterns = {
+    "ui": {
+        "hi": "carajo",
     },
-    "es": {
-        "ui": {
-            "hi": "hola",
-        },
-        "pattern": {
-            "important": "importante",
-            "dificulty": [
-                "muy f[aá]cil",
-                "f[aá]cil",
-                "normal",
-                "dif[ií]cil",
-                "muy dif[ií]cil",
-            ],
-            "week": [
-                "lunes",
-                "martes",
-                "mi[eé]rcoles",
-                "jueves",
-                "viernes",
-                "s[aá]bado",
-                "domingo",
-            ],
-            "months": [
-                "enero",
-                "febrero",
-                "marzo",
-                "abril",
-                "mayo",
-                "junio",
-                "julio",
-                "agosto",
-                "septiembre",
-                "octubre",
-                "noviembre",
-                "diciembre",
-            ],
-            "dates": [
-                r"([0-9]{{1,2}})(\/[0-9]{{1,2}}| de ({months}))",
-                r"(de (hoy|ma[nñ]ana|este ({week})) en |en )([0-9]+ )",
-                r"(dentro de )([0-9]+ )(d[ií]as?|semanas?)",
-                r"(hoy|ma[nñ]ana)|(el |este |pr[oó]ximo )({week})",
-            ],
-        },
+    "pattern": {
+        "task_separator": "//",
+        "important": "\\*",
+        "project": "@([a-zA-Z]+)",
+        "dificulty": "!([1-5])",
+    },
+}
+
+esp_ui_and_patterns = {
+    "ui": {
+        "hi": "hola",
+    },
+    "pattern": {
+        "important": "importante",
+        "dificulty": [
+            "muy f[aá]cil",
+            "f[aá]cil",
+            "normal",
+            "dif[ií]cil",
+            "muy dif[ií]cil",
+        ],
+        "week": [
+            "lunes",
+            "martes",
+            "mi[eé]rcoles",
+            "jueves",
+            "viernes",
+            "s[aá]bado",
+            "domingo",
+        ],
+        "months": [
+            "enero",
+            "febrero",
+            "marzo",
+            "abril",
+            "mayo",
+            "junio",
+            "julio",
+            "agosto",
+            "septiembre",
+            "octubre",
+            "noviembre",
+            "diciembre",
+        ],
+        "dates": [
+            r"([0-9]{{1,2}})(\/[0-9]{{1,2}}| de ({months}))",
+            r"(de (hoy|ma[nñ]ana|este ({week})) en |en )([0-9]+ )",
+            r"(dentro de )([0-9]+ )(d[ií]as?|semanas?)",
+            r"(hoy|ma[nñ]ana)|(el |este |pr[oó]ximo )({week})",
+        ],
     },
 }
 
 
 class RegexFactory:
-    def __init__(self, data, lang="es"):
-        self.globals = data["global"]["pattern"]
-        self.locals = data[lang]["pattern"]
-        self.locals["week"] = "|".join(self.locals["week"])
-        self.locals["months"] = "|".join(self.locals["months"])
-
-    def get_patterns(self):
+    def __init__(self, global_pattern, local_pattern):
+        self.globals = global_pattern["pattern"]
+        self.locals = local_pattern["pattern"].copy()
         patterns = {}
-        patterns["date"] = "|".join(
-            pattern.format(**self.locals) for pattern in self.locals["dates"]
-        )
-        patterns["important"] = "|".join(
-            (self.globals["important"], self.locals["important"])
-        )
-        patterns["dificulty"] = "|".join(
-            (self.globals["dificulty"], *self.locals["dificulty"])
-        )
-        print(patterns)
+        patterns["week"] = "|".join(self.locals.get("week", []))
+        patterns["months"] = "|".join(self.locals.get("months", []))
+        self.locals["dates"] = [
+            date.format(**patterns) for date in self.locals["dates"]
+        ]
 
-    def compile_rgx(cls, *patterns):
+    def compile_rgx(self, *patterns):
         return re.compile("|".join(patterns), re.IGNORECASE)
 
+    def get_regex(self):
+        return {
+            "important": self.compile_rgx(
+                self.globals["important"], self.locals.get("important", "")
+            ),
+            "project": self.compile_rgx(self.globals["project"]),
+            "dificulty": self.compile_rgx(
+                self.globals["dificulty"], *self.locals.get("dificulty", [])
+            ),
+            "date": self.compile_rgx(*self.locals["dates"]),
+        }
 
-esp = RegexFactory(ui_patterns)
-esp.get_patterns()
+
+esp = RegexFactory(g_ui_and_patterns, esp_ui_and_patterns)
+
+test = "fecha es el proximo martes va a ser muy difícil, @pero es importante"
+print(re.search(esp.get_regex()["date"], test))
+print(re.search(esp.get_regex()["important"], test))
+print(re.search(esp.get_regex()["project"], test))
+print(re.search(esp.get_regex()["dificulty"], test))
 
 # print(esp.globals)
 
