@@ -4,39 +4,45 @@ from fileLoaders import load_json
 
 class RegexFactory:
     def __init__(self, lang):
-        self.globals = load_json("./data/config/lang/regex", "globals.json")
-        self.locals = load_json("./data/config/lang/regex", f"{lang}.json")
-        self.date_patterns = []
+        self.__globals = load_json("./data/config/lang/regex", "globals.json")
+        self.__locals = load_json("./data/config/lang/regex", f"{lang}.json")
+        self.regex_for = self.__get_regex()
+
+    def __compile_rgx(self, *patterns):
+        return re.compile("|".join(patterns), re.IGNORECASE)
+
+    def __get_regex(self):
+        self.__date_patterns = []
         patterns = {
-            "week": "|".join(self.locals.get("week", [])),
-            "months": "|".join(self.locals.get("months", [])),
+            "week": "|".join(self.__locals.get("week", [])),
+            "months": "|".join(self.__locals.get("months", [])),
         }
-        for date_format in self.locals["dates"]:
-            self.date_patterns.append(
+        for date_format in self.__locals["dates"]:
+            self.__date_patterns.append(
                 date_format.replace("{week}", patterns["week"]).replace(
                     "{months}", patterns["months"]
                 )
             )
-
-    def compile_rgx(self, *patterns):
-        return re.compile("|".join(patterns), re.IGNORECASE)
-
-    def get_regex(self):
         return {
-            "important": self.compile_rgx(
-                self.globals["important"], self.locals.get("important", "")
+            "important": self.__compile_rgx(
+                self.__globals["important"],
+                *self.__locals.get("important", ""),
             ),
-            "project": self.compile_rgx(self.globals["project"]),
-            "dificulty": self.compile_rgx(
-                self.globals["dificulty"], *self.locals.get("dificulty", [])
+            "project": self.__compile_rgx(
+                self.__globals["project"],
+                *self.__locals.get("project", []),
             ),
-            "date": self.compile_rgx(*self.date_patterns),
+            "dificulty": self.__compile_rgx(
+                self.__globals["dificulty"],
+                *self.__locals.get("dificulty", []),
+            ),
+            "date": self.__compile_rgx(*self.__date_patterns),
         }
 
 
 esp = RegexFactory("es")
 test = "el 12 de noviembre martes va a ser muy difícil, @pero es importante"
-print(re.search(esp.get_regex()["date"], test))
-print(re.search(esp.get_regex()["important"], test))
-print(re.search(esp.get_regex()["project"], test))
-print(re.search(esp.get_regex()["dificulty"], test))
+print(re.search(esp.regex_for["date"], test))
+print(re.search(esp.regex_for["important"], test))
+print(re.search(esp.regex_for["project"], test))
+print(re.search(esp.regex_for["dificulty"], test))

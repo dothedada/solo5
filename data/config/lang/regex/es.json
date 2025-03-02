@@ -1,13 +1,19 @@
 {
-  "important": "importante",
-  "dificulty": ["muy fácil", "fácil", "normal", "difícil", "muy difícil"],
+  "important": ["importante"],
+  "dificulty": [
+    "muy f[aá]cil",
+    "f[aá]cil",
+    "normal",
+    "dif[ií]cil",
+    "muy dif[ií]cil"
+  ],
   "week": [
     "lunes",
     "martes",
-    "miércoles",
+    "mi[eé]rcoles",
     "jueves",
     "viernes",
-    "sábado",
+    "s[aá]bado",
     "domingo"
   ],
   "months": [
