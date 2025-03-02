@@ -1,0 +1,6 @@
+{
+  "task_separator": "//",
+  "important": "\\*",
+  "project": "@([a-zA-Z]+)",
+  "dificulty": "!([1-5])"
+}

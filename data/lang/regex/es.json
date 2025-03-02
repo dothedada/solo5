@@ -1,0 +1,33 @@
+{
+  "important": "importante",
+  "dificulty": ["muy fácil", "fácil", "normal", "difícil", "muy difícil"],
+  "week": [
+    "lunes",
+    "martes",
+    "miércoles",
+    "jueves",
+    "viernes",
+    "sábado",
+    "domingo"
+  ],
+  "months": [
+    "enero",
+    "febrero",
+    "marzo",
+    "abril",
+    "mayo",
+    "junio",
+    "julio",
+    "agosto",
+    "septiembre",
+    "octubre",
+    "noviembre",
+    "diciembre"
+  ],
+  "dates": [
+    "([0-9]{1,2})(\/[0-9]{1,2}| de ({months}))",
+    "(de (hoy|ma[nñ]ana|este ({week})) en |en )([0-9]+ )",
+    "(dentro de )([0-9]+ )(d[ií]as?|semanas?)",
+    "(hoy|ma[nñ]ana)|(el |este |pr[oó]ximo )({week})"
+  ]
+}
