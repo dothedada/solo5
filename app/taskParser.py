@@ -117,21 +117,35 @@ def parse_due_date(string, parser):
 
         return date(year, month, day)
 
-    # day_relative
-    # day_absolute
-    # addition
-    # unit
-    # (?:de (?P<day_start_relative>hoy|ma[nñ]ana)|de este (?P<day_start_absolute>lunes|martes|mi[ee]rcoles|jueves|viernes|s[aá]bado|domingo)) en (?P<addition>\d+) (?P<unit>d[ií]as?|semanas?)
+    if "day_start_absolute" in values and "addition" in values:
+        days = 0
+        weekday = 0
+        for i, pattern in enumerate(parser.regex_for["week"]):
+            regex = re.compile(pattern, re.IGNORECASE)
+            match = re.match(regex, values["day_start_absolute"])
+            if match:
+                weekday = i
+                break
+
+        if weekday < date.today().weekday():
+            days += date.today().weekday() - weekday + 7
+        else:
+            days += weekday - date.today().weekday()
+
+        print("asd", days)
+        days += int(values["addition"]) - 1
+
+        return date(date.today().year, date.today().month, date.today().day + days)
+
+    # (?:de este (?P<day_start_absolute>lunes|martes|mi[ee]rcoles|jueves|viernes|s[aá]bado|domingo)) en (?P<addition>\d+) d[ií]as?
     #
-    # day_relative
-    # day_absolute
-    # addition
+    if "day_relative" in values and "day_absolute" in values and "addition" in values:
+        pass
     # (?P<day_relative>hoy|ma[nñ]ana)|(?:el |este |(?P<adition>pr[oó]ximo) )(?P<day_absolute>lunes|martes|mi[eé]rcoles|jueves|viernes|s[aá]bado|domingo)
     #
-    # addition
-    # unit
+    if "addition" in values and "unit" in values:
+        pass
     # (?:dentro de |en )(?P<addition>\d+) (?P<unit>d[ií]as?|semanas?)
-    return 1
 
 
 def parse_task(string, lang):
@@ -159,5 +173,5 @@ def parse_task(string, lang):
     }
 
 
-test = "el el martes 12 de enero martes va a ser DIFIc, @pero es importante"
+test = "el de este miercoles en 15 dias de enero martes va a ser DIFIc, @pero es importante"
 print(parse_task(test, "es"))
