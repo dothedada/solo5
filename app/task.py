@@ -2,6 +2,7 @@ class TaskToken:
     keys_allowed = (
         "id",
         "task",
+        "important",
         "dificulty",
         "creation_date",
         "lang",
