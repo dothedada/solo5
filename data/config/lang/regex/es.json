@@ -32,7 +32,7 @@
   ],
   "dates": [
     "(?P<day_num>[0-9]{1,2})(?:\\/(?P<month_num>[0-9]{1,2})| de (?P<month_name>{months}))",
-    "(?:de (?P<day_start_relative>hoy|ma[nñ]ana)|de este (?P<day_start_absolute>{week})) en (?P<addition>\\d+) (?P<unit>d[ií]as?|semanas?)",
+    "(?:de este (?P<day_start_absolute>lunes|martes|mi[ee]rcoles|jueves|viernes|s[aá]bado|domingo)) en (?P<addition>\d+) d[ií]as?",
     "(?P<day_relative>hoy|ma[nñ]ana)|(?:el |este |(?P<adition>pr[oó]ximo) )(?P<day_absolute>{week})",
     "(?:dentro de |en )(?P<addition>\\d+) (?P<unit>d[ií]as?|semanas?)"
   ]
