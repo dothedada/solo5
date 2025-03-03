@@ -1,4 +1,6 @@
 import re
+import time
+import random
 from fileLoaders import load_json
 
 
@@ -46,3 +48,21 @@ print(re.search(esp.regex_for["date"], test))
 print(re.search(esp.regex_for["important"], test))
 print(re.search(esp.regex_for["project"], test))
 print(re.search(esp.regex_for["dificulty"], test))
+
+
+def id_maker(string):
+    char_sum = sum(ord(char) for char in string)
+    timestamp = int(time.time() * 1000)
+    salt = random.randint(1, 9999)
+    base_id = (char_sum * timestamp * salt) % (2**64)
+
+    return str(hex(base_id))[2:]
+
+
+print(id_maker(test))
+print(id_maker(test))
+print(id_maker(test))
+
+
+def parse_task(string):
+    return {}
