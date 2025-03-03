@@ -1,12 +1,6 @@
 {
   "important": ["importante"],
-  "dificulty": [
-    "muy f[aá]cil",
-    "f[aá]cil",
-    "normal",
-    "dif[ií]cil",
-    "muy dif[ií]cil"
-  ],
+  "dificulty": ["f[aá]cil", "normal", "dif[ií]cil"],
   "week": [
     "lunes",
     "martes",

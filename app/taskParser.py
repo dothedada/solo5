@@ -4,11 +4,11 @@ import time
 import random
 from fileLoaders import load_json
 from enum import Enum
-from task import TaskToken, Task
+from task import Task
 
 
 class Defaults(Enum):
-    DIFICULTY = 3
+    DIFICULTY = 2
     LANG = "es"
     TASK_SECUENCER = "//"
 
@@ -23,7 +23,12 @@ class RegexFactory:
         return re.compile("|".join(patterns), re.IGNORECASE)
 
     def __get_regex(self):
-        self.__date_patterns = []
+        self.__dificulty_ptt = [self.__compile_rgx(self.globals["dificulty"])]
+        self.__date_ptt = []
+
+        for dificulty_level in self.locals.get("dificulty", []):
+            self.__dificulty_ptt.append(self.__compile_rgx(dificulty_level))
+
         date_names = {
             "week": "|".join(self.locals.get("week", [])),
             "months": "|".join(self.locals.get("months", [])),
@@ -37,7 +42,8 @@ class RegexFactory:
                 date_names["months"],
             )
             date_regex = self.__compile_rgx(date_pattern)
-            self.__date_patterns.append(date_regex)
+            self.__date_ptt.append(date_regex)
+
         return {
             "week": self.locals.get("week", []),
             "months": self.locals.get("months", []),
@@ -49,11 +55,8 @@ class RegexFactory:
                 self.globals["project"],
                 *self.locals.get("project", []),
             ),
-            "dificulty": self.__compile_rgx(
-                self.globals["dificulty"],
-                *self.locals.get("dificulty", []),
-            ),
-            "dates": self.__date_patterns,
+            "dificulty": self.__dificulty_ptt,
+            "dates": self.__date_ptt,
         }
 
 
@@ -72,20 +75,13 @@ def parse_important(string, parser):
 
 
 def parse_dificulty(string, parser):
-    # NOTE: implementar la misma estructura de parseo por loop de fechas
-    parsed = re.search(parser.regex_for["dificulty"], string)
-
-    if parsed is None:
-        return Defaults.DIFICULTY.value
-
-    if parsed.group()[1:].isnumeric():
-        return int(parsed[1:])
-
-    for i, pattern in enumerate(parser.locals["dificulty"]):
-        regex = re.compile(f"^{pattern}", re.IGNORECASE)
-        match = re.match(regex, parsed.group())
+    current = None
+    for i, pattern in enumerate(parser.regex_for["dificulty"]):
+        match = re.search(pattern, string)
         if match:
-            return i + 1
+            current = i
+
+    return Defaults.DIFICULTY.value if current is None else current
 
 
 def parse_project(string, parser):
@@ -183,5 +179,5 @@ def parse_task(string, lang):
     return tasks
 
 
-test = "Holi!"
+test = "Holi! muy fácil // creo que difícil // y si es muy dificil? // sin lio"
 print(parse_task(test, "es"))
