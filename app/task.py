@@ -1,5 +1,6 @@
 class TaskToken:
     keys_allowed = (
+        "lang",
         "id",
         "task",
         "important",
@@ -7,7 +8,7 @@ class TaskToken:
         "creation_date",
         "lang",
         "due_date",
-        "dependencies",
+        "parent",
         "project",
     )
 

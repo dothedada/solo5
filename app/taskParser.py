@@ -1,14 +1,16 @@
 import re
-from datetime import date
+from datetime import date, timedelta
 import time
 import random
 from fileLoaders import load_json
 from enum import Enum
+from task import TaskToken, Task
 
 
 class Defaults(Enum):
     DIFICULTY = 3
     LANG = "es"
+    TASK_SECUENCER = "//"
 
 
 class RegexFactory:
@@ -92,86 +94,94 @@ def parse_project(string, parser):
 
 
 def parse_due_date(string, parser):
-    values = {}
+    data = {}
 
     for date_format in parser.regex_for["dates"]:
         match = re.search(date_format, string)
         if match:
-            values = dict(match.groupdict())
+            data = dict(match.groupdict())
             break
 
-    if len(values) == 0:
+    if len(data) == 0:
         return None
 
-    if "day_num" in values and "month_num" in values and "month_name" in values:
-        day = int(values.get("day_num", 1))
-        month = 0
+    if all(key in data for key in ["day_num", "month_num", "month_name"]):
         year = date.today().year
-        if values.get("month_num"):
-            month = int(values.get("month_num"))
+        month = 0
+        day = int(data.get("day_num", 1))
+
+        if data.get("month_num"):
+            month = int(data.get("month_num"))
         else:
-            month = parser.regex_for["months"].index(values["month_name"]) + 1
+            month = parser.regex_for["months"].index(data["month_name"]) + 1
 
         if date(year, month, day) < date.today():
             year += 1
 
         return date(year, month, day)
 
-    if "day_start_absolute" in values and "addition" in values:
-        days = 0
+    if all(key in data for key in ["day_start_absolute", "addition"]):
+        today = date.today()
         weekday = 0
+
         for i, pattern in enumerate(parser.regex_for["week"]):
             regex = re.compile(pattern, re.IGNORECASE)
-            match = re.match(regex, values["day_start_absolute"])
+            match = re.match(regex, data["day_start_absolute"])
             if match:
                 weekday = i
                 break
 
-        if weekday < date.today().weekday():
-            days += date.today().weekday() - weekday + 7
-        else:
-            days += weekday - date.today().weekday()
+        difference = (weekday - today.weekday() + 7) % 7
+        difference += int(data["addition"]) - 1
 
-        print("asd", days)
-        days += int(values["addition"]) - 1
+        return date.today() + timedelta(days=difference)
 
-        return date(date.today().year, date.today().month, date.today().day + days)
+    if all(key in data for key in ["day_end_absolute", "add_week"]):
+        weekday = 0
+        today = date.today()
+        print(data)
 
-    # (?:de este (?P<day_start_absolute>lunes|martes|mi[ee]rcoles|jueves|viernes|s[aá]bado|domingo)) en (?P<addition>\d+) d[ií]as?
-    #
-    if "day_relative" in values and "day_absolute" in values and "addition" in values:
-        pass
-    # (?P<day_relative>hoy|ma[nñ]ana)|(?:el |este |(?P<adition>pr[oó]ximo) )(?P<day_absolute>lunes|martes|mi[eé]rcoles|jueves|viernes|s[aá]bado|domingo)
-    #
-    if "addition" in values and "unit" in values:
-        pass
-    # (?:dentro de |en )(?P<addition>\d+) (?P<unit>d[ií]as?|semanas?)
+        for i, pattern in enumerate(parser.regex_for["week"]):
+            regex = re.compile(pattern, re.IGNORECASE)
+            match = re.match(regex, data["day_end_absolute"])
+            if match:
+                weekday = i
+                break
+
+        difference = (weekday - today.weekday() + 7) % 7
+        if data["add_week"]:
+            difference += 7
+
+        return today + timedelta(days=difference)
+
+    if "addition" in data:
+        return date.today() + timedelta(days=int(data["addition"]) - 1)
 
 
 def parse_task(string, lang):
-
     # NOTE: ver como vinculamos la regex factory
     parser = RegexFactory(lang)
+    tasks = []
 
-    project = parse_project(string, parser)
-    important = parse_important(string, parser)
-    dificulty = parse_dificulty(string, parser)
-    due_date = parse_due_date(string, parser)
+    for i, task_raw in enumerate(string.split(Defaults.TASK_SECUENCER.value)):
+        tasks.append(
+            Task(
+                {
+                    "lang": lang,
+                    "id": id_maker(task_raw),
+                    "task": task_raw,
+                    "creation_date": date.today(),
+                    "due_date": parse_due_date(task_raw, parser),
+                    "project": parse_project(task_raw, parser),
+                    "important": parse_important(task_raw, parser),
+                    "dificulty": parse_dificulty(task_raw, parser),
+                    "parent": None if i == 0 else tasks[i - 1].id,
+                }
+            )
+        )
 
-    # "due_date",
-    # "dependencies",
-
-    return {
-        "id": id_maker(string),
-        "task": string,
-        "creation_date": date.today(),
-        "due_date": due_date,
-        "lang": lang,
-        "important": important,
-        "project": project,
-        "dificulty": dificulty,
-    }
+    return tasks
 
 
-test = "el de este miercoles en 15 dias de enero martes va a ser DIFIc, @pero es importante"
+test = "Holi!"
 print(parse_task(test, "es"))
