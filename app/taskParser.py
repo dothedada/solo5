@@ -1,8 +1,14 @@
 import re
-from datetime import datetime
+from datetime import date
 import time
 import random
 from fileLoaders import load_json
+from enum import Enum
+
+
+class Defaults(Enum):
+    DIFICULTY = 3
+    LANG = "es"
 
 
 class RegexFactory:
@@ -16,17 +22,23 @@ class RegexFactory:
 
     def __get_regex(self):
         self.__date_patterns = []
-        patterns = {
+        date_names = {
             "week": "|".join(self.locals.get("week", [])),
             "months": "|".join(self.locals.get("months", [])),
         }
         for date_format in self.locals["dates"]:
-            self.__date_patterns.append(
-                date_format.replace("{week}", patterns["week"]).replace(
-                    "{months}", patterns["months"]
-                )
+            date_pattern = date_format.replace(
+                "{week}",
+                date_names["week"],
+            ).replace(
+                "{months}",
+                date_names["months"],
             )
+            date_regex = self.__compile_rgx(date_pattern)
+            self.__date_patterns.append(date_regex)
         return {
+            "week": self.locals.get("week", []),
+            "months": self.locals.get("months", []),
             "important": self.__compile_rgx(
                 self.globals["important"],
                 *self.locals.get("important", ""),
@@ -39,7 +51,7 @@ class RegexFactory:
                 self.globals["dificulty"],
                 *self.locals.get("dificulty", []),
             ),
-            "date": self.__compile_rgx(*self.__date_patterns),
+            "dates": self.__date_patterns,
         }
 
 
@@ -58,10 +70,11 @@ def parse_important(string, parser):
 
 
 def parse_dificulty(string, parser):
+    # NOTE: implementar la misma estructura de parseo por loop de fechas
     parsed = re.search(parser.regex_for["dificulty"], string)
 
     if parsed is None:
-        return 3
+        return Defaults.DIFICULTY.value
 
     if parsed.group()[1:].isnumeric():
         return int(parsed[1:])
@@ -74,12 +87,51 @@ def parse_dificulty(string, parser):
 
 
 def parse_project(string, parser):
-    parsed = re.search(parser.regex_for["project"])
+    parsed = re.search(parser.regex_for["project"], string)
     return parsed.group()[1:] if parsed else None
 
 
-def parse_due_date():
-    pass
+def parse_due_date(string, parser):
+    values = {}
+
+    for date_format in parser.regex_for["dates"]:
+        match = re.search(date_format, string)
+        if match:
+            values = dict(match.groupdict())
+            break
+
+    if len(values) == 0:
+        return None
+
+    if "day_num" in values and "month_num" in values and "month_name" in values:
+        day = int(values.get("day_num", 1))
+        month = 0
+        year = date.today().year
+        if values.get("month_num"):
+            month = int(values.get("month_num"))
+        else:
+            month = parser.regex_for["months"].index(values["month_name"]) + 1
+
+        if date(year, month, day) < date.today():
+            year += 1
+
+        return date(year, month, day)
+
+    # day_relative
+    # day_absolute
+    # addition
+    # unit
+    # (?:de (?P<day_start_relative>hoy|ma[nñ]ana)|de este (?P<day_start_absolute>lunes|martes|mi[ee]rcoles|jueves|viernes|s[aá]bado|domingo)) en (?P<addition>\d+) (?P<unit>d[ií]as?|semanas?)
+    #
+    # day_relative
+    # day_absolute
+    # addition
+    # (?P<day_relative>hoy|ma[nñ]ana)|(?:el |este |(?P<adition>pr[oó]ximo) )(?P<day_absolute>lunes|martes|mi[eé]rcoles|jueves|viernes|s[aá]bado|domingo)
+    #
+    # addition
+    # unit
+    # (?:dentro de |en )(?P<addition>\d+) (?P<unit>d[ií]as?|semanas?)
+    return 1
 
 
 def parse_task(string, lang):
@@ -90,6 +142,7 @@ def parse_task(string, lang):
     project = parse_project(string, parser)
     important = parse_important(string, parser)
     dificulty = parse_dificulty(string, parser)
+    due_date = parse_due_date(string, parser)
 
     # "due_date",
     # "dependencies",
@@ -97,7 +150,8 @@ def parse_task(string, lang):
     return {
         "id": id_maker(string),
         "task": string,
-        "creation_date": datetime.now().date(),
+        "creation_date": date.today(),
+        "due_date": due_date,
         "lang": lang,
         "important": important,
         "project": project,
@@ -105,5 +159,5 @@ def parse_task(string, lang):
     }
 
 
-test = "el 12 de noviembre martes va a ser DIFIcil, @pero es importante"
+test = "el el martes 12 de enero martes va a ser DIFIc, @pero es importante"
 print(parse_task(test, "es"))
