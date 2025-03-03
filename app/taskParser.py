@@ -43,14 +43,6 @@ class RegexFactory:
         }
 
 
-esp = RegexFactory("es")
-test = "el 12 de noviembre martes va a ser muy difícil, @pero es importante"
-print(re.search(esp.regex_for["date"], test))
-print(re.search(esp.regex_for["important"], test))
-print(re.search(esp.regex_for["project"], test))
-print(re.search(esp.regex_for["dificulty"], test))
-
-
 def id_maker(string):
     char_sum = sum(ord(char) for char in string)
     timestamp = int(time.time() * 1000)
@@ -62,10 +54,24 @@ def id_maker(string):
 
 def parse_task(string, lang):
 
+    # NOTE: ver como vinculamos la regex factory
     parser = RegexFactory(lang)
 
     important_src = re.search(parser.regex_for["important"], string)
     important = important_src is not None
+
+    dificulty_src = re.search(parser.regex_for["dificulty"], string)
+    dificulty = 3
+    # NOTE: evitar trabajar dificulty con try catch
+    # pensar en volver a hacer un bucle con los regex de dificultad y el que le
+    # atine es el  indice
+
+    if dificulty_src:
+        try:
+            dificulty = int(dificulty_src.group()[1:])
+        except Exception:
+            dificulty = parser.locals["dificulty"].index("muy dif[ií]cil") + 1
+
     # "dificulty",
     # "due_date",
     # "dependencies",
@@ -81,7 +87,9 @@ def parse_task(string, lang):
         "lang": lang,
         "important": important,
         "project": project,
+        "dificulty": dificulty,
     }
 
 
+test = "el 12 de noviembre martes va a ser muy difícil, @pero es importante"
 print(parse_task(test, "es"))
