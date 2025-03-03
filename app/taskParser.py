@@ -52,33 +52,47 @@ def id_maker(string):
     return hex(base_id)[2:]
 
 
+def parse_important(string, parser):
+    parsed = re.search(parser.regex_for["important"], string)
+    return parsed is not None
+
+
+def parse_dificulty(string, parser):
+    parsed = re.search(parser.regex_for["dificulty"], string)
+
+    if parsed is None:
+        return 3
+
+    if parsed.group()[1:].isnumeric():
+        return int(parsed[1:])
+
+    for i, pattern in enumerate(parser.locals["dificulty"]):
+        regex = re.compile(f"^{pattern}", re.IGNORECASE)
+        match = re.match(regex, parsed.group())
+        if match:
+            return i + 1
+
+
+def parse_project(string, parser):
+    parsed = re.search(parser.regex_for["project"])
+    return parsed.group()[1:] if parsed else None
+
+
+def parse_due_date():
+    pass
+
+
 def parse_task(string, lang):
 
     # NOTE: ver como vinculamos la regex factory
     parser = RegexFactory(lang)
 
-    important_src = re.search(parser.regex_for["important"], string)
-    important = important_src is not None
+    project = parse_project(string, parser)
+    important = parse_important(string, parser)
+    dificulty = parse_dificulty(string, parser)
 
-    dificulty_src = re.search(parser.regex_for["dificulty"], string)
-    dificulty = 3
-    # NOTE: evitar trabajar dificulty con try catch
-    # pensar en volver a hacer un bucle con los regex de dificultad y el que le
-    # atine es el  indice
-
-    if dificulty_src:
-        try:
-            dificulty = int(dificulty_src.group()[1:])
-        except Exception:
-            dificulty = parser.locals["dificulty"].index("muy dif[ií]cil") + 1
-
-    # "dificulty",
     # "due_date",
     # "dependencies",
-
-    project_src = re.search(parser.regex_for["project"], string)
-    project = project_src.group()[1:] if project_src else None
-    # "project",
 
     return {
         "id": id_maker(string),
@@ -91,5 +105,5 @@ def parse_task(string, lang):
     }
 
 
-test = "el 12 de noviembre martes va a ser muy difícil, @pero es importante"
+test = "el 12 de noviembre martes va a ser DIFIcil, @pero es importante"
 print(parse_task(test, "es"))
