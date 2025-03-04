@@ -23,22 +23,23 @@ class RegexFactory:
         week = "|".join(self.__local.get("week", []))
         months = "|".join(self.__local.get("months", []))
         time_structure = "|".join(self.__local.get("time_structure", []))
-        today_relative = "|".join(self.__local.get("today_relative", []))
+        today_rel = "|".join(self.__local.get("today_rel", []))
         dates_formatted = []
         for date_format in self.__local["dates"]:
             date_pattern = date_format.format(
                 week=week,
                 months=months,
-                today_relative=today_relative,
+                today_relative=today_rel,
                 time_structure=time_structure,
             )
             dates_formatted.append(date_pattern)
         self.__local["dates"] = dates_formatted
-        # print(dates_formatted)
 
         return {
-            "week": week,
-            "months": months,
+            "week": self.__local.get("week", []),
+            "months": self.__local.get("months", []),
+            "time_structure": time_structure,
+            "today_rel": self.__local.get("today_rel", []),
             "project": self.__regex_compiler("project"),
             "important": self.__regex_compiler("important"),
             "dificulty": self.__regex_compiler("dificulty"),

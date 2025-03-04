@@ -34,14 +34,57 @@ def parse_project(match, match_index):
     return match.group()[1:] if match else None
 
 
+def get_month(data_dict, parser):
+    month_num = data_dict.get("month_num")
+    month_name = data_dict.get("month_name")
+
+    if month_num:
+        return int(data_dict.get("month_num"))
+    elif month_name:
+        return parser.regex_for["months"].index(month_name) + 1
+
+    return date.today().month
+
+
+def get_weekday(name, parser):
+    return parser.regex_for["week"].index(name)
+
+
+@matcher
+def get_today_rel(match, match_index):
+    return match_index
+
+
+def get_date(data_dict, parser):
+    if data_dict.get("from") is None:
+        return date.today()
+
+    today_rel = data_dict.get("today_rel")
+    if today_rel:
+        day = date.today().day + get_today_rel(today_rel, parser, "today_rel")
+    else:
+        day = int(data_dict["day"])
+
+    month = get_month(data_dict, parser)
+    year = data_dict.get("year", date.today().year)
+
+    if date(year, month, day) < date.today():
+        year += 1
+
+    base_date = date(year, month, day)
+    print(data_dict, base_date)
+
+
 @matcher
 def parse_due_date(match, match_index):
     if match is None:
         return None
 
-    data = dict(match.groupdict())
+    data_dict = dict(match.groupdict())
 
-    return data
+    get_date(data_dict, RegexFactory("es"))
+
+    return data_dict
 
 
 def id_maker(string):
@@ -76,34 +119,11 @@ def parse_task(string, lang):
     return tasks
 
 
-test = "hot // hoy // mañana // pasado mañana"
+test = "12 de noviembre // 1/1 // hoy // mañana"
 parse_task(test, "es")
-# print(parse_task(test, "es"))
-
-
-def get_month(value, parser):
-    if value.isnumeric():
-        return int(value)
-    return parser.regex_for["months"].index(value)
-
-
-def get_weekday(name, parser):
-    return parser.regex_for["week"].index(name)
-
-
-def get_date(macth, parser):
-    pass
 
 
 """
-    obtener from
-        obtener dia
-        mes,
-        año?
-        base_name?
-        retornar fecha
-    si no
-        fecha = hoy
 
     si date
         retornar fecha
@@ -122,12 +142,14 @@ def get_date(macth, parser):
     month_num   -> numero del mes en el calendario
     month_name  -> nombre del mes en el calendario
     year        -> año (opcional, asume actual/siguiente)
-    base_name   -> hoy, mañana, pasado mañana
+    today_rel   -> hoy, mañana, pasado mañana
 
                 modifier    -> de, de este, dentro de, próximo, siguiente
                 amount      -> cantidad numérica para incremento, si no int o none es 1
                 unit_day    -> dias
                 unit_week   -> semana
                 unit_month  -> mes
+
+
 
 """

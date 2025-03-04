@@ -13,7 +13,7 @@
     "(?P<unit_month>mes(?:es)?)",
     "(?P<unit_year>)a[nñ]os?"
   ],
-  "today_relative": ["hoy", "(?<!pasado )\\bma[nñ]ana\\b", "pasado ma[nñ]ana"],
+  "today_rel": ["hoy", "(?<!pasado )\\bma[nñ]ana\\b", "pasado ma[nñ]ana"],
   "week": [
     "lunes",
     "martes",
@@ -38,12 +38,12 @@
     "diciembre"
   ],
   "dates": [
-    "(?P<date>(?P<day>(?:\\b(0?[1-9]|[12][0-9]|3[01])\\b))(?:[/-](?P<month_num>\\b(?:0?[1-9]|1[0-2])\\b)| de (?P<month_name>{months})))",
-    "(?:de |de este |del )(?P<from>({today_relative}|{week})) en (?P<modifier>(?P<amount>\\d+) ({time_structure}))",
-    "(?:el (?P<weekday>{week})) (?P<unit_week>de la pr[oó]xima semana)",
-    "(?:el |este |el (?P<unit_week>pr[oó]ximo) )(?P<weekday>{week})",
+    "(?P<date>(?P<from>(?P<day>(?:\\b(0?[1-9]|[12][0-9]|3[01])\\b))(?:[/-](?P<month_num>\\b(?:0?[1-9]|1[0-2])\\b)| de (?P<month_name>{months}))))",
+    "(?P<from>de |de este |del ({today_relative}|{week})) en (?P<modifier>(?P<amount>\\d+) ({time_structure}))",
+    "(?P<modifier>el (?P<weekday>{week})) (?P<unit_week>de la pr[oó]xima semana)",
+    "(?P<modifier>el |este |el (?P<unit_week>pr[oó]ximo) )(?P<weekday>{week})",
     "(?P<modifier>(?:dentro de|en) (?P<amount>\\d+) ({time_structure}))",
-    "(?P<date>{today_relative})"
+    "(?P<date>(?P<from>(?P<today_rel>{today_relative})))"
   ],
-  "asd": []
+  "asd": "del 25 de noviembre en 8 días"
 }
