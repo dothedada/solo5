@@ -71,8 +71,7 @@ def get_date(data_dict, parser):
     if date(year, month, day) < date.today():
         year += 1
 
-    base_date = date(year, month, day)
-    print(data_dict, base_date)
+    return date(year, month, day)
 
 
 @matcher
@@ -81,10 +80,12 @@ def parse_due_date(match, match_index):
         return None
 
     data_dict = dict(match.groupdict())
+    base_date = get_date(data_dict, RegexFactory("es"))
 
-    get_date(data_dict, RegexFactory("es"))
+    if data_dict.get("date"):
+        return base_date
 
-    return data_dict
+    return
 
 
 def id_maker(string):
@@ -119,14 +120,11 @@ def parse_task(string, lang):
     return tasks
 
 
-test = "12 de noviembre // 1/1 // hoy // mañana"
+test = "12 de noviembre // este martes // hoy // mañana"
 parse_task(test, "es")
 
 
 """
-
-    si date
-        retornar fecha
 
     si modifier
         obtener cantidad
@@ -135,15 +133,15 @@ parse_task(test, "es")
     añadir modifier a fecha
 
     (- from -)  (- modifier -)
-    date        -> fecha absoluta sin calulos adicionales
-    from        -> de, este, de este, el
+    from        -> establece inicio de cálculo. de, este, de este, el
     day         -> numero del día de calendario
-    weekday     -> nombre del día de la semana("lunes", "martes", ...)
+    today_rel   -> hoy, mañana, pasado mañana
     month_num   -> numero del mes en el calendario
     month_name  -> nombre del mes en el calendario
     year        -> año (opcional, asume actual/siguiente)
-    today_rel   -> hoy, mañana, pasado mañana
+    date        -> fecha absoluta sin calulos adicionales
 
+                weekday     -> nombre del día de la semana("lunes", "martes", ...)
                 modifier    -> de, de este, dentro de, próximo, siguiente
                 amount      -> cantidad numérica para incremento, si no int o none es 1
                 unit_day    -> dias
