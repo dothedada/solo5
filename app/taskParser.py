@@ -77,12 +77,45 @@ def parse_task(string, lang):
     return tasks
 
 
-test = "hola! 25 de noviembre // proximo martes"
+test = "hola! difícil // proximo martes muy difícil // muy muy fácil // mu facil"
 print(parse_task(test, "es"))
 
+
+def parse_month(name, parser):
+    return parser.regex_for["months"].index(name) + 1
+
+
+def parse_weekday(name, parser):
+    return parser.regex_for["week"].index(name)
+
+
 """
+    si date, 
+        obtener dia
+        mes,
+        año?
+        base_name?
+        retornar fecha
+
+    si no from
+        fecha base hoy
+    de lo contrario
+        obtener dia
+        obtener mes
+        obtener año
+        retornar fecha
+
+    si modifier
+        obtener cantidad
+        obtener unidad
+        
+
+    añadir modifier a fecha
+
+
+
     (- from -)  (- modifier -)
-    end         -> fecha absoluta sin calulos adicionales
+    date        -> fecha absoluta sin calulos adicionales
     from        -> de, este, de este, el
     day         -> numero del día de calendario
     weekday     -> nombre del día de la semana("lunes", "martes", ...)
@@ -99,6 +132,8 @@ print(parse_task(test, "es"))
     dia
     semana (7 días)
     mes
+
+    el martes de la proxima semana
 
     "(?P<day_num>[0-9]{1,2})(?:\\/(?P<month_num>[0-9]{1,2})| de (?P<month_name>{months}))",
     "(?:de este (?P<day_start_absolute>{week})) en (?P<addition>\\d+) d[ií]as?",

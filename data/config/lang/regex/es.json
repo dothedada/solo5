@@ -1,11 +1,22 @@
 {
   "important": ["importante"],
-  "dificulty": ["f[aá]cil", "normal", "dif[ií]cil"],
+  "dificulty": [
+    "muy f[aá]cil",
+    "(?<!muy )\\bf[aá]cil\\b",
+    "normal",
+    "(?<!muy )\\bdif[ií]cil\\b",
+    "muy dif[ií]cil"
+  ],
   "time_structure": [
     ["dias?", 1, "day"],
     ["semana?", 7, "day"],
     ["mes(?:es)?", 1, "month"],
     ["a[nñ]os?", 1, "year"]
+  ],
+  "base_name": [
+    ["hoy", 0, "day"],
+    ["ma[nñ]ana", 1, "day"],
+    ["pasado ma[nñ]ana", 2, "day"]
   ],
   "week": [
     "lunes",
