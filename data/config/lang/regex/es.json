@@ -5,19 +5,15 @@
     "(?<!muy )\\bf[aá]cil\\b",
     "normal",
     "(?<!muy )\\bdif[ií]cil\\b",
-    "muy\\s*dif[ií]cil"
+    "muy dif[ií]cil"
   ],
   "time_structure": [
-    ["dias?", 1, "day"],
-    ["semana?", 7, "day"],
-    ["mes(?:es)?", 1, "month"],
-    ["a[nñ]os?", 1, "year"]
+    "(?P<unit_day>d[ií]as?)",
+    "(?P<unit_week>semana?)",
+    "(?P<unit_month>mes(?:es)?)",
+    "(?P<unit_year>)a[nñ]os?"
   ],
-  "base_name": [
-    ["hoy", 0, "day"],
-    ["ma[nñ]ana", 1, "day"],
-    ["pasado ma[nñ]ana", 2, "day"]
-  ],
+  "today_relative": ["hoy", "(?<!pasado )\\bma[nñ]ana\\b", "pasado ma[nñ]ana"],
   "week": [
     "lunes",
     "martes",
@@ -42,9 +38,12 @@
     "diciembre"
   ],
   "dates": [
-    "(?P<day_num>[0-9]{{1,2}})(?:\\/(?P<month_num>[0-9]{{1,2}})| de (?P<month_name>{months}))",
-    "(?:de este (?P<day_start_absolute>{week})) en (?P<addition>\\d+) d[ií]as?",
-    "(?:el |este |(?P<add_week>pr[oó]ximo) )(?P<day_end_absolute>{week})",
-    "(?:dentro de |en )(?P<addition>\\d+) d[ií]as?"
-  ]
+    "(?P<date>(?P<day>(?:\\b(0?[1-9]|[12][0-9]|3[01])\\b))(?:[/-](?P<month_num>\\b(?:0?[1-9]|1[0-2])\\b)| de (?P<month_name>{months})))",
+    "(?:de |de este |del )(?P<from>({today_relative}|{week})) en (?P<modifier>(?P<amount>\\d+) ({time_structure}))",
+    "(?:el (?P<weekday>{week})) (?P<unit_week>de la pr[oó]xima semana)",
+    "(?:el |este |el (?P<unit_week>pr[oó]ximo) )(?P<weekday>{week})",
+    "(?P<modifier>(?:dentro de|en) (?P<amount>\\d+) ({time_structure}))",
+    "(?P<date>{today_relative})"
+  ],
+  "asd": []
 }

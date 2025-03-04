@@ -40,7 +40,6 @@ def parse_due_date(match, match_index):
         return None
 
     data = dict(match.groupdict())
-    print(data)
 
     return data
 
@@ -77,7 +76,7 @@ def parse_task(string, lang):
     return tasks
 
 
-test = "hola! difícil // proximo martes muy difícil // muy fácil // mu facil"
+test = "hot // hoy // mañana // pasado mañana"
 parse_task(test, "es")
 # print(parse_task(test, "es"))
 
@@ -115,8 +114,6 @@ def get_date(macth, parser):
 
     añadir modifier a fecha
 
-
-
     (- from -)  (- modifier -)
     date        -> fecha absoluta sin calulos adicionales
     from        -> de, este, de este, el
@@ -125,17 +122,12 @@ def get_date(macth, parser):
     month_num   -> numero del mes en el calendario
     month_name  -> nombre del mes en el calendario
     year        -> año (opcional, asume actual/siguiente)
-    name_base   -> hoy, mañana, pasado mañana
+    base_name   -> hoy, mañana, pasado mañana
 
                 modifier    -> de, de este, dentro de, próximo, siguiente
-                amount      -> cantidad numérica para incremento/decremento
-                unit        -> unidad de tiempo (día, semana, mes, año)
+                amount      -> cantidad numérica para incremento, si no int o none es 1
+                unit_day    -> dias
+                unit_week   -> semana
+                unit_month  -> mes
 
-
-    el martes de la proxima semana
-
-    "(?P<date>(?P<day>[0-9]{1,2})(?:\\/(?P<month_num>[0-9]{1,2})| de (?P<month_name>{months})))",
-    "(?P<from>(?:de este (?P<weekday>{week}))) en (?P<modifier>(?P<ammount>\\d+) (?P<unit>d[ií]as?))",
-    "(?:el |este |(?P<add_week>pr[oó]ximo) )(?P<weekday>{week})",
-    "(?P<modifier>(?:dentro de |en )(?P<addition>\\d+) (?P<unit>d[ií]as?))"
 """

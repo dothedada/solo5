@@ -22,12 +22,19 @@ class RegexFactory:
     def __get_regex(self):
         week = "|".join(self.__local.get("week", []))
         months = "|".join(self.__local.get("months", []))
+        time_structure = "|".join(self.__local.get("time_structure", []))
+        today_relative = "|".join(self.__local.get("today_relative", []))
         dates_formatted = []
         for date_format in self.__local["dates"]:
-            date_pattern = date_format.format(week=week, months=months)
+            date_pattern = date_format.format(
+                week=week,
+                months=months,
+                today_relative=today_relative,
+                time_structure=time_structure,
+            )
             dates_formatted.append(date_pattern)
-        print(dates_formatted)
         self.__local["dates"] = dates_formatted
+        # print(dates_formatted)
 
         return {
             "week": week,
