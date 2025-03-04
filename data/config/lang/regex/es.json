@@ -1,7 +1,6 @@
 {
   "important": ["importante"],
   "dificulty": ["f[aá]cil", "normal", "dif[ií]cil"],
-  "project": [],
   "time_structure": [
     ["dias?", 1, "day"],
     ["semana?", 7, "day"],

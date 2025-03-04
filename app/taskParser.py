@@ -1,54 +1,10 @@
-import re
 from datetime import date, timedelta
+from config import Defaults
+import re
 import time
 import random
-from fileLoaders import load_json
-from enum import Enum
+from regexGenerator import RegexFactory
 from task import Task
-
-
-class Defaults(Enum):
-    DIFICULTY = 2
-    LANG = "es"
-    TASK_SECUENCER = "//"
-
-
-class RegexFactory:
-    def __init__(self, lang):
-        self.__global = load_json("./data/config/lang/regex", "globals.json")
-        self.__local = load_json("./data/config/lang/regex", f"{lang}.json")
-        self.regex_for = self.__get_regex()
-
-    def __regex_compiler(self, pattern_name):
-        patterns = []
-        global_pattern = self.__global.get(pattern_name, None)
-        if global_pattern is not None:
-            patterns.append(re.compile(global_pattern, re.IGNORECASE))
-
-        for pattern in self.__local.get(pattern_name, []):
-            patterns.append(re.compile(pattern, re.IGNORECASE))
-
-        return patterns
-
-    def __get_regex(self):
-        week = "|".join(self.__local.get("week", []))
-        months = "|".join(self.__local.get("months", []))
-        dates_formatted = []
-        for date_format in self.__local["dates"]:
-            date_pattern = date_format.replace("{week}", week).replace(
-                "{months}", months
-            )
-            dates_formatted.append(date_pattern)
-        self.__local["dates"] = dates_formatted
-
-        return {
-            "week": week,
-            "months": months,
-            "project": self.__regex_compiler("project"),
-            "important": self.__regex_compiler("important"),
-            "dificulty": self.__regex_compiler("dificulty"),
-            "dates": self.__regex_compiler("dates"),
-        }
 
 
 def matcher(func):
@@ -84,6 +40,7 @@ def parse_due_date(match, match_index):
         return None
 
     data = dict(match.groupdict())
+    print(data)
 
     return data
 
@@ -123,74 +80,20 @@ def parse_task(string, lang):
 test = "hola! 25 de noviembre // proximo martes"
 print(parse_task(test, "es"))
 
-# if all(key in data for key in ["day_num", "month_num", "month_name"]):
-#     year = date.today().year
-#     month = 0
-#     day = int(data.get("day_num", 1))
-#
-#     if data.get("month_num"):
-#         month = int(data.get("month_num"))
-#     else:
-#         month = parser.regex_for["months"].index(data["month_name"]) + 1
-#
-#     if date(year, month, day) < date.today():
-#         year += 1
-#
-#     return date(year, month, day)
-#
-# if all(key in data for key in ["day_start_absolute", "addition"]):
-#     today = date.today()
-#     weekday = 0
-#
-#     for i, pattern in enumerate(parser.regex_for["week"]):
-#         regex = re.compile(pattern, re.IGNORECASE)
-#         match = re.match(regex, data["day_start_absolute"])
-#         if match:
-#             weekday = i
-#             break
-#
-#     difference = (weekday - today.weekday() + 7) % 7
-#     difference += int(data["addition"]) - 1
-#
-#     return date.today() + timedelta(days=difference)
-#
-# if all(key in data for key in ["day_end_absolute", "add_week"]):
-#     weekday = 0
-#     today = date.today()
-#     print(data)
-#
-#     for i, pattern in enumerate(parser.regex_for["week"]):
-#         regex = re.compile(pattern, re.IGNORECASE)
-#         match = re.match(regex, data["day_end_absolute"])
-#         if match:
-#             weekday = i
-#             break
-#
-#     difference = (weekday - today.weekday() + 7) % 7
-#     difference += 7 if data["add_week"] else 0
-#
-#     return today + timedelta(days=difference)
-#
-# if "addition" in data:
-#     return date.today() + timedelta(days=int(data["addition"]) - 1)
 """
-    # Valores absolutos
-    abs_day        -> día absoluto (número)
-    abs_month_num  -> numero del mes
-    abs_month_name -> nombre del mes
-    abs_year       -> año (opcional, asume actual/siguiente)
+    (- from -)  (- modifier -)
+    end         -> fecha absoluta sin calulos adicionales
+    from        -> de, este, de este, el
+    day         -> numero del día de calendario
+    weekday     -> nombre del día de la semana("lunes", "martes", ...)
+    month_num   -> numero del mes en el calendario
+    month_name  -> nombre del mes en el calendario
+    year        -> año (opcional, asume actual/siguiente)
+    name_base   -> hoy, mañana, pasado mañana
 
-    # Valores relativos
-    ref_point      -> inicio del calculo ("de", "de este", "dentro de")
-
-    # Referencias relativas
-    rel_base       -> referencia relativo ("hoy", "mañana", "pasado mañana")
-    rel_weekday    -> día de la semana relativo("lunes", "martes", ...)
-    rel_modifier   -> modificador dw la interpretación ("próximo", "siguiente")
-
-    # Componentes para adiciones
-    amount         -> cantidad numérica para incremento/decremento
-    unit           -> unidad de tiempo (día, semana, mes, año)
+                modifier    -> de, de este, dentro de, próximo, siguiente
+                amount      -> cantidad numérica para incremento/decremento
+                unit        -> unidad de tiempo (día, semana, mes, año)
 
     estructura del tiempo:
     dia
