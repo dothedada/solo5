@@ -1,6 +1,12 @@
 {
   "important": ["importante"],
   "dificulty": ["f[aá]cil", "normal", "dif[ií]cil"],
+  "time_structure": [
+    ["dias?", 1, "day"],
+    ["semana?", 7, "day"],
+    ["mes(?:es)?", 1, "month"],
+    ["a[nñ]os?", 1, "year"]
+  ],
   "week": [
     "lunes",
     "martes",
