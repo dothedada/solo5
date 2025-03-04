@@ -5,7 +5,7 @@
     "(?<!muy )\\bf[aá]cil\\b",
     "normal",
     "(?<!muy )\\bdif[ií]cil\\b",
-    "muy dif[ií]cil"
+    "muy\\s*dif[ií]cil"
   ],
   "time_structure": [
     ["dias?", 1, "day"],
@@ -42,7 +42,7 @@
     "diciembre"
   ],
   "dates": [
-    "(?P<day_num>[0-9]{1,2})(?:\\/(?P<month_num>[0-9]{1,2})| de (?P<month_name>{months}))",
+    "(?P<day_num>[0-9]{{1,2}})(?:\\/(?P<month_num>[0-9]{{1,2}})| de (?P<month_name>{months}))",
     "(?:de este (?P<day_start_absolute>{week})) en (?P<addition>\\d+) d[ií]as?",
     "(?:el |este |(?P<add_week>pr[oó]ximo) )(?P<day_end_absolute>{week})",
     "(?:dentro de |en )(?P<addition>\\d+) d[ií]as?"

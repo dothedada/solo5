@@ -24,10 +24,9 @@ class RegexFactory:
         months = "|".join(self.__local.get("months", []))
         dates_formatted = []
         for date_format in self.__local["dates"]:
-            date_pattern = date_format.replace("{week}", week).replace(
-                "{months}", months
-            )
+            date_pattern = date_format.format(week=week, months=months)
             dates_formatted.append(date_pattern)
+        print(dates_formatted)
         self.__local["dates"] = dates_formatted
 
         return {

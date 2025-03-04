@@ -77,38 +77,41 @@ def parse_task(string, lang):
     return tasks
 
 
-test = "hola! difícil // proximo martes muy difícil // muy muy fácil // mu facil"
-print(parse_task(test, "es"))
+test = "hola! difícil // proximo martes muy difícil // muy fácil // mu facil"
+parse_task(test, "es")
+# print(parse_task(test, "es"))
 
 
-def parse_month(name, parser):
-    return parser.regex_for["months"].index(name) + 1
+def get_month(value, parser):
+    if value.isnumeric():
+        return int(value)
+    return parser.regex_for["months"].index(value)
 
 
-def parse_weekday(name, parser):
+def get_weekday(name, parser):
     return parser.regex_for["week"].index(name)
 
 
+def get_date(macth, parser):
+    pass
+
+
 """
-    si date, 
+    obtener from
         obtener dia
         mes,
         año?
         base_name?
         retornar fecha
+    si no
+        fecha = hoy
 
-    si no from
-        fecha base hoy
-    de lo contrario
-        obtener dia
-        obtener mes
-        obtener año
+    si date
         retornar fecha
 
     si modifier
         obtener cantidad
         obtener unidad
-        
 
     añadir modifier a fecha
 
@@ -128,15 +131,11 @@ def parse_weekday(name, parser):
                 amount      -> cantidad numérica para incremento/decremento
                 unit        -> unidad de tiempo (día, semana, mes, año)
 
-    estructura del tiempo:
-    dia
-    semana (7 días)
-    mes
 
     el martes de la proxima semana
 
-    "(?P<day_num>[0-9]{1,2})(?:\\/(?P<month_num>[0-9]{1,2})| de (?P<month_name>{months}))",
-    "(?:de este (?P<day_start_absolute>{week})) en (?P<addition>\\d+) d[ií]as?",
-    "(?:el |este |(?P<add_week>pr[oó]ximo) )(?P<day_end_absolute>{week})",
-    "(?:dentro de |en )(?P<addition>\\d+) d[ií]as?"
+    "(?P<date>(?P<day>[0-9]{1,2})(?:\\/(?P<month_num>[0-9]{1,2})| de (?P<month_name>{months})))",
+    "(?P<from>(?:de este (?P<weekday>{week}))) en (?P<modifier>(?P<ammount>\\d+) (?P<unit>d[ií]as?))",
+    "(?:el |este |(?P<add_week>pr[oó]ximo) )(?P<weekday>{week})",
+    "(?P<modifier>(?:dentro de |en )(?P<addition>\\d+) (?P<unit>d[ií]as?))"
 """
