@@ -25,8 +25,9 @@ As part of my Python learning journey, I wanted to strengthen my understanding o
 - [-] Input parser
   - Regex parade
   - ~NLP for parsing the input and create the token for the tasks object
-- [] Task Interpreter and factory
+- [-] Task Interpreter and factory
 - [] Task heap
+  - priorization euristics
 - [] ToDo manager class
   - invoke task methods
   - delete task
