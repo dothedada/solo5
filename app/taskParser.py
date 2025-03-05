@@ -129,7 +129,6 @@ def get_date_modifier(data_dict, parser):
             amount += 1
 
     def add_amount(unit):
-        print(data_dict.get(unit))
         if data_dict.get(unit) is None:
             return 0
         return int(data_dict.get("amount", 0))
@@ -149,9 +148,7 @@ def parse_due_date(match, match_index):
         return None
 
     data_dict = dict(match.groupdict())
-    print(data_dict)
     base_date = get_date(data_dict, loc_parser)
-    print("base_date:", base_date)
 
     if data_dict.get("date"):
         return base_date
