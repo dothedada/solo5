@@ -40,6 +40,25 @@ def parse_month_string(match, match_index):
     return match_index if match else None
 
 
+@matcher
+def get_today_rel(match, match_index):
+    return match_index if match else 0
+
+
+@matcher
+def get_day_name(match, match_index):
+    return match_index if match else None
+
+
+@matcher
+def parse_weekday(match, match_index):
+    return match_index
+
+
+def get_weekday_days(name, parser):
+    return (parse_weekday(name, parser, "week") - date.today().weekday()) % 7
+
+
 def get_month(data_dict, parser):
     month_num = data_dict.get("month_num")
     month_name = data_dict.get("month_name")
@@ -50,15 +69,6 @@ def get_month(data_dict, parser):
         return parse_month_string(month_name, parser, "months")
 
     return date.today().month
-
-
-def get_weekday(name, parser):
-    return parser.regex_for["week"].index(name)
-
-
-@matcher
-def get_today_rel(match, match_index):
-    return match_index
 
 
 def date_normalizer(year, month, day):
@@ -85,9 +95,13 @@ def get_date(data_dict, parser):
 
     today_rel = data_dict.get("today_rel")
     if today_rel:
-        base_day = date.today().day + get_today_rel(today_rel, parser, "today_rel")
+        day_offset = get_today_rel(today_rel, parser, "today_rel")
+        base_day = date.today().day + day_offset
+    elif data_dict.get("weekday"):
+        weekday = get_weekday_days(data_dict.get("weekday"), parser)
+        base_day = date.today().day + weekday
     else:
-        base_day = int(data_dict["day"])
+        base_day = int(data_dict.get("day"))
 
     base_month = get_month(data_dict, parser)
     base_year = data_dict.get("year", date.today().year)
@@ -100,29 +114,8 @@ def get_date(data_dict, parser):
     return date(year, month, day)
 
 
-# TODO: calcular el dia base a partir del weekday
-# weekday     -> nombre del día de la semana("lunes", "martes", ...)
-
-# if "day_start_absolute" in data and "addition" in data:
-#     days = 0
-#     weekday = 0
-#     for i, pattern in enumerate(parser.regex_for["week"]):
-#         regex = re.compile(pattern, re.IGNORECASE)
-#         match = re.match(regex, data["day_start_absolute"])
-#         if match:
-#             weekday = i
-#             break
-#
-#     if weekday < date.today().weekday():
-#         days += date.today().weekday() - weekday + 7
-#     else:
-#         days += weekday - date.today().weekday()
-#
-#     days += int(data["addition"]) - 1
-
-
 def get_date_modifier(data_dict, parser):
-    if data_dict.get("modifier"):
+    if data_dict.get("modifier") is None:
         return 0, 0, 0
 
     parsed_amount = data_dict.get("amount", None)
@@ -136,11 +129,13 @@ def get_date_modifier(data_dict, parser):
             amount += 1
 
     def add_amount(unit):
+        print(data_dict.get(unit))
         if data_dict.get(unit) is None:
             return 0
-        return int(unit) + amount
+        return int(data_dict.get("amount", 0))
 
-    days = add_amount("unit_day") + add_amount("unit_week") * 7
+    days = add_amount("unit_day")
+    days += add_amount("unit_week") * 7
     months = add_amount("unit_month")
     years = add_amount("unit_year")
 
@@ -149,23 +144,25 @@ def get_date_modifier(data_dict, parser):
 
 @matcher
 def parse_due_date(match, match_index):
+    loc_parser = RegexFactory("es")
     if match is None:
         return None
 
     data_dict = dict(match.groupdict())
     print(data_dict)
-    base_date = get_date(data_dict, RegexFactory("es"))
-    print(base_date)
+    base_date = get_date(data_dict, loc_parser)
+    print("base_date:", base_date)
 
     if data_dict.get("date"):
         return base_date
 
-    add_days, add_monts, add_years = get_date_modifier(data_dict, RegexFactory("es"))
+    add_days, add_monts, add_years = get_date_modifier(data_dict, loc_parser)
 
-    year = base_date.year + add_years
-    month = base_date.month + add_monts
-    day = base_date.day + add_days
-    print("year", year, "month", month, "day", day)
+    year, month, day = date_normalizer(
+        base_date.year + add_years,
+        base_date.month + add_monts,
+        base_date.day + add_days,
+    )
     return date(year, month, day)
 
 
@@ -183,6 +180,7 @@ def parse_task(string, lang):
     tasks = []
 
     for i, task_raw in enumerate(string.split(Defaults.TASK_SECUENCER.value)):
+        print(task_raw)
         task = Task(
             {
                 "lang": lang,
@@ -196,10 +194,11 @@ def parse_task(string, lang):
                 "parent": None if i == 0 else tasks[i - 1].id,
             }
         )
+        print(task.due_date)
         tasks.append(task)
 
     return tasks
 
 
-test = "12 de noviembre // el 23 de mar // 31/2 "
+test = "de este martes en 2 semanas"
 parse_task(test, "es")
