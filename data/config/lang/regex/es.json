@@ -1,11 +1,11 @@
 {
   "important": ["importante"],
   "dificulty": [
-    "muy f[aá]cil",
-    "(?<!muy )\\bf[aá]cil\\b",
+    "\\bmuy f[aá]cil\\b",
+    "(?<!\\bmuy )\\bf[aá]cil\\b",
     "normal",
-    "(?<!muy )\\bdif[ií]cil\\b",
-    "muy dif[ií]cil"
+    "(?<!\\bmuy )\\bdif[ií]cil\\b",
+    "\\bmuy dif[ií]cil\\b"
   ],
   "time_structure": [
     "(?P<unit_day>d[ií]as?)",
@@ -13,29 +13,41 @@
     "(?P<unit_month>mes(?:es)?)",
     "(?P<unit_year>)a[nñ]os?"
   ],
-  "today_rel": ["hoy", "(?<!pasado )\\bma[nñ]ana\\b", "pasado ma[nñ]ana"],
+  "today_rel": [
+    "\\bhoy\\b",
+    "(?<!pasado )\\bma[nñ]ana\\b",
+    "\\bpasado ma[nñ]ana\\b"
+  ],
   "week": [
-    "lunes",
-    "martes",
-    "mi[eé]rcoles",
-    "jueves",
-    "viernes",
-    "s[aá]bado",
-    "domingo"
+    "\\blun(?:es)?\\b",
+    "\\bmar(?:tes)?\\b",
+    "\\bmi[eé](?:rcoles)?\\b",
+    "\\bjue(?:ves)?\\b",
+    "\\bvie(?:rnes)?\\b",
+    "\\bs[aá]b(?:ado)?\\b",
+    "\\bdom(?:ingo)?\\b"
   ],
   "months": [
-    "enero",
-    "febrero",
-    "marzo",
-    "abril",
-    "mayo",
-    "junio",
-    "julio",
-    "agosto",
-    "septiembre",
-    "octubre",
-    "noviembre",
-    "diciembre"
+    "\\bene(?:ro)?\\b",
+    "\\bfeb(?:rero)?\\b",
+    "\\bmar(?:zo)?\\b",
+    "\\babr(?:il)?\\b",
+    "\\bmay(?:o)?\\b",
+    "\\bjun(?:io)?\\b",
+    "\\bjul(?:io)?\\b",
+    "\\bago(?:sto)?\\b",
+    "\\bsep(?:tiembre)?\\b",
+    "\\boct(?:ubre)?\\b",
+    "\\bnov(?:iembre)?\\b",
+    "\\bdic(?:iembre)?\\b"
+  ],
+  "amount_str": ["^$", "\\b(?:pr[oó]ximo|siguiente)\\b"],
+  "numeration_str": [
+    "^$",
+    "\\bun[oa]?\\b",
+    "\\bdos\\b",
+    "\\btres\\b",
+    "\\bcuatro\\b"
   ],
   "dates": [
     "(?P<date>(?P<from>(?P<day>(?:\\b(0?[1-9]|[12][0-9]|3[01])\\b))(?:[/-](?P<month_num>\\b(?:0?[1-9]|1[0-2])\\b)| de (?P<month_name>{months}))))",
