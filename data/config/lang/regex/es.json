@@ -39,7 +39,7 @@
   ],
   "dates": [
     "(?P<date>(?P<from>(?P<day>(?:\\b(0?[1-9]|[12][0-9]|3[01])\\b))(?:[/-](?P<month_num>\\b(?:0?[1-9]|1[0-2])\\b)| de (?P<month_name>{months}))))",
-    "(?P<from>de |de este |del ({today_relative}|{week})) en (?P<modifier>(?P<amount>\\d+) ({time_structure}))",
+    "(?P<from>de ({today_relative})|de este |del ({week})) en (?P<modifier>(?P<amount>\\d+) ({time_structure}))",
     "(?P<modifier>el (?P<weekday>{week})) (?P<unit_week>de la pr[oó]xima semana)",
     "(?P<modifier>el |este |el (?P<unit_week>pr[oó]ximo) )(?P<weekday>{week})",
     "(?P<modifier>(?:dentro de|en) (?P<amount>\\d+) ({time_structure}))",

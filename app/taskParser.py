@@ -64,6 +64,8 @@ def get_date(data_dict, parser):
         day = date.today().day + get_today_rel(today_rel, parser, "today_rel")
     else:
         day = int(data_dict["day"])
+    # TODO: calcular el dia base a partir del weekday
+    # weekday     -> nombre del día de la semana("lunes", "martes", ...)
 
     month = get_month(data_dict, parser)
     year = data_dict.get("year", date.today().year)
@@ -74,18 +76,51 @@ def get_date(data_dict, parser):
     return date(year, month, day)
 
 
+def get_date_modifier(data_dict, parser):
+    if data_dict.get("modifier"):
+        return 0, 0, 0
+
+    parsed_amount = data_dict.get("amount", None)
+    amount = 0
+
+    if parsed_amount:
+        if parsed_amount.isnumeric():
+            amount = int(parsed_amount)
+        else:
+            # NOTE: lista correspondiente a cantidad? proxima, un, una...???
+            amount += 1
+
+    def add_amount(unit):
+        if data_dict.get(unit) is None:
+            return 0
+        return int(unit) + amount
+
+    days = add_amount("unit_day") + add_amount("unit_week") * 7
+    months = add_amount("unit_month")
+    years = add_amount("unit_year")
+
+    return days, months, years
+
+
 @matcher
 def parse_due_date(match, match_index):
     if match is None:
         return None
 
     data_dict = dict(match.groupdict())
+    print(data_dict)
     base_date = get_date(data_dict, RegexFactory("es"))
 
     if data_dict.get("date"):
         return base_date
 
-    return
+    add_days, add_monts, add_years = get_date_modifier(data_dict, RegexFactory("es"))
+
+    return base_date + timedelta(
+        days=add_days,
+        months=add_monts,
+        years=add_years,
+    )
 
 
 def id_maker(string):
@@ -122,32 +157,3 @@ def parse_task(string, lang):
 
 test = "12 de noviembre // este martes // hoy // mañana"
 parse_task(test, "es")
-
-
-"""
-
-    si modifier
-        obtener cantidad
-        obtener unidad
-
-    añadir modifier a fecha
-
-    (- from -)  (- modifier -)
-    from        -> establece inicio de cálculo. de, este, de este, el
-    day         -> numero del día de calendario
-    today_rel   -> hoy, mañana, pasado mañana
-    month_num   -> numero del mes en el calendario
-    month_name  -> nombre del mes en el calendario
-    year        -> año (opcional, asume actual/siguiente)
-    date        -> fecha absoluta sin calulos adicionales
-
-                weekday     -> nombre del día de la semana("lunes", "martes", ...)
-                modifier    -> de, de este, dentro de, próximo, siguiente
-                amount      -> cantidad numérica para incremento, si no int o none es 1
-                unit_day    -> dias
-                unit_week   -> semana
-                unit_month  -> mes
-
-
-
-"""

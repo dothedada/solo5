@@ -52,19 +52,19 @@ As part of my Python learning journey, I wanted to strengthen my understanding o
 
 ## Parsing date structure
 
-(- from -)  (- modifier -)
-date        -> fecha absoluta sin calulos adicionales
-from        -> de, este, de este, el
+(- from -)  
+from        -> establece inicio de cálculo. de, este, de este, el
 day         -> numero del día de calendario
+today_rel   -> hoy, mañana, pasado mañana
 weekday     -> nombre del día de la semana("lunes", "martes", ...)
 month_num   -> numero del mes en el calendario
 month_name  -> nombre del mes en el calendario
 year        -> año (opcional, asume actual/siguiente)
-base_name   -> hoy, mañana, pasado mañana
-
+date        -> fecha absoluta sin calulos adicionales
+(- modifier -)
 modifier    -> de, de este, dentro de, próximo, siguiente
 amount      -> cantidad numérica para incremento, si no int o none es 1
-unit        -> unidad de tiempo (día, semana, mes, año)
 unit_day    -> dias
 unit_week   -> semana
 unit_month  -> mes
+unit_year   -> año
