@@ -2,9 +2,9 @@
   "important": ["importante"],
   "dificulty": [
     "\\bmuy f[aá]cil\\b",
-    "(?<!\\bmuy\\b)\\bf[aá]cil\\b",
+    "(?<!muy )\\bf[aá]cil\\b",
     "normal",
-    "(?<!\\bmuy\\b)\\bdif[ií]cil\\b",
+    "(?<!muy )\\bdif[ií]cil\\b",
     "\\bmuy dif[ií]cil\\b"
   ],
   "time_structure": [
@@ -15,7 +15,7 @@
   ],
   "today_rel": [
     "\\bhoy\\b",
-    "(?<!\\bpasado\\b)\\bma[nñ]ana\\b",
+    "(?<!pasado )\\bma[nñ]ana\\b",
     "\\bpasado\\s+ma[nñ]ana\\b"
   ],
   "week": [
@@ -50,9 +50,9 @@
     "\\bcuatro\\b"
   ],
   "dates": [
-    "(?P<date>(?P<from>(?P<day>(?:\\b(0?[1-9]|[12][0-9]|3[01])\\b))(?:[/-](?P<month_num>\\b(?:0?[1-9]|1[0-2])\\b)| de (?P<month_name>{months}))))",
-    "(?P<from>de ({today_relative})|(?:de este |del )(?P<weekday>{week})) en (?P<modifier>(?P<amount>\\d+) ({time_structure}))",
-    "(?P<from>el (?P<weekday>{week})) (?P<modifier>(?P<unit_week>de la pr[oó]xima semana))",
+    "(?P<date>(?P<from>(?P<day>(?:\\b(0?[1-9]|[12][0-9]|3[01])\\b))(?:[/-]| de )(?:(?P<month_num>\\b(?:0?[1-9]|1[0-2])\\b)|(?P<month_name>{months}))))",
+    "(?P<from>de (?P<today_rel>{today_relative})|(?:de este |del )(?P<weekday>{week})) en (?P<modifier>(?P<amount>\\d+) ({time_structure}))",
+    "(?P<from>el (?P<weekday>{week})) (?P<modifier>(?P<unit_week>de la (?P<amount>pr[oó]xima) semana))",
     "(?P<from>el |este |el (?P<modifier>(?P<unit_week>pr[oó]ximo)) )(?P<weekday>{week})",
     "(?P<modifier>(?:dentro de|en) (?P<amount>\\d+) ({time_structure}))",
     "(?P<date>(?P<from>(?P<today_rel>{today_relative})))"

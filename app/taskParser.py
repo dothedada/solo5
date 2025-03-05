@@ -66,7 +66,7 @@ def get_month(data_dict, parser):
     if month_num:
         return int(data_dict.get("month_num"))
     elif month_name:
-        return parse_month_string(month_name, parser, "months")
+        return parse_month_string(month_name, parser, "months") + 1
 
     return date.today().month
 
@@ -100,8 +100,11 @@ def get_date(data_dict, parser):
     elif data_dict.get("weekday"):
         weekday = get_weekday_days(data_dict.get("weekday"), parser)
         base_day = date.today().day + weekday
-    else:
+    elif data_dict.get("day").isnumeric():
         base_day = int(data_dict.get("day"))
+    else:
+        print("el dia esta mal configurado")
+        base_day = 1
 
     base_month = get_month(data_dict, parser)
     base_year = data_dict.get("year", date.today().year)
@@ -109,7 +112,7 @@ def get_date(data_dict, parser):
     year, month, day = date_normalizer(base_year, base_month, base_day)
 
     if date(year, month, day) < date.today():
-        base_year += 1
+        year += 1
 
     return date(year, month, day)
 
@@ -129,9 +132,7 @@ def get_date_modifier(data_dict, parser):
             amount += 1
 
     def add_amount(unit):
-        if data_dict.get(unit) is None:
-            return 0
-        return int(data_dict.get("amount", 0))
+        return amount if data_dict.get(unit) is not None else 0
 
     days = add_amount("unit_day")
     days += add_amount("unit_week") * 7
@@ -148,6 +149,7 @@ def parse_due_date(match, match_index):
         return None
 
     data_dict = dict(match.groupdict())
+    print(data_dict)
     base_date = get_date(data_dict, loc_parser)
 
     if data_dict.get("date"):
@@ -197,5 +199,25 @@ def parse_task(string, lang):
     return tasks
 
 
-test = "de este martes en 2 semanas"
+test = "de mañana en 8 días "
+#
+# test = "12/05" # 12 de mayo de 2025
+# test = "25 de diciembre" # 25 de diciembre de 2025
+# test = "01-11" # 1 de noviembre de 2025
+# test = "de hoy en 5 días"  # 10 de marzo de 2025
+# test = "de este martes en 2 semanas"  # 18 de marzo de 2025
+# test = "del lunes en 3 meses"  # 2 de junio de 2025
+# test = "el martes de la próxima semana"  # 11 de marzo de 2025
+# test = "el viernes de la proxima semana"  # 14 de marzo de 2025
+# test = "el domingo de la próxima semana"  # 16 de marzo de 2025
+# test = "el próximo lunes"  # 10 de marzo de 2025
+# test = "este miércoles"  # 6 de marzo de 2025
+# test = "el próximo sábado"  # 9 de marzo de 2025
+# test = "dentro de 3 días"  # 8 de marzo de 2025
+# test = "en 2 semanas"  # 19 de marzo de 2025
+# test = "dentro de 1 mes"  # 5 de abril de 2025
+# test = "hoy"  # 5 de marzo de 2025
+# test = "mañana"  # 6 de marzo de 2025
+# test = "pasado mañana"  # 7 de marzo de 2025
+
 parse_task(test, "es")
