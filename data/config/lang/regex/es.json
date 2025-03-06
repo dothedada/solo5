@@ -42,10 +42,10 @@
       "\\bnov(?:iembre)?\\b",
       "\\bdic(?:iembre)?\\b"
     ],
-    "amount_str": ["^\\b$", "\\b(?:pr[oó]ximo|siguiente)\\b", "patotera"],
-    "numeration_str": [
+    "amount_str": ["^\\b$", "\\b(?:pr[oó]ximo|siguiente)\\b"],
+    "enumeration_str": [
       "^\\b$",
-      "\\bun[oa]?\\b",
+      "\\b(un[oa]?|primero)\\b",
       "\\bdos\\b",
       "\\btres\\b",
       "\\bcuatro\\b"
@@ -57,6 +57,7 @@
     "(?P<from>el (?P<weekday>{week})) (?P<modifier>(?P<unit_week>de la (?P<amount>pr[oó]xima) semana))",
     "(?P<from>el |este |el (?P<modifier>(?P<unit_week>(?P<amount>{amount_str}))) )(?P<weekday>{week})",
     "(?P<modifier>(?:dentro de|en) (?P<amount>\\d+) ({time_structure}))",
+    "(?P<date>(?P<from>(?P<day_str>({enumeration_str})) de (?P<month_name>{months})))",
     "(?P<date>(?P<from>(?P<today_rel>{today_rel})))"
   ]
 }

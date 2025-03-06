@@ -58,6 +58,73 @@ class Parser:
         )
         return date(year, month, day)
 
+    def _get_weekday_days(self, name):
+        return (self._match_ind(name, "week") - date.today().weekday()) % 7
+
+    def _get_month(self, data_dict):
+        month_num = data_dict.get("month_num")
+        month_name = data_dict.get("month_name")
+
+        if month_num:
+            return int(month_num)
+        elif month_name:
+            return self._match_ind(month_name, "months") + 1
+
+        return date.today().month
+
+    def _get_date(self, data_dict):
+        if data_dict.get("from") is None:
+            return date.today()
+
+        day_str = data_dict.get("day_str")
+        today_rel = data_dict.get("today_rel")
+        if today_rel:
+            day_offset = self._match_ind(today_rel, "today_rel")
+            b_day = date.today().day + day_offset
+        elif day_str:
+            b_day = self._match_ind(day_str, "enumeration_str")
+        elif data_dict.get("weekday"):
+            weekday = self._get_weekday_days(data_dict.get("weekday"))
+            b_day = date.today().day + weekday
+        elif data_dict.get("day") and data_dict.get("day").isnumeric():
+            b_day = int(data_dict.get("day"))
+        else:
+            print("Cannot parse the day setted")
+            b_day = 1
+
+        b_month = self._get_month(data_dict)
+        b_year = data_dict.get("year", date.today().year)
+
+        year, month, day = Parser.normalize_date(b_year, b_month, b_day)
+
+        if date(year, month, day) < date.today():
+            year += 1
+
+        return date(year, month, day)
+
+    def _get_date_modifier(self, data_dict):
+        if data_dict.get("modifier") is None:
+            return 0, 0, 0
+
+        parsed_amount = data_dict.get("amount", None)
+        amount = 0
+
+        if parsed_amount:
+            if parsed_amount.isnumeric():
+                amount = int(parsed_amount)
+            else:
+                amount += self._match_ind(parsed_amount, "amount_str")
+
+        def add_amount(unit):
+            return amount if data_dict.get(unit) is not None else 0
+
+        days = add_amount("unit_day")
+        days += add_amount("unit_week") * 7
+        months = add_amount("unit_month")
+        years = add_amount("unit_year")
+
+        return days, months, years
+
     @staticmethod
     def make_id_for(string):
         char_sum = sum(ord(char) for char in string)
@@ -118,72 +185,8 @@ class Parser:
 
         return tasks
 
-    def _get_weekday_days(self, name):
-        return (self._match_ind(name, "week") - date.today().weekday()) % 7
 
-    def _get_month(self, data_dict):
-        month_num = data_dict.get("month_num")
-        month_name = data_dict.get("month_name")
-
-        if month_num:
-            return int(month_num)
-        elif month_name:
-            return self._match_ind(month_name, "months") + 1
-
-        return date.today().month
-
-    def _get_date(self, data_dict):
-        if data_dict.get("from") is None:
-            return date.today()
-
-        today_rel = data_dict.get("today_rel")
-        if today_rel:
-            day_offset = self._match_ind(today_rel, "today_rel")
-            b_day = date.today().day + day_offset
-        elif data_dict.get("weekday"):
-            weekday = self._get_weekday_days(data_dict.get("weekday"))
-            b_day = date.today().day + weekday
-        elif data_dict.get("day").isnumeric():
-            b_day = int(data_dict.get("day"))
-        else:
-            print("Cannot parse the day setted")
-            b_day = 1
-
-        b_month = self._get_month(data_dict)
-        b_year = data_dict.get("year", date.today().year)
-
-        year, month, day = Parser.normalize_date(b_year, b_month, b_day)
-
-        if date(year, month, day) < date.today():
-            year += 1
-
-        return date(year, month, day)
-
-    def _get_date_modifier(self, data_dict):
-        if data_dict.get("modifier") is None:
-            return 0, 0, 0
-
-        parsed_amount = data_dict.get("amount", None)
-        amount = 0
-
-        if parsed_amount:
-            if parsed_amount.isnumeric():
-                amount = int(parsed_amount)
-            else:
-                amount += self._match_ind(parsed_amount, "amount_str")
-
-        def add_amount(unit):
-            return amount if data_dict.get(unit) is not None else 0
-
-        days = add_amount("unit_day")
-        days += add_amount("unit_week") * 7
-        months = add_amount("unit_month")
-        years = add_amount("unit_year")
-
-        return days, months, years
-
-
-test = ' el patotera martes * difícil "caigo" a @jalizco'
+test = 'el próximo viernes // el diez de mayo * difícil "caigo" a @jalizco'
 parser_es = Parser("es")
 print(parser_es.make_task(test))
 # test = "12/05" # 12 de mayo de 2025
