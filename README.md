@@ -25,7 +25,17 @@ As part of my Python learning journey, I wanted to strengthen my understanding o
 - [-] Input parser
   - Regex parade
   - ~NLP for parsing the input and create the token for the tasks object
-- [-] Task Interpreter and factory
+- [-] the regex factory
+- [-] THE F*CKING date parser
+- [] Make the tests for this shit
+  - regex factory
+  - parser
+    - token creation
+    - id
+    - importance
+    - project
+    - date
+    - dificulty
 - [] Task heap
   - priorization euristics
 - [] ToDo manager class

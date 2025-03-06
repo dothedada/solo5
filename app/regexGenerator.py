@@ -1,47 +1,79 @@
 import re
 from fileLoaders import load_json
+from config import Defaults
 
 
-class RegexFactory:
-    def __init__(self, lang):
-        self.__global = load_json("./data/config/lang/regex", "globals.json")
-        self.__local = load_json("./data/config/lang/regex", f"{lang}.json")
-        self.regex_for = self.__get_regex()
+# Class to make regex dictionarys able to access using dot notation
+class RegexDict:
+    def __init__(self, dictionary):
+        self._dictionary = dictionary
 
-    def __regex_compiler(self, pattern_name):
+    def __getattribute__(self, key):
+        value = self._dictionary[key]
+        if isinstance(value, dict):
+            return RegexDict(value)
+        return value
+
+    def __getitem__(self, key):
+        return self.__getattribute__(key)
+
+
+class GetRegex:
+    lang = {}
+    cur_lang = ""
+
+    @classmethod
+    def of(cls, lang):
+        cls.cur_lang = lang
+
+        if lang in cls.lang:
+            return cls.lang[lang]
+
+        cls.lang[lang] = {}
+
+        n_lang = {}
+        n_lang["globals"] = load_json(Defaults.RGX_PATH.value, "globals.json")
+        n_lang["locals"] = load_json(Defaults.RGX_PATH.value, f"{lang}.json")
+        n_lang["local_format"] = {}
+
+        for key, value in n_lang["locals"].items():
+            n_lang["local_format"][key] = "|".join(value)
+
+        # Assings global and local formats before compiling regex
+        cls.lang[lang] = RegexDict(n_lang)
+        cls.lang[lang]["regex_for"] = cls._make_regex_dict()
+
+        return cls.lang[lang]
+
+    @classmethod
+    def _regex_compiler(cls, pattern):
         patterns = []
-        global_pattern = self.__global.get(pattern_name, None)
-        if global_pattern is not None:
-            patterns.append(re.compile(global_pattern, re.IGNORECASE))
+        global_patterns = cls.lang[cls.cur_lang]["globals"].get(pattern, None)
+        local_patterns = cls.lang[cls.cur_lang]["locals"].get(pattern, [])
+        local_str_format = cls.lang[cls.cur_lang]["local_format"]
 
-        for pattern in self.__local.get(pattern_name, []):
-            patterns.append(re.compile(pattern, re.IGNORECASE))
+        # Assemble the regex structure
+        if global_patterns is not None:
+            patterns.append(re.compile(global_patterns, re.IGNORECASE))
+
+        for pattern in local_patterns:
+            # Replace the placeholders with the keys present in __local json
+            new_pattern = pattern.format(**local_str_format)
+            patterns.append(re.compile(new_pattern, re.IGNORECASE))
 
         return patterns
 
-    def __get_regex(self):
-        week = "|".join(self.__local.get("week", []))
-        months = "|".join(self.__local.get("months", []))
-        time_structure = "|".join(self.__local.get("time_structure", []))
-        today_rel = "|".join(self.__local.get("today_rel", []))
-        dates_formatted = []
-        for date_format in self.__local["dates"]:
-            date_pattern = date_format.format(
-                week=week,
-                months=months,
-                today_relative=today_rel,
-                time_structure=time_structure,
-            )
-            dates_formatted.append(date_pattern)
-        self.__local["dates"] = dates_formatted
+    @classmethod
+    def _make_regex_dict(cls):
+        lcl_patterns = cls.lang[cls.cur_lang]["locals"]
 
         return {
-            "week": self.__local.get("week", []),
-            "months": self.__local.get("months", []),
-            "time_structure": time_structure,
-            "today_rel": self.__local.get("today_rel", []),
-            "project": self.__regex_compiler("project"),
-            "important": self.__regex_compiler("important"),
-            "dificulty": self.__regex_compiler("dificulty"),
-            "dates": self.__regex_compiler("dates"),
+            "week": lcl_patterns.get("week", []),
+            "months": lcl_patterns.get("months", []),
+            "time_structure": lcl_patterns.get("time_structure", []),
+            "today_rel": lcl_patterns.get("today_rel", []),
+            "project": cls._regex_compiler("project"),
+            "important": cls._regex_compiler("important"),
+            "dificulty": cls._regex_compiler("dificulty"),
+            "dates": cls._regex_compiler("dates"),
         }

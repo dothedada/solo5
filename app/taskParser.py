@@ -3,7 +3,7 @@ from config import Defaults
 import re
 import time
 import random
-from regexGenerator import RegexFactory
+from regexGenerator import GetRegex
 from task import Task
 from datetime import date
 
@@ -144,7 +144,7 @@ def get_date_modifier(data_dict, parser):
 
 @matcher
 def parse_due_date(match, match_index):
-    loc_parser = RegexFactory("es")
+    loc_parser = GetRegex("es")
     if match is None:
         return None
 
@@ -175,7 +175,7 @@ def id_maker(string):
 
 
 def parse_task(string, lang):
-    parser = RegexFactory(lang)
+    parser = GetRegex(lang)
     tasks = []
 
     for i, task_raw in enumerate(string.split(Defaults.TASK_SECUENCER.value)):
@@ -205,7 +205,7 @@ test = "de mañana en 8 días "
 # test = "25 de diciembre" # 25 de diciembre de 2025
 # test = "01-11" # 1 de noviembre de 2025
 # test = "de hoy en 5 días"  # 10 de marzo de 2025
-# test = "de este martes en 2 semanas"  # 18 de marzo de 2025
+test = "de este martes en 2 semanas"  # 18 de marzo de 2025
 # test = "del lunes en 3 meses"  # 2 de junio de 2025
 # test = "el martes de la próxima semana"  # 11 de marzo de 2025
 # test = "el viernes de la proxima semana"  # 14 de marzo de 2025
