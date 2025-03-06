@@ -39,7 +39,7 @@ class GetRegex:
             patterns.append(re.compile(global_patterns, re.IGNORECASE))
 
         for pattern in local_patterns:
-            # Replace the placeholders with the keys present in __local json
+            # Replace the placeholders with the keys present in local_patterns
             new_pattern = pattern.format(**local_str_format)
             patterns.append(re.compile(new_pattern, re.IGNORECASE))
 
@@ -47,13 +47,13 @@ class GetRegex:
 
     @classmethod
     def _make_regex_dict(cls, lang):
-        lcl_patterns = cls._lang[lang]["locals"]
+        local_patterns = cls._lang[lang]["locals"]
 
         return {
-            "week": lcl_patterns.get("week", []),
-            "months": lcl_patterns.get("months", []),
-            "time_structure": lcl_patterns.get("time_structure", []),
-            "today_rel": lcl_patterns.get("today_rel", []),
+            "week": local_patterns.get("week", []),
+            "months": local_patterns.get("months", []),
+            "time_structure": local_patterns.get("time_structure", []),
+            "today_rel": local_patterns.get("today_rel", []),
             "project": cls._regex_compiler("project", lang),
             "important": cls._regex_compiler("important", lang),
             "dificulty": cls._regex_compiler("dificulty", lang),

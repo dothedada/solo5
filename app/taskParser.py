@@ -174,6 +174,13 @@ def id_maker(string):
     return hex(base_id)[2:]
 
 
+def sanitize_task(string):
+    string = string.strip()
+    string = re.sub(r"\s+", " ", string)
+    string = string.replace('"', '""')
+    return f'"{string}"'
+
+
 def parse_task(string, lang):
     parser = GetRegex.of(lang)
     tasks = []
@@ -184,7 +191,7 @@ def parse_task(string, lang):
             {
                 "lang": lang,
                 "id": id_maker(task_raw),
-                "task": task_raw,
+                "task": sanitize_task(task_raw),
                 "creation_date": date.today(),
                 "project": parse_project(task_raw, parser, "project"),
                 "important": parse_important(task_raw, parser, "important"),
@@ -199,8 +206,7 @@ def parse_task(string, lang):
     return tasks
 
 
-test = "de mañana en 8 días "
-#
+test = 'de mañana en 8 días "caigo" a jalizco      si,   ... eso creo \n ñoooo'
 # test = "12/05" # 12 de mayo de 2025
 # test = "25 de diciembre" # 25 de diciembre de 2025
 # test = "01-11" # 1 de noviembre de 2025
