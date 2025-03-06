@@ -1,8 +1,9 @@
-class TaskToken:
+class Task:
     keys_allowed = (
         "lang",
         "id",
         "task",
+        "task_csv",
         "important",
         "dificulty",
         "creation_date",
@@ -12,23 +13,15 @@ class TaskToken:
         "project",
     )
 
-    def __init__(self, **kwargs):
-        if "id" not in kwargs or "task" not in kwargs:
-            raise TypeError("id and task are mandatory to create token")
-        for key, value in kwargs.items():
-            if key not in TaskToken.keys_allowed:
+    def __init__(self, task_dict):
+        if not isinstance(task_dict, dict):
+            raise TypeError("task_dict must be a dict object")
+        if "id" not in task_dict or "task" not in task_dict:
+            raise TypeError("id and task are mandatory to create a task token")
+        for key, value in task_dict.items():
+            if key not in Task.keys_allowed:
                 continue
             setattr(self, key, value)
-
-
-class Task(TaskToken):
-    keys_allowed = TaskToken.keys_allowed + ("priority",)
-
-    def __init__(self, token):
-        super().__init__(**token)
-
-    def set_priority(self, priority):
-        self.priority = priority
 
     def update_properties(self, **kwargs):
         for key, value in kwargs.items():
