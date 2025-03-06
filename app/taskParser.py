@@ -21,42 +21,22 @@ def matcher(func):
 
 
 @matcher
-def parse_important(match, match_index):
-    return False if match is None else True
+def get_match_bool(match, match_index):
+    return True if match else False
 
 
 @matcher
-def parse_dificulty(match, match_index):
-    return Defaults.DIFICULTY.value if match is None else match_index
-
-
-@matcher
-def parse_project(match, match_index):
-    return match.group()[1:] if match else None
-
-
-@matcher
-def parse_month_string(match, match_index):
-    return match_index if match else None
-
-
-@matcher
-def get_today_rel(match, match_index):
-    return match_index if match else 0
-
-
-@matcher
-def get_day_name(match, match_index):
-    return match_index if match else None
-
-
-@matcher
-def parse_weekday(match, match_index):
+def get_match_index(match, match_index):
     return match_index
 
 
+@matcher
+def get_match(match, match_index):
+    return match.group() if match else None
+
+
 def get_weekday_days(name, parser):
-    return (parse_weekday(name, parser, "week") - date.today().weekday()) % 7
+    return (get_match_bool(name, parser, "week") - date.today().weekday()) % 7
 
 
 def get_month(data_dict, parser):
@@ -64,9 +44,9 @@ def get_month(data_dict, parser):
     month_name = data_dict.get("month_name")
 
     if month_num:
-        return int(data_dict.get("month_num"))
+        return int(month_num)
     elif month_name:
-        return parse_month_string(month_name, parser, "months") + 1
+        return get_match_index(month_name, parser, "months") + 1
 
     return date.today().month
 
@@ -95,7 +75,7 @@ def get_date(data_dict, parser):
 
     today_rel = data_dict.get("today_rel")
     if today_rel:
-        day_offset = get_today_rel(today_rel, parser, "today_rel")
+        day_offset = get_match_index(today_rel, parser, "today_rel")
         base_day = date.today().day + day_offset
     elif data_dict.get("weekday"):
         weekday = get_weekday_days(data_dict.get("weekday"), parser)
@@ -103,7 +83,7 @@ def get_date(data_dict, parser):
     elif data_dict.get("day").isnumeric():
         base_day = int(data_dict.get("day"))
     else:
-        print("el dia esta mal configurado")
+        print("Cannot parse the day setted")
         base_day = 1
 
     base_month = get_month(data_dict, parser)
@@ -144,18 +124,18 @@ def get_date_modifier(data_dict, parser):
 
 @matcher
 def parse_due_date(match, match_index):
-    loc_parser = GetRegex.of("es")
     if match is None:
         return None
 
-    data_dict = dict(match.groupdict())
-    print(data_dict)
-    base_date = get_date(data_dict, loc_parser)
+    loc_parser = GetRegex.of(Defaults.LANG.value)
 
-    if data_dict.get("date"):
+    date_info = dict(match.groupdict())
+    base_date = get_date(date_info, loc_parser)
+
+    if date_info.get("date"):
         return base_date
 
-    add_days, add_monts, add_years = get_date_modifier(data_dict, loc_parser)
+    add_days, add_monts, add_years = get_date_modifier(date_info, loc_parser)
 
     year, month, day = date_normalizer(
         base_date.year + add_years,
@@ -193,11 +173,11 @@ def parse_task(string, lang):
                 "id": id_maker(task_raw),
                 "task": sanitize_task(task_raw),
                 "creation_date": date.today(),
-                "project": parse_project(task_raw, parser, "project"),
-                "important": parse_important(task_raw, parser, "important"),
-                "dificulty": parse_dificulty(task_raw, parser, "dificulty"),
+                "project": get_match(task_raw, parser, "project"),
+                "important": get_match_bool(task_raw, parser, "important"),
+                "dificulty": get_match_index(task_raw, parser, "dificulty"),
                 "due_date": parse_due_date(task_raw, parser, "dates"),
-                "parent": None if i == 0 else tasks[i - 1].id,
+                "parent": tasks[i - 1].id if tasks else None,
             }
         )
         print(task)
@@ -206,7 +186,7 @@ def parse_task(string, lang):
     return tasks
 
 
-test = 'de mañana en 8 días "caigo" a jalizco      si,   ... eso creo \n ñoooo'
+test = 'de mañana en 8 días * "caigo" a @jalizco'
 # test = "12/05" # 12 de mayo de 2025
 # test = "25 de diciembre" # 25 de diciembre de 2025
 # test = "01-11" # 1 de noviembre de 2025
