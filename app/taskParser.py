@@ -10,12 +10,14 @@ from datetime import date
 
 class Parser:
     def __init__(self, lang):
-        self.lang = lang
-        self.parser = GetRegex.of(lang)
+        self._lang = lang
+        self._parser = GetRegex.of(lang)
 
-    def matcher(func):
+    # Compares the string with the regex source to get the object or the index
+    def _matcher(func):
         def wrapper(self, string, regex_src):
-            for i, pattern in enumerate(self.parser["regex_for"][regex_src]):
+            for i, pattern in enumerate(self._parser["regex_for"][regex_src]):
+                print(type(pattern), "//", pattern, "//", string)
                 match = re.search(pattern, string)
                 if match:
                     return func(self, match=match, match_index=i)
@@ -24,32 +26,32 @@ class Parser:
 
         return wrapper
 
-    @matcher
-    def get_match_bool(self, match, match_index):
+    @_matcher
+    def _match_bool(self, match, match_index):
         return True if match else False
 
-    @matcher
-    def get_match_ind(self, match, match_index):
+    @_matcher
+    def _match_ind(self, match, match_index):
         return match_index
 
-    @matcher
-    def get_match(self, match, match_index):
+    @_matcher
+    def _match_dict(self, match, match_index):
         return match.group() if match else None
 
-    @matcher
-    def get_match_date(self, match, match_index):
+    @_matcher
+    def _match_date(self, match, match_index):
         if match is None:
             return None
 
         date_info = match.groupdict()
-        base_date = self.get_date(date_info)
+        base_date = self._get_date(date_info)
 
         if date_info.get("date"):
             return base_date
 
-        add_days, add_monts, add_years = self.get_date_modifier(date_info)
+        add_days, add_monts, add_years = self._get_date_modifier(date_info)
 
-        year, month, day = self.date_normalizer(
+        year, month, day = Parser.normalize_date(
             base_date.year + add_years,
             base_date.month + add_monts,
             base_date.day + add_days,
@@ -57,7 +59,7 @@ class Parser:
         return date(year, month, day)
 
     @staticmethod
-    def id_maker(string):
+    def make_id_for(string):
         char_sum = sum(ord(char) for char in string)
         timestamp = int(time.time() * 1000)
         salt = random.randint(1, 9999)
@@ -66,53 +68,18 @@ class Parser:
         return hex(base_id)[2:]
 
     @staticmethod
-    def sanitize_task(string, csv):
+    def sanitize_text(string, is_csv):
         string = string.strip()
         string = re.sub(r"\s+", " ", string)
 
-        if csv:
+        if is_csv:
             string = string.replace('"', '""')
             return f'"{string}"'
 
         return string
 
-    def get_task(self, string):
-        tasks = []
-
-        for i, task_raw in enumerate(string.split(Defaults.TASK_SPLIT.value)):
-            task = Task(
-                {
-                    "lang": self.lang,
-                    "id": self.id_maker(task_raw),
-                    "task": self.sanitize_task(task_raw, False),
-                    "task_csv": self.sanitize_task(task_raw, True),
-                    "creation_date": date.today(),
-                    "project": self.get_match(task_raw, "project"),
-                    "important": self.get_match_bool(task_raw, "important"),
-                    "dificulty": self.get_match_ind(task_raw, "dificulty"),
-                    "due_date": self.get_match_date(task_raw, "dates"),
-                    "parent": tasks[i - 1].id if tasks else None,
-                }
-            )
-            tasks.append(task)
-
-        return tasks
-
-    def get_weekday_days(self, name):
-        return (self.get_match_ind(name, "week") - date.today().weekday()) % 7
-
-    def get_month(self, data_dict):
-        month_num = data_dict.get("month_num")
-        month_name = data_dict.get("month_name")
-
-        if month_num:
-            return int(month_num)
-        elif month_name:
-            return self.get_match_ind(month_name, self.parser, "months") + 1
-
-        return date.today().month
-
-    def date_normalizer(self, year, month, day):
+    @staticmethod
+    def normalize_date(year, month, day):
         try:
             date(year, month, day)
             return year, month, day
@@ -129,16 +96,52 @@ class Parser:
 
         return year, month, day
 
-    def get_date(self, data_dict):
+    def make_task(self, string):
+        tasks = []
+
+        for i, task_raw in enumerate(string.split(Defaults.TASK_SPLIT.value)):
+            task = Task(
+                {
+                    "lang": self._lang,
+                    "id": Parser.make_id_for(task_raw),
+                    "task": Parser.sanitize_text(task_raw, False),
+                    "task_csv": Parser.sanitize_text(task_raw, True),
+                    "creation_date": date.today(),
+                    "project": self._match_dict(task_raw, "project"),
+                    "important": self._match_bool(task_raw, "important"),
+                    "dificulty": self._match_ind(task_raw, "dificulty"),
+                    "due_date": self._match_date(task_raw, "dates"),
+                    "parent": tasks[i - 1].id if tasks else None,
+                }
+            )
+            tasks.append(task)
+
+        return tasks
+
+    def _get_weekday_days(self, name):
+        return (self._match_ind(name, "week") - date.today().weekday()) % 7
+
+    def _get_month(self, data_dict):
+        month_num = data_dict.get("month_num")
+        month_name = data_dict.get("month_name")
+
+        if month_num:
+            return int(month_num)
+        elif month_name:
+            return self._match_ind(month_name, "months") + 1
+
+        return date.today().month
+
+    def _get_date(self, data_dict):
         if data_dict.get("from") is None:
             return date.today()
 
         today_rel = data_dict.get("today_rel")
         if today_rel:
-            day_offset = self.get_match_ind(today_rel, "today_rel")
+            day_offset = self._match_ind(today_rel, "today_rel")
             b_day = date.today().day + day_offset
         elif data_dict.get("weekday"):
-            weekday = self.get_weekday_days(data_dict.get("weekday"))
+            weekday = self._get_weekday_days(data_dict.get("weekday"))
             b_day = date.today().day + weekday
         elif data_dict.get("day").isnumeric():
             b_day = int(data_dict.get("day"))
@@ -146,17 +149,17 @@ class Parser:
             print("Cannot parse the day setted")
             b_day = 1
 
-        b_month = self.get_month(data_dict)
+        b_month = self._get_month(data_dict)
         b_year = data_dict.get("year", date.today().year)
 
-        year, month, day = self.date_normalizer(b_year, b_month, b_day)
+        year, month, day = Parser.normalize_date(b_year, b_month, b_day)
 
         if date(year, month, day) < date.today():
             year += 1
 
         return date(year, month, day)
 
-    def get_date_modifier(self, data_dict):
+    def _get_date_modifier(self, data_dict):
         if data_dict.get("modifier") is None:
             return 0, 0, 0
 
@@ -167,8 +170,7 @@ class Parser:
             if parsed_amount.isnumeric():
                 amount = int(parsed_amount)
             else:
-                # NOTE: lista correspondiente a cantidad? proxima, un, una...?
-                amount += 1
+                amount += self._match_ind(parsed_amount, "amount_str")
 
         def add_amount(unit):
             return amount if data_dict.get(unit) is not None else 0
@@ -181,9 +183,9 @@ class Parser:
         return days, months, years
 
 
-test = ' de este martes * "caigo" a @jalizco'
+test = ' el patotera martes * "caigo" a @jalizco'
 parser_es = Parser("es")
-print(parser_es.get_task(test))
+print(parser_es.make_task(test))
 # test = "12/05" # 12 de mayo de 2025
 # test = "25 de diciembre" # 25 de diciembre de 2025
 # test = "01-11" # 1 de noviembre de 2025
@@ -204,3 +206,4 @@ print(parser_es.get_task(test))
 # test = "pasado mañana"  # 7 de marzo de 2025
 
 # parse_task(test, "es")
+#

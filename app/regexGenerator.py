@@ -21,7 +21,7 @@ class GetRegex:
         for key, value in n_lang["locals"].items():
             n_lang["local_format"][key] = "|".join(value)
 
-        # Assings global and local formats before compiling regex
+        # Assigns global and local formats before compiling regex
         cls._lang[lang] = n_lang
         cls._lang[lang]["regex_for"] = cls._make_regex_dict(lang)
 
@@ -54,6 +54,7 @@ class GetRegex:
             "months": local_patterns.get("months", []),
             "time_structure": local_patterns.get("time_structure", []),
             "today_rel": local_patterns.get("today_rel", []),
+            "amount_str": local_patterns.get("amount_str", []),
             "project": cls._regex_compiler("project", lang),
             "important": cls._regex_compiler("important", lang),
             "dificulty": cls._regex_compiler("dificulty", lang),
