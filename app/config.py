@@ -7,3 +7,4 @@ class Defaults(Enum):
     DIFFICULTY = 2
     LANG = "es"
     TASK_SPLIT = "//"
+    TASK_AMOUNT = 5

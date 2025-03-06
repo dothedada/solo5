@@ -16,47 +16,40 @@ class GetRegex:
         n_lang = {}
         n_lang["globals"] = load_json(Defaults.RGX_PATH.value, "globals.json")
         n_lang["locals"] = load_json(Defaults.RGX_PATH.value, f"{lang}.json")
-        n_lang["local_format"] = {}
-
-        for key, value in n_lang["locals"].items():
-            n_lang["local_format"][key] = "|".join(value)
+        n_lang["definitions"] = n_lang["locals"]["definitions"]
 
         # Assigns global and local formats before compiling regex
         cls._lang[lang] = n_lang
-        cls._lang[lang]["regex_for"] = cls._make_regex_dict(lang)
+        cls._lang[lang]["regex_for"] = cls._regex_compiler(lang)
 
         return cls._lang[lang]
 
     @classmethod
-    def _regex_compiler(cls, pattern, lang):
-        patterns = []
-        global_patterns = cls._lang[lang]["globals"].get(pattern, None)
-        local_patterns = cls._lang[lang]["locals"].get(pattern, [])
-        local_str_format = cls._lang[lang]["local_format"]
+    def _regex_compiler(cls, lang):
+        patterns = {}
+        local_str = {}
 
-        # Assemble the regex structure
-        if global_patterns is not None:
-            patterns.append(re.compile(global_patterns, re.IGNORECASE))
+        for key, value in cls._lang[lang]["definitions"].items():
+            local_str[key] = "|".join(value)
 
-        for pattern in local_patterns:
-            # Replace the placeholders with the keys present in local_patterns
-            new_pattern = pattern.format(**local_str_format)
-            patterns.append(re.compile(new_pattern, re.IGNORECASE))
-
-        return patterns
-
-    @classmethod
-    def _make_regex_dict(cls, lang):
+        global_patterns = cls._lang[lang]["globals"]
         local_patterns = cls._lang[lang]["locals"]
 
-        return {
-            "week": local_patterns.get("week", []),
-            "months": local_patterns.get("months", []),
-            "time_structure": local_patterns.get("time_structure", []),
-            "today_rel": local_patterns.get("today_rel", []),
-            "amount_str": local_patterns.get("amount_str", []),
-            "project": cls._regex_compiler("project", lang),
-            "important": cls._regex_compiler("important", lang),
-            "dificulty": cls._regex_compiler("dificulty", lang),
-            "dates": cls._regex_compiler("dates", lang),
-        }
+        pattern_keys = set([*global_patterns.keys(), *local_patterns.keys()])
+        pattern_keys.remove("definitions")
+
+        for pattern in pattern_keys:
+            patterns[pattern] = []
+            if pattern in global_patterns:
+                patterns[pattern].append(
+                    re.compile(global_patterns[pattern], re.IGNORECASE)
+                )
+
+            if pattern in local_patterns:
+                for sub_pattern in local_patterns[pattern]:
+                    formated_pattern = sub_pattern.format(**local_str)
+                    patterns[pattern].append(
+                        re.compile(formated_pattern, re.IGNORECASE)
+                    )
+
+        return {**patterns, **cls._lang[lang]["definitions"]}

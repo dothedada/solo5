@@ -1,11 +1,12 @@
 import calendar
-from config import Defaults
 import re
 import time
 import random
+from datetime import date
+
+from config import Defaults
 from regexGenerator import GetRegex
 from task import Task
-from datetime import date
 
 
 class Parser:
@@ -17,7 +18,6 @@ class Parser:
     def _matcher(func):
         def wrapper(self, string, regex_src):
             for i, pattern in enumerate(self._parser["regex_for"][regex_src]):
-                print(type(pattern), "//", pattern, "//", string)
                 match = re.search(pattern, string)
                 if match:
                     return func(self, match=match, match_index=i)
@@ -183,7 +183,7 @@ class Parser:
         return days, months, years
 
 
-test = ' el patotera martes * "caigo" a @jalizco'
+test = ' el patotera martes * difícil "caigo" a @jalizco'
 parser_es = Parser("es")
 print(parser_es.make_task(test))
 # test = "12/05" # 12 de mayo de 2025

@@ -7,48 +7,50 @@
     "(?<!muy )\\bdif[ií]cil\\b",
     "\\bmuy dif[ií]cil\\b"
   ],
-  "time_structure": [
-    "(?P<unit_day>\\bd[ií]as?\\b)",
-    "(?P<unit_week>\\bsemanas?\\b)",
-    "(?P<unit_month>\\bmes(?:es)?\\b)",
-    "(?P<unit_year>\\ba[nñ]os?\\b)"
-  ],
-  "today_rel": [
-    "\\bhoy\\b",
-    "(?<!pasado )\\bma[nñ]ana\\b",
-    "\\bpasado\\s+ma[nñ]ana\\b"
-  ],
-  "week": [
-    "\\blun(?:es)?\\b",
-    "\\bmar(?:tes)?\\b",
-    "\\bmi[eé](?:rcoles)?\\b",
-    "\\bjue(?:ves)?\\b",
-    "\\bvie(?:rnes)?\\b",
-    "\\bs[aá]b(?:ado)?\\b",
-    "\\bdom(?:ingo)?\\b"
-  ],
-  "months": [
-    "\\bene(?:ro)?\\b",
-    "\\bfeb(?:rero)?\\b",
-    "\\bmar(?:zo)?\\b",
-    "\\babr(?:il)?\\b",
-    "\\bmay(?:o)?\\b",
-    "\\bjun(?:io)?\\b",
-    "\\bjul(?:io)?\\b",
-    "\\bago(?:sto)?\\b",
-    "\\bsep(?:tiembre)?\\b",
-    "\\boct(?:ubre)?\\b",
-    "\\bnov(?:iembre)?\\b",
-    "\\bdic(?:iembre)?\\b"
-  ],
-  "amount_str": ["^\\b$", "\\b(?:pr[oó]ximo|siguiente)\\b", "patotera"],
-  "numeration_str": [
-    "^\\b$",
-    "\\bun[oa]?\\b",
-    "\\bdos\\b",
-    "\\btres\\b",
-    "\\bcuatro\\b"
-  ],
+  "definitions": {
+    "time_structure": [
+      "(?P<unit_day>\\bd[ií]as?\\b)",
+      "(?P<unit_week>\\bsemanas?\\b)",
+      "(?P<unit_month>\\bmes(?:es)?\\b)",
+      "(?P<unit_year>\\ba[nñ]os?\\b)"
+    ],
+    "today_rel": [
+      "\\bhoy\\b",
+      "(?<!pasado )\\bma[nñ]ana\\b",
+      "\\bpasado\\s+ma[nñ]ana\\b"
+    ],
+    "week": [
+      "\\blun(?:es)?\\b",
+      "\\bmar(?:tes)?\\b",
+      "\\bmi[eé](?:rcoles)?\\b",
+      "\\bjue(?:ves)?\\b",
+      "\\bvie(?:rnes)?\\b",
+      "\\bs[aá]b(?:ado)?\\b",
+      "\\bdom(?:ingo)?\\b"
+    ],
+    "months": [
+      "\\bene(?:ro)?\\b",
+      "\\bfeb(?:rero)?\\b",
+      "\\bmar(?:zo)?\\b",
+      "\\babr(?:il)?\\b",
+      "\\bmay(?:o)?\\b",
+      "\\bjun(?:io)?\\b",
+      "\\bjul(?:io)?\\b",
+      "\\bago(?:sto)?\\b",
+      "\\bsep(?:tiembre)?\\b",
+      "\\boct(?:ubre)?\\b",
+      "\\bnov(?:iembre)?\\b",
+      "\\bdic(?:iembre)?\\b"
+    ],
+    "amount_str": ["^\\b$", "\\b(?:pr[oó]ximo|siguiente)\\b", "patotera"],
+    "numeration_str": [
+      "^\\b$",
+      "\\bun[oa]?\\b",
+      "\\bdos\\b",
+      "\\btres\\b",
+      "\\bcuatro\\b"
+    ]
+  },
   "dates": [
     "(?P<date>(?P<from>(?P<day>(?:\\b(0?[1-9]|[12][0-9]|3[01])\\b))(?:[/-]| de )(?:(?P<month_num>\\b(?:0?[1-9]|1[0-2])\\b)|(?P<month_name>{months}))))",
     "(?P<from>de (?P<today_rel>{today_rel})|(?:de este |del )(?P<weekday>{week})) en (?P<modifier>(?P<amount>\\d+) ({time_structure}))",
