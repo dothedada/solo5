@@ -36,7 +36,7 @@ def get_match(match, match_index):
 
 
 def get_weekday_days(name, parser):
-    return (get_match_bool(name, parser, "week") - date.today().weekday()) % 7
+    return (get_match_index(name, parser, "week") - date.today().weekday()) % 7
 
 
 def get_month(data_dict, parser):
@@ -186,7 +186,7 @@ def parse_task(string, lang):
     return tasks
 
 
-test = 'de mañana en 8 días * "caigo" a @jalizco'
+test = ' de este martes * "caigo" a @jalizco'
 # test = "12/05" # 12 de mayo de 2025
 # test = "25 de diciembre" # 25 de diciembre de 2025
 # test = "01-11" # 1 de noviembre de 2025
