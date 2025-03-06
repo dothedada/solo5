@@ -4,6 +4,7 @@ class Task:
         "id",
         "task",
         "task_csv",
+        "done",
         "important",
         "dificulty",
         "creation_date",
@@ -14,10 +15,6 @@ class Task:
     )
 
     def __init__(self, task_dict):
-        if not isinstance(task_dict, dict):
-            raise TypeError("task_dict must be a dict object")
-        if "id" not in task_dict or "task" not in task_dict:
-            raise TypeError("id and task are mandatory to create a task token")
         for key, value in task_dict.items():
             if key not in Task.keys_allowed:
                 continue

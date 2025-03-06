@@ -58,7 +58,7 @@ class Parser:
         )
         return date(year, month, day)
 
-    def _get_weekday_days(self, name):
+    def _get_next_weekday(self, name):
         return (self._match_ind(name, "week") - date.today().weekday()) % 7
 
     def _get_month(self, data_dict):
@@ -84,7 +84,7 @@ class Parser:
         elif day_str:
             b_day = self._match_ind(day_str, "enumeration_str")
         elif data_dict.get("weekday"):
-            weekday = self._get_weekday_days(data_dict.get("weekday"))
+            weekday = self._get_next_weekday(data_dict.get("weekday"))
             b_day = date.today().day + weekday
         elif data_dict.get("day") and data_dict.get("day").isnumeric():
             b_day = int(data_dict.get("day"))
@@ -173,6 +173,7 @@ class Parser:
                     "id": Parser.make_id_for(task_raw),
                     "task": Parser.sanitize_text(task_raw, False),
                     "task_csv": Parser.sanitize_text(task_raw, True),
+                    "done": False,
                     "creation_date": date.today(),
                     "project": self._match_dict(task_raw, "project"),
                     "important": self._match_bool(task_raw, "important"),

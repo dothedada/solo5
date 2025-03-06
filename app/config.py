@@ -8,3 +8,4 @@ class Defaults(Enum):
     LANG = "es"
     TASK_SPLIT = "//"
     TASK_AMOUNT = 5
+    COUNT_CURRENT_DAY = False
