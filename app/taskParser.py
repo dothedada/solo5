@@ -10,7 +10,7 @@ from datetime import date
 
 def matcher(func):
     def wrapper(string, parser, regex_source):
-        for i, pattern in enumerate(parser.regex_for[regex_source]):
+        for i, pattern in enumerate(parser["regex_for"][regex_source]):
             match = re.search(pattern, string)
             if match:
                 return func(match=match, match_index=i)
@@ -144,7 +144,7 @@ def get_date_modifier(data_dict, parser):
 
 @matcher
 def parse_due_date(match, match_index):
-    loc_parser = GetRegex("es")
+    loc_parser = GetRegex.of("es")
     if match is None:
         return None
 
@@ -175,7 +175,7 @@ def id_maker(string):
 
 
 def parse_task(string, lang):
-    parser = GetRegex(lang)
+    parser = GetRegex.of(lang)
     tasks = []
 
     for i, task_raw in enumerate(string.split(Defaults.TASK_SECUENCER.value)):
@@ -193,7 +193,7 @@ def parse_task(string, lang):
                 "parent": None if i == 0 else tasks[i - 1].id,
             }
         )
-        print(task.due_date)
+        print(task)
         tasks.append(task)
 
     return tasks
@@ -205,13 +205,13 @@ test = "de mañana en 8 días "
 # test = "25 de diciembre" # 25 de diciembre de 2025
 # test = "01-11" # 1 de noviembre de 2025
 # test = "de hoy en 5 días"  # 10 de marzo de 2025
-test = "de este martes en 2 semanas"  # 18 de marzo de 2025
+# test = "de este martes en 2 semanas"  # 18 de marzo de 2025
 # test = "del lunes en 3 meses"  # 2 de junio de 2025
 # test = "el martes de la próxima semana"  # 11 de marzo de 2025
 # test = "el viernes de la proxima semana"  # 14 de marzo de 2025
 # test = "el domingo de la próxima semana"  # 16 de marzo de 2025
 # test = "el próximo lunes"  # 10 de marzo de 2025
-# test = "este miércoles"  # 6 de marzo de 2025
+# test = "este viernes"  # 6 de marzo de 2025
 # test = "el próximo sábado"  # 9 de marzo de 2025
 # test = "dentro de 3 días"  # 8 de marzo de 2025
 # test = "en 2 semanas"  # 19 de marzo de 2025
