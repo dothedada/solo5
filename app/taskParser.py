@@ -189,7 +189,10 @@ class Parser:
 
 test = 'el próximo viernes // el diez de mayo * difícil "caigo" a @jalizco'
 parser_es = Parser("es")
-print(parser_es.make_task(test))
+tasks = parser_es.make_task(test)
+print(tasks[0])
+tasks[0].mark_done()
+print(tasks[0])
 # test = "12/05" # 12 de mayo de 2025
 # test = "25 de diciembre" # 25 de diciembre de 2025
 # test = "01-11" # 1 de noviembre de 2025

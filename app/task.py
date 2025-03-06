@@ -30,6 +30,14 @@ class Task:
             setattr(self, key, value)
         return self
 
+    def mark_done(self):
+        setattr(self, "done", True)
+        return self
+
+    def mark_not_done(self):
+        setattr(self, "done", False)
+        return self
+
     def __repr__(self):
         output = "Task { \n"
         for key, value in self.__dict__.items():
