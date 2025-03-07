@@ -15,6 +15,9 @@ class Task:
     )
 
     def __init__(self, task_dict):
+        if "id" not in task_dict or "task" not in task_dict:
+            raise TypeError("Task must have id and task parameters")
+
         for key, value in task_dict.items():
             if key not in Task.keys_allowed:
                 continue
@@ -23,7 +26,8 @@ class Task:
     def update_properties(self, **kwargs):
         for key, value in kwargs.items():
             if key == "id":
-                raise Exception("Id cannot be updated")
+                print("Id cannot be updated")
+                continue
             if key not in Task.keys_allowed:
                 print(f"The key '{key}' does not exist in the Task object")
                 continue
