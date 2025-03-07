@@ -130,6 +130,9 @@ class Parser:
         if parsed_diff != 0:
             return parsed_diff
 
+        if parsed_diff == -1:
+            return Defaults.BASE_DIF.value
+
         return int(
             re.search(
                 self._parser["globals"]["dificulty"],
