@@ -179,7 +179,6 @@ class Parser:
                     "important": self._match_bool(task_raw, "important"),
                     "dificulty": self._match_ind(task_raw, "dificulty"),
                     "due_date": self._match_date(task_raw, "dates"),
-                    "parent": tasks[i - 1].id if tasks else None,
                 }
             )
             tasks.append(task)
@@ -190,9 +189,9 @@ class Parser:
 test = 'el próximo viernes // el diez de mayo * difícil "caigo" a @jalizco'
 parser_es = Parser("es")
 tasks = parser_es.make_task(test)
-print(tasks[0])
-tasks[0].mark_done()
-print(tasks[0])
+print(tasks)
+# tasks[0].mark_done()
+# print(tasks[0])
 # test = "12/05" # 12 de mayo de 2025
 # test = "25 de diciembre" # 25 de diciembre de 2025
 # test = "01-11" # 1 de noviembre de 2025

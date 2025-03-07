@@ -10,7 +10,6 @@ class Task:
         "creation_date",
         "lang",
         "due_date",
-        "parent",
         "project",
     )
 
