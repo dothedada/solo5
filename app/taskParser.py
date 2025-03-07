@@ -125,6 +125,18 @@ class Parser:
 
         return days, months, years
 
+    def _get_dificulty(self, task_raw):
+        parsed_diff = self._match_ind(task_raw, "dificulty")
+        if parsed_diff != 0:
+            return parsed_diff
+
+        return int(
+            re.search(
+                self._parser["globals"]["dificulty"],
+                task_raw,
+            ).group()[1:]
+        )
+
     @staticmethod
     def make_id_for(string):
         char_sum = sum(ord(char) for char in string)
@@ -177,7 +189,7 @@ class Parser:
                     "creation_date": date.today(),
                     "project": self._match_dict(task_raw, "project"),
                     "important": self._match_bool(task_raw, "important"),
-                    "dificulty": self._match_ind(task_raw, "dificulty"),
+                    "dificulty": self._get_dificulty(task_raw),
                     "due_date": self._match_date(task_raw, "dates"),
                 }
             )
@@ -186,10 +198,10 @@ class Parser:
         return tasks
 
 
-test = 'el próximo viernes // el diez de mayo * difícil "caigo" a @jalizco'
-parser_es = Parser("es")
-tasks = parser_es.make_task(test)
-print(tasks)
+# test = 'el próximo viernes // el diez de mayo * difícil "caigo" a @jalizco'
+# parser_es = Parser("es")
+# tasks = parser_es.make_task(test)
+# print(tasks)
 # tasks[0].mark_done()
 # print(tasks[0])
 # test = "12/05" # 12 de mayo de 2025
