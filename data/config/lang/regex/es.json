@@ -49,7 +49,8 @@
       "\\bdos\\b",
       "\\btres\\b",
       "\\bcuatro\\b"
-    ]
+    ],
+    "asd": ["en un mes"]
   },
   "dates": [
     "(?P<date>(?P<from>(?P<day>(?:\\b(0?[1-9]|[12][0-9]|3[01])\\b))(?:[/-]| de )(?:(?P<month_num>\\b(?:0?[1-9]|1[0-2])\\b)|(?P<month_name>{months}))))",

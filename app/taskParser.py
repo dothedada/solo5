@@ -127,7 +127,7 @@ class Parser:
 
     def _get_dificulty(self, task_raw):
         parsed_diff = self._match_ind(task_raw, "dificulty")
-        if parsed_diff != 0:
+        if parsed_diff > 0:
             return parsed_diff
 
         if parsed_diff == -1:

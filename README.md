@@ -27,16 +27,7 @@ As part of my Python learning journey, I wanted to strengthen my understanding o
   - ~NLP for parsing the input and create the token for the tasks object
 - [-] the regex factory
 - [-] THE F*CKING date parser
-- [] Make the tests for this shit
-  - regex factory
-  - parser
-    - token creation
-    - id
-    - importance
-    - project
-    - date
-    - dificulty
-- [] Task heap
+- [-] Task heap
   - priorization euristics
 - [] ToDo manager class
   - invoke task methods
@@ -47,6 +38,7 @@ As part of my Python learning journey, I wanted to strengthen my understanding o
     - based on energy,
       - put asside the able ones to delay
       - add the next in line with the appropiate dificulty
+  - search tasks
   - import - export task batches
 - [] CSV manager
   - Create, read, write task in CSV

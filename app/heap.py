@@ -1,5 +1,5 @@
 from config import Defaults
-from datetime import date, timedelta
+from datetime import date
 from task import Task
 
 
@@ -92,30 +92,32 @@ class Heap:
 
 
 def get_urgency(task_urgency):
-    if task_urgency["due_date"] is None:
+    if task_urgency is None:
         return 1
 
-    days_available = (task_urgency["due_date"] - date.today()).days
+    days_available = (task_urgency - date.today()).days
 
     if days_available > 14:
         return 2
     if days_available > 7:
         return 3
     if days_available > 3:
-        return 4
-    if days_available >= 0:
         return 5
-    return 20
-
-
-def get_dificulty(task_dificulty):
-    return Defaults.DIFFICULTY.value if task_dificulty < 0 else task_dificulty
+    if days_available > 2:
+        return 7
+    if days_available > 1:
+        return 11
+    if days_available > 0:
+        return 13
+    if days_available == 0:
+        return 17
+    return 29
 
 
 def prioritizer(task):
-    important = 1 if task["important"] else 0
-    dificulty = get_dificulty(task["dificulty"])
-    urgency = get_urgency(task["urgency"])
+    important = 1 if task.important else 0
+    dificulty = task.dificulty * (task.dificulty - 1)
+    urgency = get_urgency(task.due_date)
 
     return int(
         (important * Defaults.IMP_W.value)
