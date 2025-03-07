@@ -182,6 +182,9 @@ class Parser:
         tasks = []
 
         for i, task_raw in enumerate(string.split(Defaults.TASK_SPLIT.value)):
+            if task_raw.strip() == "":
+                continue
+
             task = Task(
                 {
                     "lang": self._lang,
