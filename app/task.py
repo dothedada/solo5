@@ -1,17 +1,8 @@
+from config import Defaults
+
+
 class Task:
-    keys_allowed = (
-        "lang",
-        "id",
-        "task",
-        "task_csv",
-        "done",
-        "undelayable",
-        "dificulty",
-        "creation_date",
-        "lang",
-        "due_date",
-        "project",
-    )
+    keys_allowed = Defaults.KEYS_ALLOWED.value
 
     def __init__(self, task_dict):
         if "id" not in task_dict or "task" not in task_dict:

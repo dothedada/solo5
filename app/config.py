@@ -14,3 +14,17 @@ class Defaults(Enum):
     DIF_W = 11
 
     COUNT_CURRENT_DAY = False
+
+    KEYS_ALLOWED = (
+        "lang",
+        "id",
+        "task",
+        "task_csv",
+        "done",
+        "undelayable",
+        "dificulty",
+        "creation_date",
+        "lang",
+        "due_date",
+        "project",
+    )
