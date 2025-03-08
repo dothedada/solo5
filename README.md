@@ -30,7 +30,7 @@ As part of my Python learning journey, I wanted to strengthen my understanding o
 - [-] Task heap
   - priorization euristics
 - [] ToDo manager class
-  - invoke task methods
+  - invoke task methods (Update, mark done, mark not done)
   - delete task
   - arrange tasks
   - set taks for today ->
