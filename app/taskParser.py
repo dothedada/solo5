@@ -62,12 +62,9 @@ class Parser:
         return (self._match_ind(name, "week") - date.today().weekday()) % 7
 
     def _get_month(self, data_dict):
-        month_num = data_dict.get("month_num")
-        month_name = data_dict.get("month_name")
-
-        if month_num:
+        if month_num := data_dict.get("month_num"):
             return int(month_num)
-        elif month_name:
+        elif month_name := data_dict.get("month_name"):
             return self._match_ind(month_name, "months") + 1
 
         return date.today().month
@@ -76,21 +73,17 @@ class Parser:
         if data_dict.get("from") is None:
             return date.today()
 
-        day_str = data_dict.get("day_str")
-        today_rel = data_dict.get("today_rel")
-        if today_rel:
-            day_offset = self._match_ind(today_rel, "today_rel")
-            b_day = date.today().day + day_offset
-        elif day_str:
+        b_day = date.today().day
+        if today_rel := data_dict.get("today_rel"):
+            b_day += self._match_ind(today_rel, "today_rel")
+        elif weekday := data_dict.get("weekday"):
+            b_day += self._get_next_weekday(weekday)
+        elif day_str := data_dict.get("day_str"):
             b_day = self._match_ind(day_str, "enumeration_str")
-        elif data_dict.get("weekday"):
-            weekday = self._get_next_weekday(data_dict.get("weekday"))
-            b_day = date.today().day + weekday
-        elif data_dict.get("day") and data_dict.get("day").isnumeric():
-            b_day = int(data_dict.get("day"))
+        elif (day := data_dict.get("day")) and day.isnumeric():
+            b_day = int(day)
         else:
             print("Cannot parse the day setted")
-            b_day = 1
 
         b_month = self._get_month(data_dict)
         b_year = data_dict.get("year", date.today().year)
@@ -106,10 +99,8 @@ class Parser:
         if data_dict.get("modifier") is None:
             return 0, 0, 0
 
-        parsed_amount = data_dict.get("amount", None)
         amount = 0
-
-        if parsed_amount:
+        if parsed_amount := data_dict.get("amount", None):
             if parsed_amount.isnumeric():
                 amount = int(parsed_amount)
             else:
@@ -126,19 +117,14 @@ class Parser:
         return days, months, years
 
     def _get_dificulty(self, task_raw):
-        parsed_diff = self._match_ind(task_raw, "dificulty")
-        if parsed_diff > 0:
+        if (parsed_diff := self._match_ind(task_raw, "dificulty")) > 0:
             return parsed_diff
 
         if parsed_diff == -1:
             return Defaults.BASE_DIF.value
 
-        return int(
-            re.search(
-                self._parser["globals"]["dificulty"],
-                task_raw,
-            ).group()[1:]
-        )
+        dificulty_l = re.search(self._parser["globals"]["dificulty"], task_raw)
+        return int(dificulty_l.group()[1:])
 
     @staticmethod
     def make_id_for(string):
