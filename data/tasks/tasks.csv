@@ -1,0 +1,11 @@
+lang,id,task,done,creation_date,project,important,dificulty,due_date
+es,1,"Hacer la compra semanal",False,2023-10-25,Personal,True,2,2023-10-28
+es,2,"Revisar el informe mensual",False,2023-10-25,Trabajo,True,4,2023-10-27
+es,3,"Llamar al médico para cita",False,2023-10-25,Salud,False,1,2023-10-30
+es,4,"Planificar las vacaciones",False,2023-10-25,Personal,True,3,2023-11-15
+es,5,"Enviar correo al equipo",False,2023-10-25,Trabajo,False,2,2023-10-26
+es,6,"Hacer ejercicio",False,2023-10-25,Salud,True,1,2023-10-31
+es,7,"Leer un libro",False,2023-10-25,None,False,1,2023-11-05
+es,8,"Preparar presentación",False,2023-10-25,Trabajo,True,5,2023-10-29
+es,9,"Organizar el armario",False,2023-10-25,Personal,False,2,2023-11-10
+es,10,"Comprar regalo de cumpleaños",False,2023-10-25,Personal,True,3,2023-11-01
