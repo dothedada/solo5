@@ -90,6 +90,13 @@ class Heap:
     def get_r_child_ind(self, index):
         return (index * 2) + 2
 
+    def __repr__(self):
+        string = "Heap [\n"
+        for value, task in self._heap:
+            string += f"\t({value}, {task.task})\n"
+        string += "]\n"
+        return string
+
 
 def get_urgency(task_urgency):
     if task_urgency is None:

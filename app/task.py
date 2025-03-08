@@ -45,5 +45,5 @@ class Task:
         output = "Task { \n"
         for key, value in self.__dict__.items():
             output += f"\t{key}: {value}\n"
-        output += "}"
+        output += "}\n"
         return output
