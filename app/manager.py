@@ -1,17 +1,14 @@
 from datetime import date
 
 
+from taskParser import Parser
 from config import Defaults
-from fileLoaders import load_csv
+from fileLoaders import load_csv, add_tasks_to_csv
 from task import Task
 from heap import Heap
 
 # - [] ToDo manager class
-#   - Load tasks
-#   - Make heap tasks available
-#   - Make heaps by dificulty
-#   - Make heaps by project
-
+#   - make task
 #   - invoke task methods (Update, mark done, mark not done)
 #   - delete task
 
@@ -21,6 +18,7 @@ from heap import Heap
 #     - based on energy,
 #       - put asside the able ones to delay
 #       - add the next in line with the appropiate dificulty
+# que si no encuentra la indicada? cual es el fallback???
 
 #   - search tasks
 #   - import - export task batches
@@ -28,11 +26,17 @@ from heap import Heap
 
 class TaskManager:
     def __init__(self):
+        self.lang = Defaults.LANG.value
+        self.parser = Parser(self.lang)
         tasks_in_file = load_csv(Defaults.DATA_PATH.value, "tasks.csv")
         loaded_tasks = self.csv_to_tasks(tasks_in_file)
         self.global_heap = Heap(loaded_tasks)
 
-    # TODO: cambiar importante por inaplazable
+    def add_task(self, task_string):
+        tasks = self.parser.make_task(task_string)
+        self.global_heap.push(tasks)
+        add_tasks_to_csv(Defaults.DATA_PATH.value, "tasks.csv", task_string)
+
     def csv_to_tasks(self, tasks_list):
         tasks = []
         for task_line in tasks_list:

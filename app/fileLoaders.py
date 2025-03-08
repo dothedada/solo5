@@ -2,6 +2,7 @@ import json
 import csv
 from pathlib import Path
 
+from config import Defaults
 
 BASE_DIRECTORY = Path.cwd()
 
@@ -31,3 +32,19 @@ def load_csv(path, filename):
             return list(reader)
     except (IOError, csv.Error) as e:
         print(f"Cannot read the file at '{filepath}': {e}")
+
+
+def add_tasks_to_csv(path, filename, tasks):
+    filepath = BASE_DIRECTORY / path / filename
+
+    try:
+        with filepath.open("a", newline="", encoding="utf-8") as csv_file:
+            fieldnames = Defaults.KEYS_ALLOWED.value
+            writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
+
+            if csv_file.tell() == 0:
+                writer.writeheader()
+
+            writer.writerows(tasks)
+    except (IOErrorm, csv.Error) as e:
+        raise RuntimeError(f"Cannot write task to the file {filename}: {e}")
