@@ -5,7 +5,7 @@ class Task:
         "task",
         "task_csv",
         "done",
-        "important",
+        "undelayable",
         "dificulty",
         "creation_date",
         "lang",

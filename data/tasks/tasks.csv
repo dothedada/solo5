@@ -1,4 +1,4 @@
-lang,id,task,done,creation_date,project,important,dificulty,due_date
+lang,id,task,done,creation_date,project,undelayable,dificulty,due_date
 es,1,"Hacer la compra semanal",False,2023-10-25,Personal,True,2,2023-10-28
 es,2,"Revisar el informe mensual",False,2023-10-25,Trabajo,True,4,2023-10-27
 es,3,"Llamar al médico para cita",False,2023-10-25,Salud,False,1,2023-10-30

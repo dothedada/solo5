@@ -9,7 +9,7 @@ class Defaults(Enum):
 
     TASK_AMOUNT = 5
     BASE_DIF = 3
-    IMP_W = 13
+    UND_W = 13
     URG_W = 17
     DIF_W = 11
 

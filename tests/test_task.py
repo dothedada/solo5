@@ -9,7 +9,7 @@ class TestTask(unittest.TestCase):
                 "id": 1,
                 "task": "Finish report",
                 "done": False,
-                "important": True,
+                "undelayable": True,
                 "invalid_key": "should be ignored",
             }
         )
@@ -22,9 +22,9 @@ class TestTask(unittest.TestCase):
         self.assertFalse(hasattr(self.task, "invalid_key"))
 
     def test_update_properties_updates_allowed_keys(self):
-        self.task.update_properties(task="Updated task", important=False)
+        self.task.update_properties(task="Updated task", undelayable=False)
         self.assertEqual(self.task.task, "Updated task")
-        self.assertFalse(self.task.important)
+        self.assertFalse(self.task.undelayable)
 
     def test_update_properties_ommit_the_id_update(self):
         self.task.update_properties(id=2)
@@ -49,7 +49,7 @@ class TestTask(unittest.TestCase):
         repr_output = repr(self.task)
         self.assertIn("task: Finish report", repr_output)
         self.assertIn("done: False", repr_output)
-        self.assertIn("important: True", repr_output)  # Verifica más atributos
+        self.assertIn("undelayable: True", repr_output)  # Verifica más atributos
 
     def test_repr_starts_with_task_class_name(self):
         repr_output = repr(self.task)
@@ -86,12 +86,12 @@ class TestTask(unittest.TestCase):
         self.task.update_properties(task="Updated task").mark_done()
         self.assertTrue(self.task.done)
         self.assertEqual(self.task.task, "Updated task")
-        self.assertTrue(self.task.important)
+        self.assertTrue(self.task.undelayable)
 
     def test_multiple_operations_do_not_corrupt_state(self):
-        self.task.mark_not_done().update_properties(important=False)
+        self.task.mark_not_done().update_properties(undelayable=False)
         self.assertFalse(self.task.done)
-        self.assertFalse(self.task.important)
+        self.assertFalse(self.task.undelayable)
         self.assertEqual(self.task.task, "Finish report")
 
 

@@ -180,7 +180,7 @@ class Parser:
                     "done": False,
                     "creation_date": date.today(),
                     "project": self._match_dict(task_raw, "project"),
-                    "important": self._match_bool(task_raw, "important"),
+                    "undelayable": self._match_bool(task_raw, "undelayable"),
                     "dificulty": self._get_dificulty(task_raw),
                     "due_date": self._match_date(task_raw, "dates"),
                 }

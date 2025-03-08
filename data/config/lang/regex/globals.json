@@ -1,5 +1,5 @@
 {
-  "important": "\\*",
+  "undelayable": "\\*",
   "project": "@[a-zA-Z]+",
   "dificulty": "![1-5]"
 }

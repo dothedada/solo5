@@ -1,5 +1,5 @@
 {
-  "important": ["importante"],
+  "undelayable": ["inaplazable"],
   "dificulty": [
     "\\bmuy f[aá]cil\\b",
     "(?<!muy )\\bf[aá]cil\\b",

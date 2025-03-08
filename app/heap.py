@@ -4,8 +4,9 @@ from task import Task
 
 
 class Heap:
-    def __init__(self):
+    def __init__(self, tasks=[]):
         self._heap = []
+        self.push(tasks)
 
     def task_wrapper(self, task):
         if isinstance(task, Task) is False:
@@ -122,12 +123,12 @@ def get_urgency(task_urgency):
 
 
 def prioritizer(task):
-    important = 1 if task.important else 0
+    undelayable = 1 if task.undelayable else 0
     dificulty = task.dificulty * (task.dificulty - 1)
     urgency = get_urgency(task.due_date)
 
     return int(
-        (important * Defaults.IMP_W.value)
+        (undelayable * Defaults.UND_W.value)
         + (dificulty * Defaults.DIF_W.value)
         + (urgency * Defaults.URG_W.value)
     )
