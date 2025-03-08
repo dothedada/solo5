@@ -1,0 +1,65 @@
+{
+  "undelayable": ["non-deferrable"],
+  "dificulty": [
+    "\\bvery easy\\b",
+    "(?<!very )\\beasy\\b",
+    "normal",
+    "(?<!very )\\bhard\\b",
+    "\\bvery hard\\b"
+  ],
+  "definitions": {
+    "time_structure": [
+      "(?P<unit_day>\\bdays?\\b)",
+      "(?P<unit_week>\\bweeks?\\b)",
+      "(?P<unit_month>\\bmonths?\\b)",
+      "(?P<unit_year>\\byears?\\b)"
+    ],
+    "today_rel": [
+      "\\btoday\\b",
+      "(?<!next )\\btomorrow\\b",
+      "\\bday after tomorrow\\b"
+    ],
+    "week": [
+      "\\bmon(?:day)?\\b",
+      "\\btue(?:sday)?\\b",
+      "\\bwed(?:nesday)?\\b",
+      "\\bthu(?:rsday)?\\b",
+      "\\bfri(?:day)?\\b",
+      "\\bsat(?:urday)?\\b",
+      "\\bsun(?:day)?\\b"
+    ],
+    "months": [
+      "\\bjan(?:uary)?\\b",
+      "\\bfeb(?:ruary)?\\b",
+      "\\bmar(?:ch)?\\b",
+      "\\bapr(?:il)?\\b",
+      "\\bmay\\b",
+      "\\bjun(?:e)?\\b",
+      "\\bjul(?:y)?\\b",
+      "\\baug(?:ust)?\\b",
+      "\\bsep(?:tember)?\\b",
+      "\\boct(?:ober)?\\b",
+      "\\bnov(?:ember)?\\b",
+      "\\bdec(?:ember)?\\b"
+    ],
+    "amount_str": ["^\\b$", "\\b(?:next)\\b"],
+    "enumeration_str": [
+      "^\\b$",
+      "\\b(one|first)\\b",
+      "\\b(two|second)\\b",
+      "\\b(three|third)\\b",
+      "\\b(four|fourth)\\b",
+      "\\b(five|fifth)\\b"
+    ],
+    "asd": ["in a month"]
+  },
+  "dates": [
+    "(?P<date>(?P<from>(?P<day>(?:\\b(0?[1-9]|[12][0-9]|3[01])\\b))(?:[/-]| of )(?:(?P<month_num>\\b(?:0?[1-9]|1[0-2])\\b)|(?P<month_name>{months}))))",
+    "(?P<from>from (?P<today_rel>{today_rel})|(?:this |the )(?P<weekday>{week})) in (?P<modifier>(?P<amount>\\d+) ({time_structure}))",
+    "(?P<from>on (?P<weekday>{week})) (?P<modifier>(?P<unit_week>of the (?P<amount>next) week))",
+    "(?P<from>on |this |the (?P<modifier>(?P<unit_week>(?P<amount>{amount_str}))) )(?P<weekday>{week})",
+    "(?P<modifier>(?:in|within) (?P<amount>\\d+) ({time_structure}))",
+    "(?P<date>(?P<from>(?P<day_str>({enumeration_str})) of (?P<month_name>{months})))",
+    "(?P<date>(?P<from>(?P<today_rel>{today_rel})))"
+  ]
+}

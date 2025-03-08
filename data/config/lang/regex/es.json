@@ -46,9 +46,10 @@
     "enumeration_str": [
       "^\\b$",
       "\\b(un[oa]?|primero)\\b",
-      "\\bdos\\b",
-      "\\btres\\b",
-      "\\bcuatro\\b"
+      "\\b(dos|segundo)\\b",
+      "\\b(tres|tercero)\\b",
+      "\\b(cuatro|cuarto)\\b",
+      "\\b(cinco|quinto)\\b"
     ],
     "asd": ["en un mes"]
   },
