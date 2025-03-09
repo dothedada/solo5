@@ -142,7 +142,7 @@ class Parser:
 
         if is_csv:
             string = string.replace('"', '""')
-            return f'"{string}"'
+            return f"{string}"
 
         return string
 

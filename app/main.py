@@ -7,8 +7,10 @@ def main():
 
     print(taskManager.global_heap)
 
-    # tareas = load_csv(Defaults.DATA_PATH.value, "tasks.csv")
-    # print(tareas)
+    new_tasks = input("Añade una tarea...")
+
+    taskManager.add_tasks(new_tasks)
+    print(taskManager.global_heap)
 
 
 if __name__ == "__main__":

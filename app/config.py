@@ -24,7 +24,6 @@ class Defaults(Enum):
         "undelayable",
         "dificulty",
         "creation_date",
-        "lang",
         "due_date",
         "project",
     )
