@@ -40,7 +40,6 @@ def add_tasks_to_csv(path, filename, tasks):
     try:
         with filepath.open("a", encoding="utf-8") as csv_file:
             fieldnames = list(Defaults.KEYS_ALLOWED.value)
-            fieldnames.remove("task_csv")
             writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
 
             if csv_file.tell() == 0:

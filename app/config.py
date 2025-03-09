@@ -19,7 +19,6 @@ class Defaults(Enum):
         "lang",
         "id",
         "task",
-        "task_csv",
         "done",
         "undelayable",
         "dificulty",

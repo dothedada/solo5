@@ -27,9 +27,6 @@ class Task:
     def to_dict(self):
         dictionary = {}
         for key in Task.keys_allowed:
-            if key == "task_csv":
-                dictionary["task"] = getattr(self, key, None)
-                continue
 
             dictionary[key] = getattr(self, key, None)
 

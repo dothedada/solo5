@@ -51,6 +51,9 @@ class TaskManager:
     def make_today_tasks_csv(self):
         pass
 
+    def purge_done(self):
+        pass
+
     def parse_csv_date(self, date_data):
         if date_data:
             return date.fromisoformat(date_data)
@@ -64,6 +67,7 @@ class TaskManager:
                 "lang": task_line.get("lang"),
                 "id": task_line.get("id"),
                 "task": task_line.get("task"),
+                "task_csv": task_line.get("task"),
                 "done": bool(task_line.get("done")),
                 "creation_date": self.parse_csv_date(
                     task_line.get("creation_date"),

@@ -136,13 +136,9 @@ class Parser:
         return hex(base_id)[2:]
 
     @staticmethod
-    def sanitize_text(string, is_csv):
+    def sanitize_text(string):
         string = string.strip()
         string = re.sub(r"\s+", " ", string)
-
-        if is_csv:
-            string = string.replace('"', '""')
-            return f"{string}"
 
         return string
 
@@ -175,8 +171,7 @@ class Parser:
                 {
                     "lang": self._lang,
                     "id": Parser.make_id_for(task_raw),
-                    "task": Parser.sanitize_text(task_raw, False),
-                    "task_csv": Parser.sanitize_text(task_raw, True),
+                    "task": Parser.sanitize_text(task_raw),
                     "done": False,
                     "creation_date": date.today(),
                     "project": self._match_dict(task_raw, "project"),
