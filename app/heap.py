@@ -94,10 +94,13 @@ class Heap:
     def get_r_child_ind(self, index):
         return (index * 2) + 2
 
+    # def __len__(self):
+    #     return len(self._heap)
+
     def __repr__(self):
         string = "Heap [\n"
         for value, task in self._heap:
-            string += f"\t({value}, {task.task})\n"
+            string += f"\t({value}, {task.task}, d:{task.done}, {task.id})\n"
         string += "]\n"
         return string
 

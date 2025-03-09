@@ -1,6 +1,5 @@
 from datetime import date
 
-
 from taskParser import Parser
 from config import Defaults
 from fileLoaders import load_csv, add_tasks_to_csv, remove_tasks_from_csv
@@ -9,7 +8,6 @@ from heap import Heap
 
 # - [] ToDo manager class
 #   - invoke task methods (Update, mark done, mark not done)
-#   - delete task
 
 #   - set taks for today ->
 #     - get all the tasks for today < 5
@@ -19,7 +17,6 @@ from heap import Heap
 #       - add the next in line with the appropiate dificulty
 # que si no encuentra la indicada? cual es el fallback???
 
-#   - search tasks
 #   - import - export task batches
 
 
@@ -32,20 +29,30 @@ class TaskManager:
         self.search_results = []
         self.today = []
 
+    def load_csv_to_heap(self):
+        self.heap.clear()
+        tasks_in_file = load_csv(Defaults.DATA_PATH.value, "tasks.csv")
+        loaded_tasks = self.csv_to_tasks(tasks_in_file)
+        self.heap.push(loaded_tasks)
+
     def add_tasks(self, tasks_string):
         tasks = self.parser.make_task(tasks_string)
         self.heap.push(tasks)
         tasks_dic = [task.to_dict() for task in tasks]
         add_tasks_to_csv(Defaults.DATA_PATH.value, "tasks.csv", tasks_dic)
 
-    def update_task(self, task_id, key, value):
-        pass
+    def update_task(self, key, value):
+        ids = []
+        updated_tasks = []
+        for _, task in self.search_results:
+            setattr(task, key, value)
+            ids.append(task.id)
+            updated_tasks.append(task.to_dict())
 
-    def load_csv_to_heap(self):
-        self.heap.clear()
-        tasks_in_file = load_csv(Defaults.DATA_PATH.value, "tasks.csv")
-        loaded_tasks = self.csv_to_tasks(tasks_in_file)
-        self.heap.push(loaded_tasks)
+        self.delete_task(ids)
+        add_tasks_to_csv(Defaults.DATA_PATH.value, "tasks.csv", updated_tasks)
+        self.search_results.clear()
+        self.load_csv_to_heap()
 
     def delete_task(self, task_ids):
         remove_tasks_from_csv(Defaults.DATA_PATH.value, "tasks.csv", task_ids)
@@ -57,8 +64,10 @@ class TaskManager:
     def search_task(self, string):
         self.search_results.clear()
         for i, task in enumerate(self.heap, start=1):
-            if string in task.task or string in task.project:
-                self.search_results.append((i, task.task, task.project))
+            task_text = task.task if task.task else ""
+            task_project = task.project if task.project else ""
+            if string in task_text or string in task_project:
+                self.search_results.append((i, task))
         return self.search_results
 
     def make_today_tasks_csv(self):
@@ -81,12 +90,12 @@ class TaskManager:
                 "id": task_line.get("id"),
                 "task": task_line.get("task"),
                 "task_csv": task_line.get("task"),
-                "done": bool(task_line.get("done")),
+                "done": task_line.get("done") == "True",
                 "creation_date": self.parse_csv_date(
                     task_line.get("creation_date"),
                 ),
                 "project": task_line.get("project"),
-                "undelayable": bool(task_line.get("undelayable")),
+                "undelayable": task_line.get("undelayable") == "True",
                 "dificulty": int(task_line.get("dificulty")),
                 "due_date": self.parse_csv_date(task_line.get("due_date")),
             }

@@ -13,10 +13,9 @@ def main():
     # new_tasks = []
     # new_tasks.append(input("selecciona una tarea para borrar..."))
 
-    del_task = []
-    task_id = input("cual es el id...\n")
-    del_task.append(task_id)
-    taskManager.delete_task(del_task)
+    search = input("que tareas???...\n")
+    taskManager.search_task(search)
+    taskManager.update_task("done", True)
 
     # print(taskManager.delete_task(new_tasks))
     print(taskManager.heap)
