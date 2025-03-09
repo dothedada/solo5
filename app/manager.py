@@ -27,20 +27,25 @@ class TaskManager:
     def __init__(self):
         self.lang = Defaults.LANG.value
         self.parser = Parser(self.lang)
-        tasks_in_file = load_csv(Defaults.DATA_PATH.value, "tasks.csv")
-        loaded_tasks = self.csv_to_tasks(tasks_in_file)
-        self.heap = Heap(loaded_tasks)
+        self.heap = Heap()
+        self.load_csv_to_heap()
         self.search_results = []
         self.today = []
 
-    def add_tasks(self, task_string):
-        tasks = self.parser.make_task(task_string)
+    def add_tasks(self, tasks_string):
+        tasks = self.parser.make_task(tasks_string)
         self.heap.push(tasks)
         tasks_dic = [task.to_dict() for task in tasks]
         add_tasks_to_csv(Defaults.DATA_PATH.value, "tasks.csv", tasks_dic)
 
-    def update_task(self, task_id):
+    def update_task(self, task_id, key, value):
         pass
+
+    def load_csv_to_heap(self):
+        self.heap.clear()
+        tasks_in_file = load_csv(Defaults.DATA_PATH.value, "tasks.csv")
+        loaded_tasks = self.csv_to_tasks(tasks_in_file)
+        self.heap.push(loaded_tasks)
 
     def delete_task(self, task_ids):
         remove_tasks_from_csv(Defaults.DATA_PATH.value, "tasks.csv", task_ids)
