@@ -3,6 +3,7 @@ import csv
 from pathlib import Path
 import tempfile
 import shutil
+import os
 
 from config import Defaults
 
@@ -54,7 +55,11 @@ def add_tasks_to_csv(path, filename, tasks):
 
 def remove_tasks_from_csv(path, filename, task_ids):
     filepath = BASE_DIRECTORY / path / filename
-    temp_file = tempfile.NamedTemporaryFile(mode="w", delete=False)
+    temp_file = tempfile.NamedTemporaryFile(
+        mode="w",
+        delete=False,
+        encoding="utf-8",
+    )
 
     try:
         with filepath.open("r", encoding="utf-8") as csv_file:
@@ -68,6 +73,13 @@ def remove_tasks_from_csv(path, filename, task_ids):
                     continue
                 data_writer.writerow(row)
 
+        temp_file.close()
         shutil.move(temp_file.name, filepath)
     except Exception as e:
+        temp_file.close()
+        try:
+            os.unlink(temp_file.name)
+        except Exception as e:
+            print(e)
+            pass
         raise RuntimeError(f"Cannot delete task from the file {filename}: {e}")

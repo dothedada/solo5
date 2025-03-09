@@ -3,7 +3,7 @@ from datetime import date
 
 from taskParser import Parser
 from config import Defaults
-from fileLoaders import load_csv, add_tasks_to_csv
+from fileLoaders import load_csv, add_tasks_to_csv, remove_tasks_from_csv
 from task import Task
 from heap import Heap
 
@@ -42,8 +42,12 @@ class TaskManager:
     def update_task(self, task_id):
         pass
 
-    def delete_task(self, string):
-        pass
+    def delete_task(self, task_ids):
+        remove_tasks_from_csv(Defaults.DATA_PATH.value, "tasks.csv", task_ids)
+        self.heap.clear()
+        tasks_in_file = load_csv(Defaults.DATA_PATH.value, "tasks.csv")
+        loaded_tasks = self.csv_to_tasks(tasks_in_file)
+        self.heap.push(loaded_tasks)
 
     def search_task(self, string):
         self.search_results.clear()

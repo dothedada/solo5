@@ -15,6 +15,9 @@ class Heap:
         triage = prioritizer(task)
         return (triage, task)
 
+    def clear(self):
+        self._heap.clear()
+
     def push(self, tasks):
         for task in tasks:
             self._heap.append(self.task_wrapper(task))
