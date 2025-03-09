@@ -98,6 +98,18 @@ class Heap:
         string += "]\n"
         return string
 
+    def __iter__(self):
+        self._iter_index = 0
+        return self
+
+    def __next__(self):
+        if self._iter_index >= len(self._heap):
+            raise StopIteration
+
+        task = self._heap[self._iter_index][1]
+        self._iter_index += 1
+        return task
+
 
 def get_urgency(task_urgency):
     if task_urgency is None:
@@ -132,4 +144,3 @@ def prioritizer(task):
         + (dificulty * Defaults.DIF_W.value)
         + (urgency * Defaults.URG_W.value)
     )
-    pass
