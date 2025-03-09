@@ -5,12 +5,12 @@ def main():
 
     taskManager = TaskManager()
 
-    print(taskManager.global_heap)
+    print(taskManager.heap)
 
-    new_tasks = input("Añade una tarea...")
+    new_tasks = input("Busca una tarea...")
 
-    taskManager.add_tasks(new_tasks)
-    print(taskManager.global_heap)
+    print(taskManager.search_task(new_tasks))
+    print(taskManager.heap)
 
 
 if __name__ == "__main__":

@@ -29,11 +29,12 @@ class TaskManager:
         self.parser = Parser(self.lang)
         tasks_in_file = load_csv(Defaults.DATA_PATH.value, "tasks.csv")
         loaded_tasks = self.csv_to_tasks(tasks_in_file)
-        self.global_heap = Heap(loaded_tasks)
+        self.heap = Heap(loaded_tasks)
+        self.search_results = []
 
     def add_tasks(self, task_string):
         tasks = self.parser.make_task(task_string)
-        self.global_heap.push(tasks)
+        self.heap.push(tasks)
         tasks_dic = [task.to_dict() for task in tasks]
         add_tasks_to_csv(Defaults.DATA_PATH.value, "tasks.csv", tasks_dic)
 
@@ -44,9 +45,11 @@ class TaskManager:
         pass
 
     def search_task(self, string):
-        # Por task, por proyecto, por fecha de finalizacion \
-        # usar distancia de cadenas
-        pass
+        self.search_results.clear()
+        for i, task in enumerate(self.heap, start=1):
+            if string in task.task or string in task.project:
+                self.search_results.append((i, task.task, task.project))
+        return self.search_results
 
     def make_today_tasks_csv(self):
         pass
