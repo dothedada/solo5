@@ -31,6 +31,7 @@ class TaskManager:
         loaded_tasks = self.csv_to_tasks(tasks_in_file)
         self.heap = Heap(loaded_tasks)
         self.search_results = []
+        self.today = []
 
     def add_tasks(self, task_string):
         tasks = self.parser.make_task(task_string)
@@ -41,7 +42,7 @@ class TaskManager:
     def update_task(self, task_id):
         pass
 
-    def delete_task(self, task_id):
+    def delete_task(self, string):
         pass
 
     def search_task(self, string):

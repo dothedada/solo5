@@ -1,6 +1,8 @@
 import json
 import csv
 from pathlib import Path
+import tempfile
+import shutil
 
 from config import Defaults
 
@@ -48,3 +50,24 @@ def add_tasks_to_csv(path, filename, tasks):
             writer.writerows(tasks)
     except (IOError, csv.Error) as e:
         raise RuntimeError(f"Cannot write task to the file {filename}: {e}")
+
+
+def remove_tasks_from_csv(path, filename, task_ids):
+    filepath = BASE_DIRECTORY / path / filename
+    temp_file = tempfile.NamedTemporaryFile(mode="w", delete=False)
+
+    try:
+        with filepath.open("r", encoding="utf-8") as csv_file:
+            fieldnames = list(Defaults.KEYS_ALLOWED.value)
+            data_readed = csv.DictReader(csv_file, dialect="unix")
+            data_writer = csv.DictWriter(temp_file, fieldnames=fieldnames)
+            data_writer.writeheader()
+
+            for row in data_readed:
+                if row["id"] in task_ids:
+                    continue
+                data_writer.writerow(row)
+
+        shutil.move(temp_file.name, filepath)
+    except Exception as e:
+        raise RuntimeError(f"Cannot delete task from the file {filename}: {e}")
