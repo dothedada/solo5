@@ -5,7 +5,6 @@ from config import Defaults
 from fileLoaders import load_csv, sync_csv
 from task import Task
 from heap import Heap
-import functools
 
 #   - set taks for today ->
 #     - get all the tasks for today < 5
@@ -17,18 +16,6 @@ import functools
 
 
 # NOTE: Evaluar si implemento decorador
-def sync_to_heap(filename, heap):
-    def decorator(func):
-        functools.wraps(func)
-
-        def wrapper(*args, **kwargs):
-            func(*args, **kwargs)
-            heap_list = [task.to_dict() for task in heap]
-            sync_csv(filename, heap_list)
-
-        return wrapper
-
-    return decorator
 
 
 class TaskManager:
@@ -63,7 +50,6 @@ class TaskManager:
                 self.search_results.append((i, task))
 
     def select_from_search(self, enumerator):
-        # All tasks
         if int(enumerator) == 0:
             return None
 
@@ -75,7 +61,6 @@ class TaskManager:
     def add_tasks(self, tasks_string):
         tasks = self.parser(tasks_string)
         self.heap.push(tasks)
-        self.sync_csv_to_heap()
 
     def update_task(self, string):
         if len(self.search_results) != 1:
@@ -121,28 +106,26 @@ class TaskManager:
     def purge_done(self):
         pass
 
-    def parse_csv_date(self, date_data):
-        if date_data:
-            return date.fromisoformat(date_data)
-        else:
-            return None
-
     def csv_to_tasks(self, tasks_list):
+        def get_csv_date(self, date_data):
+            if date_data:
+                return date.fromisoformat(date_data)
+            else:
+                return None
+
         tasks = []
-        for task_line in tasks_list:
+        for task in tasks_list:
             task_dict = {
-                "lang": task_line.get("lang"),
-                "id": task_line.get("id"),
-                "task": task_line.get("task"),
-                "task_csv": task_line.get("task"),
-                "done": task_line.get("done") == "True",
-                "creation_date": self.parse_csv_date(
-                    task_line.get("creation_date"),
-                ),
-                "project": task_line.get("project"),
-                "undelayable": task_line.get("undelayable") == "True",
-                "dificulty": int(task_line.get("dificulty")),
-                "due_date": self.parse_csv_date(task_line.get("due_date")),
+                "lang": task.get("lang"),
+                "id": task.get("id"),
+                "task": task.get("task"),
+                "task_csv": task.get("task"),
+                "done": task.get("done") == "True",
+                "creation_date": self.get_csv_date(task.get("creation_date")),
+                "project": task.get("project"),
+                "undelayable": task.get("undelayable") == "True",
+                "dificulty": int(task.get("dificulty")),
+                "due_date": self.get_csv_date(task.get("due_date")),
             }
             tasks.append(Task(task_dict))
 

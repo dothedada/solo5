@@ -3,7 +3,9 @@ import csv
 from pathlib import Path
 import tempfile
 import shutil
+from datetime import date
 import os
+
 
 from config import Defaults
 
@@ -51,12 +53,41 @@ def sync_csv(filename, tasks):
         try:
             writer.writeheader()
             writer.writerows(tasks)
-        except Exception as e:
+        except (IOError, csv.Error) as e:
             os.unlink(temp_file.name)
             raise RuntimeError(f"Cannot write in {filename}: {e}")
 
     try:
         shutil.move(temp_file.name, filepath)
-    except Exception as e:
+    except (IOError, csv.Error) as e:
         os.unlink(temp_file.name)
         raise RuntimeError(f"The file {filename} cannot be saved: {e}")
+
+
+def remove_csv(filename):
+    filepath = BASE_DIRECTORY / Defaults.DATA_PATH.value / filename
+
+    if filepath.exists():
+        os.unlink(filepath)
+
+
+def check_for_today_csv():
+    filename = f"today_{str(date.today())}.csv"
+    filepath = BASE_DIRECTORY / Defaults.DATA_PATH.value / filename
+
+    return filepath.exists()
+
+
+def purge_old_today_csv():
+    filepath = BASE_DIRECTORY / Defaults.DATA_PATH.value
+    today_str = str(date.today())
+    results = []
+
+    for dirpath, _, filenames in os.walk(filepath):
+        for file in filenames:
+            if "today" in file:
+                results.append(os.path.join(dirpath, file))
+
+    for file in results:
+        if today_str not in file:
+            os.unlink(file)
