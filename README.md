@@ -40,9 +40,8 @@ As part of my Python learning journey, I wanted to strengthen my understanding o
       - add the next in line with the appropiate dificulty
   - search tasks
   - import - export task batches
-- [] CSV manager
+- [-] CSV manager
   - Create, read, write task in CSV
-  - Second CSV with all the tasks that has a prerequisite
 - [] Interfase printer
   - set day
   - check (day, next day, all)

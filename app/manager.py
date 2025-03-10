@@ -56,19 +56,13 @@ class TaskManager:
 
     def delete_task(self, task_ids):
         remove_tasks_from_csv(Defaults.DATA_PATH.value, "tasks.csv", task_ids)
-        self.heap.clear()
-        tasks_in_file = load_csv(Defaults.DATA_PATH.value, "tasks.csv")
-        loaded_tasks = self.csv_to_tasks(tasks_in_file)
-        self.heap.push(loaded_tasks)
+        self.load_csv_to_heap()
 
     def search_task(self, string):
         self.search_results.clear()
         for i, task in enumerate(self.heap, start=1):
-            task_text = task.task if task.task else ""
-            task_project = task.project if task.project else ""
-            if string in task_text or string in task_project:
+            if string in task.task:
                 self.search_results.append((i, task))
-        return self.search_results
 
     def make_today_tasks_csv(self):
         pass
