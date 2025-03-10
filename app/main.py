@@ -14,7 +14,7 @@ def main():
     # new_tasks.append(input("selecciona una tarea para borrar..."))
 
     search = input("que tareas???...\n")
-    taskManager.search_task(search)
+    taskManager.search_by_task(search)
     taskManager.update_task("done", True)
 
     # print(taskManager.delete_task(new_tasks))

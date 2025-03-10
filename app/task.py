@@ -16,7 +16,7 @@ class Task:
     def update_properties(self, **kwargs):
         for key, value in kwargs.items():
             if key == "id":
-                print("Id cannot be updated")
+                # print("Id cannot be updated")
                 continue
             if key not in Task.keys_allowed:
                 print(f"The key '{key}' does not exist in the Task object")

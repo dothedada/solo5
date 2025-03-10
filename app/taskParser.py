@@ -39,7 +39,7 @@ class Parser:
         return match.group() if match else None
 
     @_matcher
-    def _match_date(self, match, match_index):
+    def parse_date(self, match, match_index):
         if match is None:
             return None
 
@@ -177,38 +177,9 @@ class Parser:
                     "project": self._match_dict(task_raw, "project"),
                     "undelayable": self._match_bool(task_raw, "undelayable"),
                     "dificulty": self._get_dificulty(task_raw),
-                    "due_date": self._match_date(task_raw, "dates"),
+                    "due_date": self.parse_date(task_raw, "dates"),
                 }
             )
             tasks.append(task)
 
         return tasks
-
-
-# test = 'el próximo viernes // el diez de mayo * difícil "caigo" a @jalizco'
-# parser_es = Parser("es")
-# tasks = parser_es.make_task(test)
-# print(tasks)
-# tasks[0].mark_done()
-# print(tasks[0])
-# test = "12/05" # 12 de mayo de 2025
-# test = "25 de diciembre" # 25 de diciembre de 2025
-# test = "01-11" # 1 de noviembre de 2025
-# test = "de hoy en 5 días"  # 10 de marzo de 2025
-# test = "de este martes en 2 semanas"  # 18 de marzo de 2025
-# test = "del lunes en 3 meses"  # 2 de junio de 2025
-# test = "el martes de la próxima semana"  # 11 de marzo de 2025
-# test = "el viernes de la proxima semana"  # 14 de marzo de 2025
-# test = "el domingo de la próxima semana"  # 16 de marzo de 2025
-# test = "el próximo lunes"  # 10 de marzo de 2025
-# test = "este viernes"  # 6 de marzo de 2025
-# test = "el próximo sábado"  # 9 de marzo de 2025
-# test = "dentro de 3 días"  # 8 de marzo de 2025
-# test = "en 2 semanas"  # 19 de marzo de 2025
-# test = "dentro de 1 mes"  # 5 de abril de 2025
-# test = "hoy"  # 5 de marzo de 2025
-# test = "mañana"  # 6 de marzo de 2025
-# test = "pasado mañana"  # 7 de marzo de 2025
-
-# parse_task(test, "es")
-#
