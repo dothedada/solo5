@@ -64,6 +64,25 @@ def sync_csv(filename, tasks):
         raise RuntimeError(f"The file {filename} cannot be saved: {e}")
 
 
+def append_tasks_csv(filename, tasks):
+    filepath = BASE_DIRECTORY / Defaults.DATA_PATH.value / filename
+    file_exist = filepath.exists()
+
+    with filepath.open("a+", encoding="utf-8") as file:
+        fieldnames = list(Defaults.KEYS_ALLOWED.value)
+        writer = csv.DictWriter(file, fieldnames=fieldnames)
+
+        if not file_exist:
+            file.seek(0)
+            if not file.read():
+                writer.writeheader()
+
+        try:
+            writer.writerows(tasks)
+        except (IOError, csv.Error) as e:
+            raise RuntimeError(f"Cannot append to '{filepath}': {e}")
+
+
 def remove_csv(filename):
     filepath = BASE_DIRECTORY / Defaults.DATA_PATH.value / filename
 

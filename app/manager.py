@@ -2,7 +2,13 @@ from datetime import date
 
 from taskParser import Parser
 from config import Defaults
-from fileLoaders import load_csv, sync_csv
+from fileLoaders import (
+    load_csv,
+    sync_csv,
+    purge_old_today_csv,
+    check_for_today_csv,
+    append_tasks_csv,
+)
 from task import Task
 from heap import Heap
 
@@ -29,8 +35,13 @@ class TaskManager:
     def load_csv_to_heap(self):
         self.heap.clear()
         tasks_in_file = load_csv("tasks.csv")
-        loaded_tasks = self.csv_to_tasks(tasks_in_file)
+        loaded_tasks = self.parser.make_tasks_from_csv(tasks_in_file)
         self.heap.push(loaded_tasks)
+
+    def sync_csv_to_today(self):
+        tasks_list = [task.to_dict() for task in self.today]
+        filename = f"today_{str(date.today())}"
+        sync_csv(filename, tasks_list)
 
     def sync_csv_to_heap(self):
         heap_list = [task.to_dict() for task in self.heap]
@@ -53,9 +64,11 @@ class TaskManager:
         if int(enumerator) == 0:
             return None
 
-        return filter(
-            lambda item: item[0] == int(enumerator),
-            self.search_results,
+        return list(
+            filter(
+                lambda item: item[0] == int(enumerator),
+                self.search_results,
+            )
         )
 
     def add_tasks(self, tasks_string):
@@ -79,6 +92,7 @@ class TaskManager:
 
         task = self.search_results[0][1]
         task.update_properties(done=is_done)
+        append_tasks_csv("done.csv", task)
         self.search_results.clear()
         # TODO: if is_done # Evaluar el flujo con done.csv
         # -> grabar en done.csv,
@@ -100,33 +114,21 @@ class TaskManager:
         self.heap.push(new_tasks)
         self.search_results.clear()
 
-    def make_today_tasks_csv(self):
-        pass
+    def make_today_tasks_csv(self, amount):
+        purge_old_today_csv()
+
+        if check_for_today_csv():
+            return None
+
+        tasks = []
+        for task in range(amount):
+            tasks.append(self.heap.pop())
+
+        self.today.clear()
+        self.today.extend(tasks)
+        filename = f"today_{date.today()}.csv"
+        sync_csv(filename, tasks)
+        self.load_csv_to_heap()
 
     def purge_done(self):
         pass
-
-    def csv_to_tasks(self, tasks_list):
-        def get_csv_date(self, date_data):
-            if date_data:
-                return date.fromisoformat(date_data)
-            else:
-                return None
-
-        tasks = []
-        for task in tasks_list:
-            task_dict = {
-                "lang": task.get("lang"),
-                "id": task.get("id"),
-                "task": task.get("task"),
-                "task_csv": task.get("task"),
-                "done": task.get("done") == "True",
-                "creation_date": self.get_csv_date(task.get("creation_date")),
-                "project": task.get("project"),
-                "undelayable": task.get("undelayable") == "True",
-                "dificulty": int(task.get("dificulty")),
-                "due_date": self.get_csv_date(task.get("due_date")),
-            }
-            tasks.append(Task(task_dict))
-
-        return tasks

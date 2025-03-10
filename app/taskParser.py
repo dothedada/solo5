@@ -160,6 +160,24 @@ class Parser:
 
         return year, month, day
 
+    @staticmethod
+    def make_tasks_from_csv(tasks_list):
+        tasks = []
+
+        def get_csv_date(date_data):
+            return date.fromisoformat(date_data) if date_data else None
+
+        for task in tasks_list:
+            task["done"] = task.get("done") == "True"
+            task["undelayable"] = task.get("undelayable") == "True"
+            task["dificulty"] = int(task.get("dificulty"))
+            task["creation_date"] = get_csv_date(task.get("creation_date"))
+            task["due_date"] = get_csv_date(task.get("due_date"))
+
+            tasks.append(Task(task))
+
+        return tasks
+
     def make_task(self, string):
         tasks = []
 
