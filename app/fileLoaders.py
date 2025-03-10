@@ -23,8 +23,8 @@ def load_json(path, filename):
         raise RuntimeError(f"Cannot read the JSON file at '{filepath}': {e}")
 
 
-def load_csv(path, filename):
-    filepath = BASE_DIRECTORY / path / filename
+def load_csv(filename):
+    filepath = BASE_DIRECTORY / Defaults.DATA_PATH.value / filename
 
     if not filepath.exists():
         return None
@@ -37,8 +37,8 @@ def load_csv(path, filename):
         print(f"Cannot read the file at '{filepath}': {e}")
 
 
-def sync_csv(path, filename, tasks):
-    filepath = BASE_DIRECTORY / path / filename
+def sync_csv(filename, tasks):
+    filepath = BASE_DIRECTORY / Defaults.DATA_PATH.value / filename
 
     with tempfile.NamedTemporaryFile(
         mode="w",
