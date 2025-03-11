@@ -83,11 +83,18 @@ class TaskManager:
         # TODO: Algoritmo de priorizacion
         pass
 
-    def add_to_today_tasks(self, task):
-        pass
+    def add_to_today_tasks(self):
+        for _, task in self.search_results:
+            self.today.append(task)
+        self.search_results.clear()
 
     def remove_from_today_tasks(self, task):
-        pass
+        if len(self.search_results) != 1:
+            return None
+
+        task_id = self.search_results[0][1].id
+        self.search_results.clear()
+        self.today = [task for task in self.today if task_id != task.id]
 
     def purge_done(self):
         # NOTE: crear lista de done???

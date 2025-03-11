@@ -29,17 +29,17 @@ As part of my Python learning journey, I wanted to strengthen my understanding o
 - [-] THE F*CKING date parser
 - [-] Task heap
   - priorization euristics
-- [] ToDo manager class
+- [-] ToDo manager class
   - invoke task methods (Update, mark done, mark not done)
   - delete task
   - arrange tasks
-  - set taks for today ->
-    - get 5 by priority
-    - based on energy,
-      - put asside the able ones to delay
-      - add the next in line with the appropiate dificulty
   - search tasks
   - import - export task batches
+- [] in manager, set taks for today ->
+      - get 5 by priority
+      - based on energy,
+      - put asside the able ones to delay
+      - add the next in line with the appropiate dificulty
 - [-] CSV manager
   - Create, read, write task in CSV
 - [] Interfase printer
@@ -50,6 +50,7 @@ As part of my Python learning journey, I wanted to strengthen my understanding o
   - mark done
   - edit task
   - remove task
+- [] Make documentation
 
 ## Parsing date structure
 
