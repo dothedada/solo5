@@ -96,6 +96,13 @@ class TaskManager:
         self.search_results.clear()
         self.today = [task for task in self.today if task_id != task.id]
 
+    def print_today(self):
+        today = []
+        for i, task in enumerate(self.today):
+            enumerator = "X" if task.done else i
+            today.append(enumerator, task)
+        return today
+
     def purge_done(self):
         # NOTE: crear lista de done???
         # TODO: limpiar el CSV de tareas realizadas
