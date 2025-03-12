@@ -37,14 +37,38 @@ class TaskManager:
                 self.search_results.append((i, task))
         return self.search_results
 
-    def select_from_search(self, enumerator):
-        if int(enumerator) == 0:
+    def search_output(self):
+        return self.search_results
+
+    def search_selection(self, selection_str):
+        if "0" in selection_str:
             self.search_results.clear()
             return None
 
-        task = self.search_results[int(enumerator) - 1]
-        self.search_results.clear()
-        self.search_results.append(task)
+        selection = []
+        for char in selection_str.split(","):
+            char = char.strip()
+            if char.isdigit():
+                selection.append(int(char.strip()))
+            else:
+                try:
+                    start, end = char.split("-")
+                    start = start.strip()
+                    end = end.strip()
+                    secuence = [i for i in range(int(start), int(end) + 1)]
+                    selection.extend(secuence)
+                except ValueError:
+                    raise ValueError(f"Invalid format: {char}")
+
+        selection = set(selection)
+
+        self.search_results = list(
+            filter(
+                lambda item: item[0] in selection,
+                self.search_results,
+            )
+        )
+        return self.search_results
 
     def add_tasks(self, tasks_string):
         tasks = self.parser.make_task(tasks_string)
@@ -60,11 +84,10 @@ class TaskManager:
         base_task.update_properties(**task_info)
         self.update_csv_from_heap()
 
-    def mark_task_done(self, is_done):
-        if len(self.search_results) != 1:
-            return None
+    def mark_tasks_done(self, is_done):
+        for task in self.search_results:
+            task[1].done = is_done
 
-        self.search_results[0][1].done = is_done
         self.search_results.clear()
         self.update_csv_from_heap()
         # NOTE: crear lista de done???
