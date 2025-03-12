@@ -1,28 +1,19 @@
 from enum import Enum
+from fileManagers import load_json
+
+data_config = load_json("./data/config", "setup.json")
 
 
 class Defaults(Enum):
-    LANG = "es"
-    DATA_PATH = "./data/tasks"
-    RGX_PATH = "./data/config/lang/regex"
-    TASK_SPLIT = "//"
+    LANG = data_config.lang
+    DATA_PATH = data_config.data_path
+    RGX_PATH = data_config.rgx_path
+    TASK_SPLIT = data_config.task_split
 
-    TASK_AMOUNT = 5
-    BASE_DIF = 3
-    UND_W = 13
-    URG_W = 17
-    DIF_W = 11
+    TASK_AMOUNT = data_config.task_amount
+    BASE_DIF = data_config.base_difficulty
+    UND_W = data_config.undelayable_weight
+    URG_W = data_config.urgent_weight
+    DIF_W = data_config.diffficulty_weight
 
-    COUNT_CURRENT_DAY = False
-
-    KEYS_ALLOWED = (
-        "lang",
-        "id",
-        "task",
-        "done",
-        "undelayable",
-        "dificulty",
-        "creation_date",
-        "due_date",
-        "project",
-    )
+    COUNT_CURRENT_DAY = data_config.count_current_day

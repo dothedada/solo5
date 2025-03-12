@@ -5,8 +5,7 @@ import tempfile
 import shutil
 import os
 
-
-from config import Defaults
+from task import KEYS_ALLOWED
 
 BASE_DIRECTORY = Path.cwd()
 
@@ -24,8 +23,8 @@ def load_json(path, filename):
         raise RuntimeError(f"Cannot read the JSON file at '{filepath}': {e}")
 
 
-def load_csv(filename):
-    filepath = BASE_DIRECTORY / Defaults.DATA_PATH.value / filename
+def load_csv(filename, path):
+    filepath = BASE_DIRECTORY / path / filename
 
     if not filepath.exists():
         return None
@@ -38,15 +37,15 @@ def load_csv(filename):
         print(f"Cannot read the file at '{filepath}': {e}")
 
 
-def sync_csv(filename, tasks):
-    filepath = BASE_DIRECTORY / Defaults.DATA_PATH.value / filename
+def sync_csv(filename, path, tasks):
+    filepath = BASE_DIRECTORY / path / filename
 
     with tempfile.NamedTemporaryFile(
         mode="w",
         encoding="utf-8",
         delete=False,
     ) as temp_file:
-        fieldnames = list(Defaults.KEYS_ALLOWED.value)
+        fieldnames = list(KEYS_ALLOWED)
         writer = csv.DictWriter(temp_file, fieldnames=fieldnames)
 
         try:

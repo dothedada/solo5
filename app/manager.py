@@ -1,5 +1,5 @@
-from taskParser import Parser
 from config import Defaults
+from taskParser import Parser
 from fileManagers import load_csv, sync_csv
 from heap import Heap
 
@@ -14,13 +14,13 @@ class TaskManager:
 
     def load_csv_to_heap(self):
         self.heap.clear()
-        tasks_in_file = load_csv("tasks.csv")
+        tasks_in_file = load_csv("tasks.csv", Defaults.DATA_PATH.value)
         loaded_tasks = self.parser.make_tasks_from_csv(tasks_in_file)
         self.heap.push(loaded_tasks)
 
     def update_csv_from_heap(self):
         heap_list = [task.to_dict() for task in self.heap]
-        sync_csv("tasks.csv", heap_list)
+        sync_csv("tasks.csv", Defaults.DATA_PATH.value, heap_list)
 
     def search_by_task(self, string):
         self.search_results.clear()
