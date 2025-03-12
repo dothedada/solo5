@@ -24,9 +24,11 @@ class TaskManager:
 
     def search_by_task(self, string):
         self.search_results.clear()
-        for i, task in enumerate(self.heap, start=1):
+        number = 1
+        for task in self.heap:
             if string in task.task:
-                self.search_results.append((i, task))
+                self.search_results.append((number, task))
+                number += 1
         return self.search_results
 
     def search_by_date(self, date_string):
@@ -73,34 +75,30 @@ class TaskManager:
     def add_tasks(self, tasks_string):
         tasks = self.parser.make_task(tasks_string)
         self.heap.push(tasks)
-        self.update_csv_from_heap()
-
-    def update_task(self, task_string):
-        if len(self.search_results) != 1:
-            return None
-
-        task_info = self.parser.make_task(task_string)
-        base_task = self.search_results[0][1]
-        base_task.update_properties(**task_info)
-        self.update_csv_from_heap()
 
     def mark_tasks_done(self, is_done):
         for task in self.search_results:
             task[1].done = is_done
 
         self.search_results.clear()
-        self.update_csv_from_heap()
         # NOTE: crear lista de done???
 
     def delete_task(self):
-        if len(self.search_results) != 1:
-            return None
+        tasks_ids = set()
+        for task in self.search_results:
+            tasks_ids.add(task[1].id)
 
-        task_id = self.search_results[0][1].id
-        tasks = [task for task in self.heap if task.id != task_id]
+        tasks = [task for task in self.heap if task.id not in tasks_ids]
         self.heap.clear()
         self.heap.push(tasks)
-        self.update_csv_from_heap()
+
+    def update_task(self, task_string):
+        if len(self.search_results) != 1 or task_string is None:
+            return None
+
+        task_info = task_string.split(Defaults.TASK_SPLIT.value)[0]
+        self.delete_task()
+        self.add_tasks(task_info)
 
     def make_today_tasks(self):
         # TODO: Algoritmo de priorizacion
