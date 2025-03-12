@@ -1,5 +1,5 @@
 import re
-from fileLoaders import load_json
+from fileManagers import load_json
 from config import Defaults
 
 
