@@ -23,8 +23,8 @@ def main():
         selection = input("select:\n")
         taskManager.search_selection(selection)
 
-    nuevo = input("Ahora que???\n")
-    taskManager.update_task(nuevo)
+    # nuevo = input("Ahora que???\n")
+    taskManager.mark_tasks_done()
     taskManager.update_csv_from_heap()
 
     # print(taskManager.delete_task(new_tasks))

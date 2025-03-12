@@ -191,7 +191,6 @@ class Parser:
                     "id": Parser.make_id_for(task_raw),
                     "task": Parser.sanitize_text(task_raw),
                     "done": False,
-                    "creation_date": date.today(),
                     "project": self._match_dict(task_raw, "project"),
                     "undelayable": self._match_bool(task_raw, "undelayable"),
                     "dificulty": self._get_dificulty(task_raw),

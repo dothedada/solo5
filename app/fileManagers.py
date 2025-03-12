@@ -37,6 +37,22 @@ def load_csv(filename, path):
         print(f"Cannot read the file at '{filepath}': {e}")
 
 
+def add_record_csv(filename, path, tasks, keys):
+    filepath = BASE_DIRECTORY / path / filename
+
+    with filepath.open("a+", encoding="utf-8") as csv_file:
+        fieldnames = list(keys)
+        csv_writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
+
+        try:
+            if csv_file.tell() == 0:
+                csv_writer.writeheader()
+
+            csv_writer.writerows(tasks)
+        except (IOError, csv.Error) as e:
+            raise RuntimeError(f"Cannot write new tasks in '{filepath}': {e}")
+
+
 def sync_csv(filename, path, tasks):
     filepath = BASE_DIRECTORY / path / filename
 

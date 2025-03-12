@@ -1,7 +1,8 @@
 from config import Defaults
 from taskParser import Parser
-from fileManagers import load_csv, sync_csv
+from fileManagers import load_csv, sync_csv, add_record_csv
 from heap import Heap
+from task import DoneTask, KEYS_DONE_TASK
 
 
 class TaskManager:
@@ -76,12 +77,23 @@ class TaskManager:
         tasks = self.parser.make_task(tasks_string)
         self.heap.push(tasks)
 
-    def mark_tasks_done(self, is_done):
+    def mark_tasks_done(self):
+        done_tasks = []
         for task in self.search_results:
-            task[1].done = is_done
+            task = task[1]
+            done_tasks.append(DoneTask(task.to_dict()))
+            task.done = True
 
+        print(
+            [task.to_dict() for task in done_tasks],
+        )
         self.search_results.clear()
-        # NOTE: crear lista de done???
+        add_record_csv(
+            "done.csv",
+            Defaults.DATA_PATH.value,
+            [task.to_dict() for task in done_tasks],
+            KEYS_DONE_TASK,
+        )
 
     def delete_task(self):
         tasks_ids = set()
