@@ -19,8 +19,18 @@ class TaskManager:
     def load_csv_to_heap(self):
         self._tasks.clear()
         tasks_in_file = load_csv("tasks.csv", self._filepath)
-        loaded_tasks = self._parser.make_tasks_from_csv(tasks_in_file)
-        self._tasks.push(loaded_tasks)
+        if tasks_in_file is None:
+            return
+
+        loaded_tasks = []
+        cutoff_date = date.today() - timedelta(days=1)
+        for task in tasks_in_file:
+            done = task["done"] == "False"
+            if done or cutoff_date < date.fromisoformat(task["done_date"]):
+                loaded_tasks.append(task)
+
+        tasks = self._parser.make_tasks_from_csv(loaded_tasks)
+        self._tasks.push(tasks)
 
     def load_csv_to_today(self):
         today = load_csv(f"today_{date.today()}", self._filepath)
@@ -107,16 +117,19 @@ class TaskManager:
         self._tasks.push(tasks)
         return tasks
 
-    def mark_tasks_done(self):
-        done_tasks = []
+    def mark_tasks_done(self, is_done=True):
         for task in self.search_results:
-            done_tasks.append(DoneTask(task[1]))
-            task[1].done = True
+            task[1].done = True if is_done else False
+            task[1].done_date = date.today() if is_done else None
 
     def save_tasks_done(self):
         done_tasks = []
+        done_id = set()
+        for done_task in load_csv("done.csv", self._filepath) or []:
+            done_id.add(done_task["id"])
+
         for task in self._tasks:
-            if task.done:
+            if task.done and task.id not in done_id:
                 done_tasks.append(DoneTask(task).to_dict())
         add_record_csv("done.csv", self._filepath, done_tasks, TASK_DONE_KEYS)
 

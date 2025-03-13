@@ -10,6 +10,7 @@ TASK_KEYS = (
     "undelayable",
     "dificulty",
     "due_date",
+    "done_date",
     "project",
 )
 
@@ -18,7 +19,7 @@ TASK_DONE_KEYS = (
     "id",
     "task",
     "due_date",
-    "date_done",
+    "done_date",
 )
 
 
