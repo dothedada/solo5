@@ -5,7 +5,7 @@ def main():
 
     taskManager = TaskManager()
 
-    print(taskManager._heap)
+    print(taskManager._tasks)
 
     new_task = input("nuevas...\n")
     taskManager.add_tasks(new_task)
@@ -25,10 +25,10 @@ def main():
 
     # nuevo = input("Ahora que???\n")
     taskManager.mark_tasks_done()
-    taskManager.update_csv_from_heap()
+    taskManager.save_tasks_to_csv()
 
     # print(taskManager.delete_task(new_tasks))
-    print(taskManager._heap)
+    print(taskManager._tasks)
 
 
 if __name__ == "__main__":

@@ -5,7 +5,7 @@ import tempfile
 import shutil
 import os
 
-from task import KEYS_ALLOWED
+from task import TASK_KEYS
 
 BASE_DIRECTORY = Path.cwd()
 

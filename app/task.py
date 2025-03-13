@@ -1,6 +1,8 @@
+import time
+import random
 from datetime import date
 
-KEYS_ALLOWED = (
+TASK_KEYS = (
     "lang",
     "id",
     "task",
@@ -11,7 +13,7 @@ KEYS_ALLOWED = (
     "project",
 )
 
-KEYS_DONE_TASK = (
+TASK_DONE_KEYS = (
     "lang",
     "id",
     "task",
@@ -21,17 +23,27 @@ KEYS_DONE_TASK = (
 
 
 class Task:
-    keys_allowed = KEYS_ALLOWED
+    keys_allowed = TASK_KEYS
 
     def __init__(self, task_dict):
-        if "id" not in task_dict or "task" not in task_dict:
+        if "task" not in task_dict:
             raise TypeError("Task must have id and task parameters")
 
+        setattr(self, "id", Task.make_id_for(task_dict["task"]))
         for key, value in task_dict.items():
             if key not in self.keys_allowed:
                 continue
             setattr(self, key, value)
-            setattr(self, "creation_date", date.today())
+        setattr(self, "creation_date", date.today())
+
+    @staticmethod
+    def make_id_for(string):
+        char_sum = sum(ord(char) for char in string)
+        timestamp = int(time.time() * 1000)
+        salt = random.randint(1, 9999)
+        base_id = (char_sum * timestamp * salt) % (2**64)
+
+        return hex(base_id)[2:]
 
     def to_dict(self):
         dictionary = {}
@@ -50,7 +62,7 @@ class Task:
 
 
 class DoneTask(Task):
-    keys_allowed = KEYS_DONE_TASK
+    keys_allowed = TASK_DONE_KEYS
 
     def __init__(self, task_dict):
         if not isinstance(task_dict, Task):

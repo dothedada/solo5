@@ -1,7 +1,5 @@
 import calendar
 import re
-import time
-import random
 from datetime import date
 
 from config import Defaults
@@ -127,15 +125,6 @@ class Parser:
         return int(dificulty_l.group()[1:])
 
     @staticmethod
-    def make_id_for(string):
-        char_sum = sum(ord(char) for char in string)
-        timestamp = int(time.time() * 1000)
-        salt = random.randint(1, 9999)
-        base_id = (char_sum * timestamp * salt) % (2**64)
-
-        return hex(base_id)[2:]
-
-    @staticmethod
     def sanitize_text(string):
         string = string.strip()
         string = re.sub(r"\s+", " ", string)
@@ -188,7 +177,6 @@ class Parser:
             task = Task(
                 {
                     "lang": self._lang,
-                    "id": Parser.make_id_for(task_raw),
                     "task": Parser.sanitize_text(task_raw),
                     "done": False,
                     "project": self._match_dict(task_raw, "project"),
