@@ -6,7 +6,7 @@ def main():
     taskManager = TaskManager()
 
     print(taskManager._tasks)
-    print(taskManager.today_tasks)
+    print(taskManager.get_today())
 
     new_task = input("nuevas...\n")
     taskManager.add_tasks(new_task)

@@ -53,6 +53,14 @@ class Task:
 
         return dictionary
 
+    def __eq__(self, other):
+        if not isinstance(other, Task):
+            return False
+        return self.id == other.id
+
+    def __hash__(self):
+        return self.id
+
     def __repr__(self):
         output = "Task { \n"
         for key, value in self.to_dict().items():
