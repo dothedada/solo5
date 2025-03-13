@@ -113,8 +113,11 @@ class TaskManager:
             done_tasks.append(DoneTask(task[1]))
             task[1].done = True
 
-        done_tasks = [task.to_dict() for task in done_tasks]
-        self.search_results.clear()
+    def save_tasks_done(self):
+        done_tasks = []
+        for task in self._tasks:
+            if task.done:
+                done_tasks.append(DoneTask(task).to_dict())
         add_record_csv("done.csv", self._filepath, done_tasks, TASK_DONE_KEYS)
 
     def delete_task(self):
@@ -129,6 +132,7 @@ class TaskManager:
             tasks.append(task)
         self._tasks.clear()
         self._tasks.push(tasks)
+        self.search_results.clear()
 
     def update_task(self, task_string):
         if len(self.search_results) != 1 or task_string is None:
@@ -137,6 +141,7 @@ class TaskManager:
         task_info = task_string.split(Defaults.TASK_SPLIT.value)[0]
         self.delete_task()
         self.add_tasks(task_info)
+        self.search_results.clear()
 
     def make_today(self):
         # TODO: Algoritmo de priorizacion

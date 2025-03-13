@@ -45,7 +45,7 @@ def main():
                 elif len(taskManager.search_results) == 1:
                     print("Do you want to update:")
                     print(taskManager.search_results[0][1])
-                    confirm = input("[y]es / [n]o")
+                    confirm = input("[y]es / [n]o\n")
                     if confirm == "n":
                         print("update aborted")
                         continue
@@ -57,6 +57,27 @@ def main():
                 new_task = input("What is the new task?")
                 taskManager.update_task(new_task)
                 print("Task updated")
+            case "Done":
+                task_search = input("Whitch task you want to mark as done:\n")
+                taskManager.add_to_search_by_task(task_search)
+                print("Search results:")
+                if len(taskManager.search_results) == 0:
+                    print("No match found")
+                    continue
+                elif len(taskManager.search_results) == 1:
+                    print("Do you want to mark done:")
+                    print(taskManager.search_results[0][1])
+                    confirm = input("[y]es / [n]o\n")
+                    if confirm == "n":
+                        print("update aborted")
+                        continue
+                else:
+                    for i, task in taskManager.search_results:
+                        print(f"{i}) {task.task}")
+                    select = input("\nselect the tasks you want to mark as done...")
+                    taskManager.select_from_search(select)
+                taskManager.mark_tasks_done()
+                taskManager.save_tasks_done()
             case "Save":
                 taskManager.save_tasks_to_csv()
                 print("Tasks saved")
