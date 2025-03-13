@@ -43,52 +43,52 @@ class TaskManager:
 
     def add_to_search_by_task(self, string):
         self.search_results.clear()
-        number = 1
+        index = 1
         for task in self._tasks:
             if string in task.task:
-                self.search_results.append((number, task))
-                number += 1
-        return self.search_results
+                self.search_results.append((index, task))
+                index += 1
 
     # NOTE: Pendiente de testeo
     def add_to_search_by_date(self, date_string):
         self.search_results.clear()
         parsed_date = self._parser.parse_date(date_string)
-        for i, task in enumerate(self._tasks, start=1):
-            if f"{parsed_date:%Y-%m-%d}" == str(task.date):
-                self.search_results.append((i, task))
-        return self.search_results
+        index = 1
+        for task in self._tasks:
+            if str(parsed_date) == str(task.due_date):
+                self.search_results.append((index, task))
+                index += 1
 
     def search_output(self):
         return self.search_results
 
     def select_from_search(self, selection_str):
-        if "0" in selection_str:
+        selection_str = selection_str.strip(" ,-")
+        if selection_str == "0":
             self.search_results.clear()
             return None
 
-        selection = []
-        # BUG: cuando la cadena termina en ,
+        select = set()
         for char in selection_str.split(","):
             char = char.strip()
             if char.isdigit():
-                selection.append(int(char.strip()))
-            else:
+                select.add(int(char))
+            elif char.count("-") == 1:
                 try:
-                    start, end = char.split("-")
-                    start = start.strip()
-                    end = end.strip()
-                    secuence = [i for i in range(int(start), int(end) + 1)]
-                    selection.extend(secuence)
+                    start, end = map(str.strip, char.split("-"))
+                    if not start.isdigit() or not end.isdigit():
+                        raise ValueError(f"Invalid format: {char}")
+                    select.update(range(int(start), int(end) + 1))
                 except ValueError:
                     raise ValueError(f"Invalid format: {char}")
+            else:
+                raise ValueError(f"Invalid format: {char}")
 
-        selection = set(selection)
+        if not all(0 < i <= len(self.search_results) for i in select):
+            raise ValueError("Selection must be within the search range")
 
-        self.search_results = [
-            item for item in self.search_results if item[0] in selection
-        ]
-        return self.search_results
+        selected = [task for task in self.search_results if task[0] in select]
+        self.search_results = selected
 
     def add_tasks(self, tasks_string):
         tasks = self._parser.make_task(tasks_string)
