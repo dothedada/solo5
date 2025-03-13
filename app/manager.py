@@ -8,22 +8,33 @@ from task import DoneTask, KEYS_DONE_TASK, KEYS_ALLOWED
 
 class TaskManager:
     def __init__(self):
-        self._file_path = Defaults.DATA_PATH.value
-        self._parser = Parser(Defaults.LANG.value)
+        self._filepath = Defaults.DATA_PATH.value
         self._heap = Heap()
-        self.load_csv_to_heap()
         self.search = []
         self.today = []
+        self._parser = Parser(Defaults.LANG.value)
+        self.load_csv_to_heap()
+        self.load_csv_to_today()
 
     def load_csv_to_heap(self):
         self._heap.clear()
-        tasks_in_file = load_csv("tasks.csv", self._file_path)
+        tasks_in_file = load_csv("tasks.csv", self._filepath)
         loaded_tasks = self._parser.make_tasks_from_csv(tasks_in_file)
         self._heap.push(loaded_tasks)
 
+    def load_csv_to_today(self):
+        today = load_csv(f"today_{date.today()}", self._filepath)
+        if today is None:
+            print("No tasks for today")
+            return None
+
+        today_tasks = self._parser.make_tasks_from_csv(today)
+        for task in today_tasks:
+            self.today.append(task)
+
     def update_csv_from_heap(self):
         heap_list = [task.to_dict() for task in self._heap]
-        sync_csv("tasks.csv", self._file_path, heap_list, KEYS_ALLOWED)
+        sync_csv("tasks.csv", self._filepath, heap_list, KEYS_ALLOWED)
 
     def add_to_search_by_task(self, string):
         self.search.clear()
@@ -83,7 +94,7 @@ class TaskManager:
 
         done_tasks = [task.to_dict() for task in done_tasks]
         self.search.clear()
-        add_record_csv("done.csv", self._file_path, done_tasks, KEYS_DONE_TASK)
+        add_record_csv("done.csv", self._filepath, done_tasks, KEYS_DONE_TASK)
 
     def delete_task(self):
         tasks_ids = set()
@@ -108,7 +119,7 @@ class TaskManager:
             self.today.append(self._heap.pop())
 
         filename = f"today_{date.today()}.csv"
-        sync_csv(filename, self._file_path, self.today, KEYS_ALLOWED)
+        sync_csv(filename, self._filepath, self.today, KEYS_ALLOWED)
 
     def add_to_today_tasks(self):
         for _, task in self.search:
@@ -135,7 +146,7 @@ class TaskManager:
         yesterday = date.today() - timedelta(days=1)
         month_ago = date.today() - timedelta(days=30)
         trash_can = []
-        for done_task in load_csv("done.csv", self._file_path):
+        for done_task in load_csv("done.csv", self._filepath):
             done_date = date.fromisoformat(done_task["done_date"])
             if yesterday >= done_date:
                 done_ids.add(done_task["id"])
@@ -149,4 +160,4 @@ class TaskManager:
             avaliable_tasks.append(task)
         self._heap.clear()
         self.add_tasks(avaliable_tasks)
-        sync_csv("done.csv", self._file_path, trash_can, KEYS_DONE_TASK)
+        sync_csv("done.csv", self._filepath, trash_can, KEYS_DONE_TASK)
