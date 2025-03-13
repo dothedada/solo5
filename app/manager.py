@@ -71,7 +71,7 @@ class TaskManager:
         )
         self.add_to_search(tasks_list)
 
-    def select_from_search(self, selection_str):
+    def select_from_search(self, selection_str, just_one=False):
         selection_str = selection_str.strip(" ,-")
         if selection_str == "0":
             self.search_results.clear()
@@ -92,6 +92,9 @@ class TaskManager:
                     raise ValueError(f"Invalid format: {char}")
             else:
                 raise ValueError(f"Invalid format: {char}")
+
+        if just_one and len(select) > 1:
+            raise Exception("Select only one")
 
         if not all(0 < i <= len(self.search_results) for i in select):
             raise ValueError("Selection must be within the search range")
