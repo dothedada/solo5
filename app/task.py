@@ -53,5 +53,7 @@ class DoneTask(Task):
     keys_allowed = KEYS_DONE_TASK
 
     def __init__(self, task_dict):
-        super().__init__(task_dict)
+        if not isinstance(task_dict, Task):
+            raise TypeError(f"Received {type(task_dict)} instead of Type Task")
+        super().__init__(task_dict.to_dict())
         setattr(self, "date_done", date.today())

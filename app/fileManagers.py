@@ -53,7 +53,7 @@ def add_record_csv(filename, path, tasks, keys):
             raise RuntimeError(f"Cannot write new tasks in '{filepath}': {e}")
 
 
-def sync_csv(filename, path, tasks):
+def sync_csv(filename, path, tasks, keys):
     filepath = BASE_DIRECTORY / path / filename
 
     with tempfile.NamedTemporaryFile(
@@ -61,7 +61,7 @@ def sync_csv(filename, path, tasks):
         encoding="utf-8",
         delete=False,
     ) as temp_file:
-        fieldnames = list(KEYS_ALLOWED)
+        fieldnames = list(keys)
         writer = csv.DictWriter(temp_file, fieldnames=fieldnames)
 
         try:

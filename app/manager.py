@@ -2,53 +2,56 @@ from config import Defaults
 from taskParser import Parser
 from fileManagers import load_csv, sync_csv, add_record_csv
 from heap import Heap
-from task import DoneTask, KEYS_DONE_TASK
+from datetime import date, timedelta
+from task import DoneTask, KEYS_DONE_TASK, KEYS_ALLOWED
 
 
 class TaskManager:
     def __init__(self):
-        self.parser = Parser(Defaults.LANG.value)
-        self.heap = Heap()
+        self._file_path = Defaults.DATA_PATH.value
+        self._parser = Parser(Defaults.LANG.value)
+        self._heap = Heap()
         self.load_csv_to_heap()
-        self.search_results = []
+        self.search = []
         self.today = []
 
     def load_csv_to_heap(self):
-        self.heap.clear()
-        tasks_in_file = load_csv("tasks.csv", Defaults.DATA_PATH.value)
-        loaded_tasks = self.parser.make_tasks_from_csv(tasks_in_file)
-        self.heap.push(loaded_tasks)
+        self._heap.clear()
+        tasks_in_file = load_csv("tasks.csv", self._file_path)
+        loaded_tasks = self._parser.make_tasks_from_csv(tasks_in_file)
+        self._heap.push(loaded_tasks)
 
     def update_csv_from_heap(self):
-        heap_list = [task.to_dict() for task in self.heap]
-        sync_csv("tasks.csv", Defaults.DATA_PATH.value, heap_list)
+        heap_list = [task.to_dict() for task in self._heap]
+        sync_csv("tasks.csv", self._file_path, heap_list, KEYS_ALLOWED)
 
-    def search_by_task(self, string):
-        self.search_results.clear()
+    def add_to_search_by_task(self, string):
+        self.search.clear()
         number = 1
-        for task in self.heap:
+        for task in self._heap:
             if string in task.task:
-                self.search_results.append((number, task))
+                self.search.append((number, task))
                 number += 1
-        return self.search_results
+        return self.search
 
-    def search_by_date(self, date_string):
-        self.search_results.clear()
-        parsed_date = self.parser.parse_date(date_string)
-        for i, task in enumerate(self.heap, start=1):
+    def add_to_search_by_date(self, date_string):
+        self.search.clear()
+        parsed_date = self._parser.parse_date(date_string)
+        for i, task in enumerate(self._heap, start=1):
             if f"{parsed_date:%Y-%m-%d}" == str(task.date):
-                self.search_results.append((i, task))
-        return self.search_results
+                self.search.append((i, task))
+        return self.search
 
     def search_output(self):
-        return self.search_results
+        return self.search
 
-    def search_selection(self, selection_str):
+    def select_from_search(self, selection_str):
         if "0" in selection_str:
-            self.search_results.clear()
+            self.search.clear()
             return None
 
         selection = []
+        # BUG: cuando la cadena termina en ,
         for char in selection_str.split(","):
             char = char.strip()
             if char.isdigit():
@@ -65,47 +68,34 @@ class TaskManager:
 
         selection = set(selection)
 
-        self.search_results = list(
-            filter(
-                lambda item: item[0] in selection,
-                self.search_results,
-            )
-        )
-        return self.search_results
+        self.search = [item for item in self.search if item[0] in selection]
+        return self.search
 
     def add_tasks(self, tasks_string):
-        tasks = self.parser.make_task(tasks_string)
-        self.heap.push(tasks)
+        tasks = self._parser.make_task(tasks_string)
+        self._heap.push(tasks)
 
     def mark_tasks_done(self):
         done_tasks = []
-        for task in self.search_results:
-            task = task[1]
-            done_tasks.append(DoneTask(task.to_dict()))
-            task.done = True
+        for task in self.search:
+            done_tasks.append(DoneTask(task[1]))
+            task[1].done = True
 
-        print(
-            [task.to_dict() for task in done_tasks],
-        )
-        self.search_results.clear()
-        add_record_csv(
-            "done.csv",
-            Defaults.DATA_PATH.value,
-            [task.to_dict() for task in done_tasks],
-            KEYS_DONE_TASK,
-        )
+        done_tasks = [task.to_dict() for task in done_tasks]
+        self.search.clear()
+        add_record_csv("done.csv", self._file_path, done_tasks, KEYS_DONE_TASK)
 
     def delete_task(self):
         tasks_ids = set()
-        for task in self.search_results:
+        for task in self.search:
             tasks_ids.add(task[1].id)
 
-        tasks = [task for task in self.heap if task.id not in tasks_ids]
-        self.heap.clear()
-        self.heap.push(tasks)
+        tasks = [task for task in self._heap if task.id not in tasks_ids]
+        self._heap.clear()
+        self._heap.push(tasks)
 
     def update_task(self, task_string):
-        if len(self.search_results) != 1 or task_string is None:
+        if len(self.search) != 1 or task_string is None:
             return None
 
         task_info = task_string.split(Defaults.TASK_SPLIT.value)[0]
@@ -114,19 +104,23 @@ class TaskManager:
 
     def make_today_tasks(self):
         # TODO: Algoritmo de priorizacion
-        pass
+        for _ in range(Defaults.TASK_AMOUNT.value):
+            self.today.append(self._heap.pop())
+
+        filename = f"today_{date.today()}.csv"
+        sync_csv(filename, self._file_path, self.today, KEYS_ALLOWED)
 
     def add_to_today_tasks(self):
-        for _, task in self.search_results:
+        for _, task in self.search:
             self.today.append(task)
-        self.search_results.clear()
+        self.search.clear()
 
     def remove_from_today_tasks(self, task):
-        if len(self.search_results) != 1:
+        if len(self.search) != 1:
             return None
 
-        task_id = self.search_results[0][1].id
-        self.search_results.clear()
+        task_id = self.search[0][1].id
+        self.search.clear()
         self.today = [task for task in self.today if task_id != task.id]
 
     def print_today(self):
@@ -137,8 +131,22 @@ class TaskManager:
         return today
 
     def purge_done(self):
-        # NOTE: crear lista de done???
-        # TODO: limpiar el CSV de tareas realizadas
-        # pasarlas a nuevo CSV
-        # borrar del csv de done, las que esten con mas de 30 días de done
-        pass
+        done_ids = set()
+        yesterday = date.today() - timedelta(days=1)
+        month_ago = date.today() - timedelta(days=30)
+        trash_can = []
+        for done_task in load_csv("done.csv", self._file_path):
+            done_date = date.fromisoformat(done_task["done_date"])
+            if yesterday >= done_date:
+                done_ids.add(done_task["id"])
+            if month_ago <= done_date:
+                trash_can.append(done_task)
+
+        avaliable_tasks = []
+        for task in self._heap:
+            if task.id in done_ids:
+                continue
+            avaliable_tasks.append(task)
+        self._heap.clear()
+        self.add_tasks(avaliable_tasks)
+        sync_csv("done.csv", self._file_path, trash_can, KEYS_DONE_TASK)

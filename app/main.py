@@ -5,13 +5,13 @@ def main():
 
     taskManager = TaskManager()
 
-    print(taskManager.heap)
+    print(taskManager._heap)
 
     new_task = input("nuevas...\n")
     taskManager.add_tasks(new_task)
 
     search = input("que tareas???...\n")
-    taskManager.search_by_task(search)
+    taskManager.add_to_search_by_task(search)
     for i, task in taskManager.search_output():
         print(f"{i}) {task.task}")
 
@@ -28,7 +28,7 @@ def main():
     taskManager.update_csv_from_heap()
 
     # print(taskManager.delete_task(new_tasks))
-    print(taskManager.heap)
+    print(taskManager._heap)
 
 
 if __name__ == "__main__":

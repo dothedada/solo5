@@ -6,6 +6,7 @@ from task import Task
 class Heap:
     def __init__(self, tasks=[]):
         self._heap = []
+        self.levels = {}
         self.push(tasks)
 
     def task_wrapper(self, task):
@@ -20,8 +21,23 @@ class Heap:
 
     def push(self, tasks):
         for task in tasks:
-            self._heap.append(self.task_wrapper(task))
+            task_with_wrapper = self.task_wrapper(task)
+            self._heap.append(task_with_wrapper)
             self.heappify_up(len(self._heap) - 1)
+
+            if task.dificulty in self.levels:
+                self.levels[task.dificulty].append(task_with_wrapper)
+            else:
+                self.levels[task.dificulty] = [task_with_wrapper]
+
+        for level in self.levels:
+            self.levels[level] = list(
+                sorted(
+                    self.levels[level],
+                    key=lambda item: item[0],
+                    reverse=True,
+                )
+            )
 
     def pop(self):
         if len(self._heap) == 0:
@@ -93,9 +109,6 @@ class Heap:
 
     def get_r_child_ind(self, index):
         return (index * 2) + 2
-
-    # def __len__(self):
-    #     return len(self._heap)
 
     def __repr__(self):
         string = "Heap [\n"

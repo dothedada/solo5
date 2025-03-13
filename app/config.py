@@ -3,8 +3,6 @@ from fileManagers import load_json
 
 data_config = load_json("./data/config", "setup.json")
 
-print(data_config)
-
 
 class Defaults(Enum):
     LANG = data_config["lang"]
@@ -18,4 +16,4 @@ class Defaults(Enum):
     URG_W = data_config["urgent_weight"]
     DIF_W = data_config["diffficulty_weight"]
 
-    COUNT_CURRENT_DAY = data_config["count_current_day"]
+    COUNT_CURRENT_DAY = data_config["count_current_day"] == "False"
