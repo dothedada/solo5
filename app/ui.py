@@ -32,6 +32,16 @@ def user_input(question, type_of_answer, selection_limit):
                 print(feedback_ui["err"])
 
 
+def print_search_result(task_manager, limit):
+    print(feedback_ui["line"] * len(feedback_ui["search_results"]))
+    for i, task in task_manager.search_results:
+        if limit and i > Defaults.SEARCH_RESULTS.value:
+            print(feedback_ui["search_overflow"])
+            break
+        print(f"{i}) {task.task}")
+    print(feedback_ui["line"] * len(feedback_ui["search_results"]))
+
+
 def task_loop(task_manager, callback, texts_ui, single, action_input=None):
     selection_limit = 1 if single else float("inf")
     while True:
@@ -40,30 +50,13 @@ def task_loop(task_manager, callback, texts_ui, single, action_input=None):
 
         if len(task_manager.search_results) == 0:
             print(feedback_ui["search_no_match"])
+            continue
         elif len(task_manager.search_results) == 1:
             print(feedback_ui["warn"])
             print(f'"{task_manager.search_results[0][1].task}"')
-            action = user_input(
-                input_ui["confirmation"],
-                Feedback.CONFIRM,
-                selection_limit,
-            )
-            match Response(action):
-                case Response.YES:
-                    break
-                case Response.NO:
-                    continue
-                case _:
-                    return
         else:
             print(f'\n{feedback_ui["search_results"]}')
-            print(feedback_ui["line"] * len(feedback_ui["search_results"]))
-            for i, task in task_manager.search_results:
-                if i > Defaults.SEARCH_RESULTS.value:
-                    print(feedback_ui["search_overflow"])
-                    break
-                print(f"{i}) {task.task}")
-            print(feedback_ui["line"] * len(feedback_ui["search_results"]))
+            print_search_result(task_manager, True)
             select = user_input(
                 input_ui["which_one"] if single else input_ui["which_ones"],
                 Feedback.SELECTION,
@@ -71,24 +64,27 @@ def task_loop(task_manager, callback, texts_ui, single, action_input=None):
             )
             if select == Feedback.OUT:
                 return
+
             task_manager.select_from_search(select)
-            print(feedback_ui["line"] * len(feedback_ui["search_results"]))
             print(feedback_ui["selection"])
-            for i, task in task_manager.search_results:
-                print(f"{i}) {task.task}")
-            print(feedback_ui["line"] * len(feedback_ui["search_results"]))
-            action = user_input(
-                input_ui["confirmation"],
-                Feedback.CONFIRM,
-                selection_limit,
-            )
-            match Response(action):
-                case Response.YES:
-                    break
-                case Response.NO:
-                    continue
-                case _:
-                    return
+            print_search_result(task_manager, False)
+
+        if Defaults.CARPE_DIEM.value:
+            break
+
+        action = user_input(
+            input_ui["confirmation"],
+            Feedback.CONFIRM,
+            selection_limit,
+        )
+
+        match Response(action):
+            case Response.YES:
+                break
+            case Response.NO:
+                continue
+            case _:
+                return
 
     if action_input is not None:
         string = input(input_ui["new_data"])

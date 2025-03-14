@@ -29,6 +29,7 @@ def get_selection(input_str):
         return (Feedback.SELECTION, {int(input_str)})
 
     selection = set()
+    input_str = input_str.strip(" ,-")
     tokens = map(lambda token: token.strip(" -"), input_str.split(","))
     for token in tokens:
         if token.isdigit():
