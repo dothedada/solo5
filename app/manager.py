@@ -85,7 +85,7 @@ class TaskManager:
         selection_str = selection_str.strip(" ,-")
         if selection_str == "0":
             self.search_results.clear()
-            return None
+            return False
 
         select = set()
         for char in selection_str.split(","):
@@ -111,6 +111,7 @@ class TaskManager:
 
         selected = [task for task in self.search_results if task[0] in select]
         self.search_results = selected
+        return True
 
     def add_tasks(self, tasks_string):
         tasks = self._parser.make_task(tasks_string)
