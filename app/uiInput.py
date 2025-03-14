@@ -1,6 +1,4 @@
 from enum import Enum
-from regexGenerator import UIRegex
-import re
 from taskParser import InputParser
 
 
@@ -13,7 +11,7 @@ class Feedback(Enum):
 
 def get_selection(input_str):
     if input_str.isdigit():
-        return (Feedback.SELECTION, {int(input_str)})
+        return {int(input_str)}
 
     selection = set()
     input_str = input_str.strip(" ,-")
@@ -29,7 +27,7 @@ def get_selection(input_str):
         else:
             return None
 
-    return (Feedback.SELECTION, selection) if len(selection) > 0 else None
+    return selection if len(selection) > 0 else None
 
 
 input_parser = InputParser()
@@ -39,7 +37,7 @@ def parse_command(input_str):  # TUPLE (type, value)
     if input_str == "0":
         return (Feedback.OUT, None)
     if numbers_range := get_selection(input_str):
-        return numbers_range
+        return (Feedback.SELECTION, numbers_range)
     if command := input_parser.confirm(input_str):
         return (Feedback.CONFIRM, command)
 

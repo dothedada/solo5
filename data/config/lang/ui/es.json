@@ -29,7 +29,7 @@
         "greeting": "¿Qué quieres hacer?"
       }
     },
-    "commands": {
+    "command": {
       "add_tasks": "[a]gregar",
       "make_today": "[h]acer hoy",
       "update_task": "[act]ualizar",

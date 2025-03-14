@@ -1,4 +1,3 @@
-from enum import Enum
 from uiInput import Feedback, parse_command
 from config import Defaults
 from fileManagers import load_json
