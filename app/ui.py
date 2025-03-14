@@ -1,95 +1,90 @@
-text_ui = {
-    "delete": {
-        "search_i": "What tasks do you want to delete:\n",
-        "search_no_results_p": "Sorry, 0 tasks match.",
-        "search_one_match_p": "Do you want to delete:",
-        "search_results_p": "Search results:",
-        "confirm_i": "[y]es | [n]o, search again | [c]ancel\n",
-        "deleted_p": "deleted!",
-        "invalid_input_p": "input non valid",
-        "select_range_p": "select which ones you wanna delete...",
-        "select_instructions_i": "type the number of the task, separete with a comma",
-    },
-    "feedback": {
-        "yes": ["y", "yes"],
-        "no": ["n", "no"],
-        "cancel": ["c", "cancel"],
-    },
-}
-
-# NOTE: LA SELECCION MULTIPLE DEBE IR ACÁ Y PASAR EL LISTADO AL MÉTODO,
-# O EL MÉTODO DEBE CONTENER TODO??? INCLUSO LOS TEXTOS DE UI???
+from uiInput import Feedback, parse_command
+from config import Defaults
 
 
-def handle_single_match(task_manager, texts_ui):
+def user_feedback(question, type_of_answer, selection_limit):
     while True:
-        print(texts_ui["search_one_match_p"])
-        print(task_manager.search_results[0][1].task)
-        confirmation = input(texts_ui["confirm_i"])
-        if confirmation == "n":
-            task_manager.search_results.clear()
-            return True
-        elif confirmation == "c":
-            return False
-        elif confirmation == "y":
-            return True
-        else:
-            print(texts_ui["invalid_input_p"])
-            continue
+        response = parse_command(input(question))
+        match response[0]:
+            case Feedback.ERR:
+                print("CANNOT UNDERSTAND YOUR INPUT, TRY AGAIN OR CANCEL.")
+            case t if t == type_of_answer:
+                if (
+                    type_of_answer == Feedback.SELECTION
+                    and len(response[1]) > selection_limit
+                ):
+                    print("YOU SELECTED MORE ITEMS THAT YOU WHERE ASKED")
+                    continue
+                return response[1]
+            case Feedback.OUT:
+                print("AS YOU WISH, FUCKR...")
+                return response[0]
+            case _:
+                print("WRONG INPUT, TRY AGAIN... OR CANCEL")
 
 
-def handle_multiple_match(task_manager, texts_ui):
+def task_loop(task_manager, end_action, texts_ui, single, action_input=None):
+    selection_limit = 1 if single else float("inf")
     while True:
-        print(texts_ui["search_results_p"])
-        for i, task in task_manager.search_results:
-            print(f"{i}) {task.task}")
-        print(texts_ui["select_range_p"])
-        select = input(texts_ui["select_instructions_i"])
-        task_manager.select_from_search(select)
-
-
-def task_loop(task_manager, end_action, texts_ui, single_selection):
-    while True:
-        search_for = input(texts_ui["search"])
+        search_for = input("Que busca prro???")
         task_manager.add_to_search_by_task(search_for)
 
         if len(task_manager.search_results) == 0:
-            print(texts_ui["search_no_results_p"])
+            print("SIN RESULTADOS QUE COINCIDAN...")
         elif len(task_manager.search_results) == 1:
-            if handle_single_match(task_manager, texts_ui) is False:
+            action = user_feedback(
+                "SI, NO O QUÉ???",
+                Feedback.CONFIRM,
+                selection_limit,
+            )
+            if action == 0:
+                print("SISAS")
                 break
+            if action == 1:
+                print("NONAS, de nuevo")
+                continue
+            if action == 2:
+                print("CANCELARRRR")
+                return
         else:
-            print(texts_ui["search_results_p"])
+            print("resultados de la busqueda")
+            print("-------------------------")
             for i, task in task_manager.search_results:
                 print(f"{i}) {task.task}")
-            print(texts_ui["select_range_p"])
-            select = input(texts_ui["select_instructions_i"])
+                if i >= Defaults.SEARCH_RESULTS.value:
+                    print("Prro, selecione mejor, porque mucho resultado")
+                    break
+            print("-------------------------")
+            print("ea ea ea salieron varias")
+            select = user_feedback(
+                "Cuales???",
+                Feedback.SELECTION,
+                selection_limit,
+            )
+            print(select)
+            if select == Feedback.OUT:
+                print("SUETERRRRRRR :)")
+                return
             task_manager.select_from_search(select)
-            task_manager[end_action]()
+            action = user_feedback(
+                "Seguro prro?",
+                Feedback.CONFIRM,
+                selection_limit,
+            )
+            if action == 0:
+                print("SISAS")
+                break
+            if action == 1:
+                print("NONAS, de nuevo")
+                continue
+            if action == 2:
+                print("CANCELARRRR")
+                return
 
-        if len(task_manager.search_results) > 0:
-            task_manager[end_action]()
-            print(text_ui["deleted_p"])
+    if action_input is not None:
+        string = input("escribe la nueva cadena")
+        end_action(string)
+    else:
+        end_action()
 
-    pass
-
-
-tasks_search = input("What tasks do you want to delete:\n")
-taskManager.add_to_search_by_task(tasks_search)
-print("Search results:")
-if len(taskManager.search_results) == 0:
-    print("No match found")
-    continue
-elif len(taskManager.search_results) == 1:
-    print("Do you want to delete:")
-    print(taskManager.search_results[0][1])
-    confirm = input("[y]es / [n]o")
-    if confirm == "n":
-        print("deletion aborted")
-        continue
-else:
-    for i, task in taskManager.search_results:
-        print(f"{i}) {task.task}")
-    select = input("\nselect which ones you wanna delete...")
-    taskManager.select_from_search(select)
-taskManager.delete_task()
+    print("LISTONES!!!")

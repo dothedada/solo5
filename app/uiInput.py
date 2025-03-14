@@ -3,36 +3,31 @@ from regexGenerator import UIRegex
 import re
 
 
-class Input_t(Enum):
+class Feedback(Enum):
     CONFIRM = "c"
-    RANGE = "r"
-    NUMBER = "n"
+    SELECTION = "n"
     OUT = "o"
     ERR = "e"
 
 
-def get_command(input_str):
+def get_confirmation(input_str):
     regex = UIRegex.of("es")
 
     for i, pattern in enumerate(regex["confirmation"]):
         if re.search(pattern, input_str):
-            return (Input_t.CONFIRM, i)
+            return (Feedback.CONFIRM, i)
 
     for pattern in regex["exit"]:
         if re.search(pattern, input_str):
-            return (Input_t.OUT, 0)
+            return (Feedback.OUT, None)
 
     return None
 
 
-def get_number(input_str):
+def get_selection(input_str):
     if input_str.isdigit():
-        return (Input_t.NUMBER, int(input_str))
+        return (Feedback.SELECTION, {int(input_str)})
 
-    return None
-
-
-def get_range(input_str):
     selection = set()
     tokens = map(lambda token: token.strip(" -"), input_str.split(","))
     for token in tokens:
@@ -46,17 +41,15 @@ def get_range(input_str):
         else:
             return None
 
-    return (Input_t.RANGE, selection) if len(selection) > 0 else None
+    return (Feedback.SELECTION, selection) if len(selection) > 0 else None
 
 
 def parse_command(input_str):  # TUPLE (type, value)
     if input_str == "0":
-        return (Input_t.OUT, None)
-    if number := get_number(input_str):
-        return number
-    if numbers_range := get_range(input_str):
+        return (Feedback.OUT, None)
+    if numbers_range := get_selection(input_str):
         return numbers_range
-    if command := get_command(input_str):
+    if command := get_confirmation(input_str):
         return command
 
-    return (Input_t.ERR, f"Invalid input: {input_str}")
+    return (Feedback.ERR, f"Invalid input: {input_str}")

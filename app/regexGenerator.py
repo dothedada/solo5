@@ -13,7 +13,7 @@ class UIRegex:
 
         file = load_json(Defaults.UI_PATH.value, f"{lang}.json")
         cls._lang[lang] = {}
-        cls._lang[lang]["confirm"] = UIRegex._compile_regex(file["confirm"])
+        cls._lang[lang]["confirmation"] = UIRegex._compile_regex(file["confirmation"])
         cls._lang[lang]["exit"] = UIRegex._compile_regex(file["exit"])
 
         return cls._lang[lang]

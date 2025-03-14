@@ -81,42 +81,25 @@ class TaskManager:
         )
         self.add_to_search(tasks_list)
 
-    def select_from_search(self, selection_str, just_one=False):
-        selection_str = selection_str.strip(" ,-")
-        if selection_str == "0":
-            self.search_results.clear()
-            return False
+    def select_from_search(self, user_selection, just_one=False):
+        selection = set()
+        for select in user_selection:
+            if 0 < select <= len(self.search_results):
+                selection.add(select)
 
-        select = set()
-        for char in selection_str.split(","):
-            char = char.strip()
-            if char.isdigit():
-                select.add(int(char))
-            elif char.count("-") == 1:
-                try:
-                    start, end = map(str.strip, char.split("-"))
-                    if not start.isdigit() or not end.isdigit():
-                        raise ValueError(f"Invalid format: {char}")
-                    select.update(range(int(start), int(end) + 1))
-                except ValueError:
-                    raise ValueError(f"Invalid format: {char}")
-            else:
-                raise ValueError(f"Invalid format: {char}")
+        if not selection:
+            # NOTE: manejar el texto en la ui
+            raise ValueError("ERROR! rango de seleccion no valido")
 
-        if just_one and len(select) > 1:
-            raise Exception("Select only one")
+        if just_one:
+            selection = {min(selection)}
 
-        if not all(0 < i <= len(self.search_results) for i in select):
-            raise ValueError("Selection must be within the search range")
-
-        selected = [task for task in self.search_results if task[0] in select]
-        self.search_results = selected
-        return True
+        selected_tasks = [t for t in self.search_results if t[0] in selection]
+        self.search_results = selected_tasks
 
     def add_tasks(self, tasks_string):
         tasks = self._parser.make_task(tasks_string)
         self._tasks.push(tasks)
-        return tasks
 
     def mark_tasks_done(self, is_done=True):
         for task in self.search_results:

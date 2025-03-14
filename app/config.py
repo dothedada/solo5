@@ -8,6 +8,7 @@ class Defaults(Enum):
     LANG = data_config["lang"]
     DATA_PATH = data_config["data_path"]
     RGX_PATH = data_config["rgx_path"]
+    UI_PATH = data_config["ui_path"]
     TASK_SPLIT = data_config["task_split"]
 
     TASK_AMOUNT = data_config["task_amount"]
@@ -15,5 +16,7 @@ class Defaults(Enum):
     UND_W = data_config["undelayable_weight"]
     URG_W = data_config["urgent_weight"]
     DIF_W = data_config["diffficulty_weight"]
+
+    SEARCH_RESULTS = 5
 
     COUNT_CURRENT_DAY = data_config["count_current_day"] == "False"
