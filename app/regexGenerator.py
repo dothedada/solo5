@@ -13,23 +13,20 @@ class UIRegex:
 
         file = load_json(Defaults.UI_PATH.value, f"{lang}.json")
         cls._lang[lang] = {}
-        cls._lang[lang]["confirmation"] = UIRegex._compile_regex(file["confirmation"])
-        cls._lang[lang]["exit"] = UIRegex._compile_regex(file["exit"])
+        cls._lang[lang]["confirm"] = cls.compile_regex(file["RGX"]["confirm"])
+        cls._lang[lang]["command"] = cls.compile_regex(file["RGX"]["command"])
 
         return cls._lang[lang]
 
     @staticmethod
-    def _compile_regex(regex_list):
-        if type(regex_list) is str:
-            return re.compile(regex_list, re.IGNORECASE)
-
-        compiled_regex = []
-        for regex in regex_list:
-            compiled_regex.append(re.compile(regex, re.IGNORECASE))
+    def compile_regex(regex_list):
+        compiled_regex = {}
+        for key, pattern in regex_list.items():
+            compiled_regex[key] = re.compile(pattern, re.IGNORECASE)
         return compiled_regex
 
 
-class GetRegex:
+class TaskRegex:
     _lang = {}
 
     @classmethod

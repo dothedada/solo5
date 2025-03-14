@@ -2,15 +2,10 @@ from enum import Enum
 from uiInput import Feedback, parse_command
 from config import Defaults
 from fileManagers import load_json
+from taskParser import Confirm
 
 feedback_ui = load_json(Defaults.UI_PATH.value, "es.json")["ui"]["feedback"]
 input_ui = load_json(Defaults.UI_PATH.value, "es.json")["ui"]["input"]
-
-
-class Response(Enum):
-    YES = 0
-    NO = 1
-    CANCEL = 2
 
 
 def user_input(question, type_of_answer, selection_limit):
@@ -32,17 +27,17 @@ def user_input(question, type_of_answer, selection_limit):
                 print(feedback_ui["err"])
 
 
-def print_search_result(task_manager, limit):
+def print_tasks_in(task_list, limit):
     print(feedback_ui["line"] * len(feedback_ui["search_results"]))
-    for i, task in task_manager.search_results:
+    for i, task in task_list:
         if limit and i > Defaults.SEARCH_RESULTS.value:
-            print(feedback_ui["search_overflow"])
+            print(f'\n{feedback_ui["search_overflow"]}')
             break
         print(f"{i}) {task.task}")
     print(feedback_ui["line"] * len(feedback_ui["search_results"]))
 
 
-def task_loop(task_manager, callback, texts_ui, single, action_input=None):
+def task_loop(task_manager, callback, single, action_input=None):
     selection_limit = 1 if single else float("inf")
     while True:
         search_for = input(f'\n{input_ui["look_for"]}')
@@ -56,7 +51,7 @@ def task_loop(task_manager, callback, texts_ui, single, action_input=None):
             print(f'"{task_manager.search_results[0][1].task}"')
         else:
             print(f'\n{feedback_ui["search_results"]}')
-            print_search_result(task_manager, True)
+            print_tasks_in(task_manager.search_results, True)
             select = user_input(
                 input_ui["which_one"] if single else input_ui["which_ones"],
                 Feedback.SELECTION,
@@ -67,7 +62,7 @@ def task_loop(task_manager, callback, texts_ui, single, action_input=None):
 
             task_manager.select_from_search(select)
             print(feedback_ui["selection"])
-            print_search_result(task_manager, False)
+            print_tasks_in(task_manager.search_results, False)
 
         if Defaults.CARPE_DIEM.value:
             break
@@ -78,11 +73,13 @@ def task_loop(task_manager, callback, texts_ui, single, action_input=None):
             selection_limit,
         )
 
-        match Response(action):
-            case Response.YES:
+        match Confirm(action):
+            case Confirm.YES:
                 break
-            case Response.NO:
+            case Confirm.NO:
                 continue
+            case Confirm.ERR:  # NOTE: Evaluar
+                print(feedback_ui["err"])
             case _:
                 return
 

@@ -1,5 +1,5 @@
 from config import Defaults
-from taskParser import Parser
+from taskParser import TaskParser
 from fileManagers import load_csv, sync_csv, add_record_csv, clean_directory
 from heap import Heap
 from datetime import date, timedelta
@@ -9,7 +9,7 @@ from task import DoneTask, TASK_DONE_KEYS, TASK_KEYS
 class TaskManager:
     def __init__(self):
         self._filepath = Defaults.DATA_PATH.value
-        self._parser = Parser(Defaults.LANG.value)
+        self._parser = TaskParser()
         self._tasks = Heap()
         self.search_results = []
         self.today_tasks = set()
@@ -88,7 +88,7 @@ class TaskManager:
                 selection.add(select)
 
         if not selection:
-            # NOTE: manejar el texto en la ui
+            # BUG: manejar el texto en la ui
             raise ValueError("ERROR! rango de seleccion no valido")
 
         if just_one:

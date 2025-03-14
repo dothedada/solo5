@@ -1,16 +1,60 @@
 import calendar
 import re
 from datetime import date
+from enum import Enum
 
 from config import Defaults
-from regexGenerator import GetRegex
+from regexGenerator import TaskRegex, UIRegex
 from task import Task
 
 
-class Parser:
-    def __init__(self, lang):
-        self._lang = lang
-        self._parser = GetRegex.of(lang)
+class Confirm(Enum):
+    YES = "yes"
+    NO = "no"
+    OUT = "cancel"
+    ERR = "error"
+
+
+class Command(Enum):
+    ADD_TASKS = "add_tasks"
+    MAKE_TODAY = "make_today"
+    UPDATE_TASK = "update_task"
+    MARK_DONE = "mark_done"
+    DELETE_TASKS = "delete_tasks"
+    IN_TODAY = "in_today"
+    IN_GLOBAL = "in_global"
+    IN_DONE = "in_done"
+    SEARCH = "search"
+    EXIT = "exit"
+    PURGE = "purge"
+    FIX_DATES = "fix_dates"
+    ENCORE = "encore"
+    HELP = "help"
+    ERR = "error"
+
+
+class InputParser:
+    def __init__(self):
+        self._lang = Defaults.LANG.value
+        self._parser = UIRegex.of(self._lang)
+
+    def confirm(self, input_str):
+        for response, regex in self._parser["confirm"].items():
+            if re.search(regex, input_str):
+                return Confirm(response)
+        return Confirm.ERR
+
+    def command(self, input_str):
+        for response, regex in self._parser["command"].items():
+            if re.search(regex, input_str):
+                return Command(response)
+        return Command.ERR
+
+
+class TaskParser:
+    def __init__(self):
+        self._lang = Defaults.LANG.value
+        self._parser = TaskRegex.of(self._lang)
 
     # Compares the string with the regex source to get the object or the index
     def _matcher(func):
@@ -49,7 +93,7 @@ class Parser:
 
         add_days, add_monts, add_years = self._get_date_modifier(date_info)
 
-        year, month, day = Parser.normalize_date(
+        year, month, day = TaskParser.normalize_date(
             base_date.year + add_years,
             base_date.month + add_monts,
             base_date.day + add_days,
@@ -86,7 +130,7 @@ class Parser:
         b_month = self._get_month(data_dict)
         b_year = data_dict.get("year", date.today().year)
 
-        year, month, day = Parser.normalize_date(b_year, b_month, b_day)
+        year, month, day = TaskParser.normalize_date(b_year, b_month, b_day)
 
         if date(year, month, day) < date.today():
             year += 1
@@ -177,7 +221,7 @@ class Parser:
             task = Task(
                 {
                     "lang": self._lang,
-                    "task": Parser.sanitize_text(task_raw),
+                    "task": TaskParser.sanitize_text(task_raw),
                     "done": False,
                     "project": self._match_dict(task_raw, "project"),
                     "undelayable": self._match_bool(task_raw, "undelayable"),

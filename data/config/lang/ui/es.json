@@ -1,24 +1,34 @@
 {
-  "hi": "hola",
-  "confirmation": ["\\bsi?\\b", "\\bno?\\b", "\\bc(?:ancelar)?\\b"],
-  "exit": "salir",
-  "commands": {
-    "add_tasks": "\\ba(?:gregar|[nñ]adir)?\\b",
-    "make_today": "\\bh(?:acer hoy)?\\b",
-    "update_task": "\\bact(?:uali[sz]ar)?\\b",
-    "mark_done": "\\bt(?:erminada)\\b",
-    "delete_tasks": "\\bborrar\\b",
-    "in_today": "\\bh(?:oy)?\\b",
-    "in_global": "\\bt(?:odo)?\\b",
-    "in_done": "\\bter(?:minadas)?\\b",
-    "search": "\\bb(?:uscar)?\\b",
-    "exit": "\\bs(?:alir)?\\b",
-    "purge": "\\bpurgar\\b",
-    "fix_dates": "\\barreglar\\b",
-    "encore": "\\bextra\\b",
-    "help": "\\bayuda\\b"
+  "RGX": {
+    "confirm": {
+      "yes": "\\bsi?\\b",
+      "no": "\\bno?\\b",
+      "cancel": "\\bc(?:ancelar)?\\b"
+    },
+    "command": {
+      "add_tasks": "\\ba(?:gregar|[nñ]adir)?\\b",
+      "make_today": "\\bh(?:acer hoy)?\\b",
+      "update_task": "\\bact(?:uali[sz]ar)?\\b",
+      "mark_done": "\\bt(?:erminada)\\b",
+      "delete_tasks": "\\bborrar\\b",
+      "in_today": "\\bh(?:oy)?\\b",
+      "in_global": "\\bt(?:odo)?\\b",
+      "in_done": "\\bter(?:minadas)?\\b",
+      "search": "\\bb(?:uscar)?\\b",
+      "exit": "\\bs(?:alir)?\\b",
+      "purge": "\\bpurgar\\b",
+      "fix_dates": "\\barreglar\\b",
+      "encore": "\\bextra\\b",
+      "help": "\\bayuda\\b"
+    }
   },
   "ui": {
+    "main": {
+      "feedback": {
+        "header": "///// SOLO5 /////",
+        "greeting": "¿Qué quieres hacer?"
+      }
+    },
     "commands": {
       "add_tasks": "[a]gregar",
       "make_today": "[h]acer hoy",

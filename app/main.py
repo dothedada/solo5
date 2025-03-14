@@ -1,6 +1,5 @@
 from manager import TaskManager
-from fileManagers import clean_directory
-from config import Defaults
+from taskParser import InputParser
 from ui import task_loop
 
 
@@ -11,35 +10,24 @@ def main():
     print(taskManager._tasks)
     print(taskManager.get_today())
 
+    usr_input = InputParser()
+    print(usr_input.confirm("sis i si si").value)
+
     while True:
         do = input("Add, Remove, Update, Done, Save, Exit:\n")
+
+        # print(parse_command(do))
 
         match do:
             case "Add":
                 tasks_str = input("Add tasks:\n")
                 taskManager.add_tasks(tasks_str)
             case "Remove":
-                task_loop(
-                    taskManager,
-                    taskManager.delete_task,
-                    "",
-                    False,
-                )
+                task_loop(taskManager, taskManager.delete_task, False)
             case "Update":
-                task_loop(
-                    taskManager,
-                    taskManager.update_task,
-                    "",
-                    True,
-                    True,
-                )
+                task_loop(taskManager, taskManager.update_task, True, True)
             case "Done":
-                task_loop(
-                    taskManager,
-                    taskManager.mark_tasks_done(),
-                    "",
-                    False,
-                )
+                task_loop(taskManager, taskManager.mark_tasks_done(), False)
             case "Save":
                 taskManager.save_tasks_to_csv()
                 print("Tasks saved")
