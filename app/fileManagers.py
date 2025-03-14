@@ -37,6 +37,13 @@ def load_csv(filename, path):
         print(f"Cannot read the file at '{filepath}': {e}")
 
 
+def clean_directory(filename_pattern, path):
+    filepath = BASE_DIRECTORY / path
+    for file in filepath.glob(filename_pattern):
+        if file.is_file():
+            os.unlink(file)
+
+
 def add_record_csv(filename, path, tasks, keys):
     filepath = BASE_DIRECTORY / path / filename
 

@@ -1,4 +1,6 @@
 from manager import TaskManager
+from fileManagers import clean_directory
+from config import Defaults
 
 
 def main():
@@ -8,6 +10,7 @@ def main():
     print(taskManager._tasks)
     print(taskManager.get_today())
 
+    clean_directory("today_*.csv", Defaults.DATA_PATH.value)
     while True:
         do = input("Add, Remove, Update, Done, Save, Exit:\n")
 

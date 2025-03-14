@@ -1,6 +1,6 @@
 from config import Defaults
 from taskParser import Parser
-from fileManagers import load_csv, sync_csv, add_record_csv
+from fileManagers import load_csv, sync_csv, add_record_csv, clean_directory
 from heap import Heap
 from datetime import date, timedelta
 from task import DoneTask, TASK_DONE_KEYS, TASK_KEYS
@@ -188,23 +188,29 @@ class TaskManager:
         for _, task in self.search_results:
             self.today_tasks.remove(task)
 
-    # def purge_done(self):
-    #     done_ids = set()
-    #     yesterday = date.today() - timedelta(days=1)
-    #     month_ago = date.today() - timedelta(days=30)
-    #     trash_can = []
-    #     for done_task in load_csv("done.csv", self._filepath):
-    #         done_date = date.fromisoformat(done_task["done_date"])
-    #         if yesterday >= done_date:
-    #             done_ids.add(done_task["id"])
-    #         if month_ago <= done_date:
-    #             trash_can.append(done_task)
-    #
-    #     avaliable_tasks = []
-    #     for task in self._tasks:
-    #         if task.id in done_ids:
-    #             continue
-    #         avaliable_tasks.append(task)
-    #     self._tasks.clear()
-    #     self.add_tasks(avaliable_tasks)
-    #     sync_csv("done.csv", self._filepath, trash_can, TASK_DONE_KEYS)
+    def purge_done(self):
+        today = date.today()
+        month_ago = today - timedelta(days=30)
+
+        # Purge old today files
+        clean_directory("today_*.csv", self._filepath)
+
+        # Purge heap tasks from heap
+        tasks_not_done = []
+        for task in self._tasks:
+            if task.done:
+                continue
+            tasks_not_done.append(task)
+        self._tasks.push(tasks_not_done)
+
+        # Purge done tasks file from old done tasks
+        tasks_done = []
+        for task in load_csv("done.csv", self._filepath):
+            done_date = date.fromisoformat(task["done_date"])
+            if done_date < month_ago:
+                continue
+            tasks_done.append(task)
+
+        # Save tasks
+        self.save_tasks_to_csv()
+        sync_csv("done.csv", self._filepath, tasks_done, TASK_DONE_KEYS)
