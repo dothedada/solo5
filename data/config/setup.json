@@ -2,6 +2,7 @@
   "lang": "es",
   "data_path": "./data/tasks",
   "rgx_path": "./data/config/lang/regex",
+  "ui_path": "./data/config/lang/ui",
   "task_split": "//",
   "task_amount": 5,
   "base_difficulty": 3,

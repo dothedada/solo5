@@ -1,3 +1,19 @@
 {
-  "hi": "hola"
+  "hi": "hola",
+  "confirmation": ["\\bsi?\\b", "\\bno?\\b", "\\bc(?:ancelar)?\\b"],
+  "exit": ["salir"],
+  "ui": {
+    "confirmation": "[s]i | [n]o, buscar de nuevo | [c]ancelar",
+    "delete": {
+      "search_i": "What tasks do you want to delete:\n",
+      "search_no_results_p": "Sorry, 0 tasks match.",
+      "search_one_match_p": "Do you want to delete:",
+      "search_results_p": "Search results:",
+      "confirm_i": "[y]es | [n]o, search again | [c]ancel\n",
+      "deleted_p": "deleted!",
+      "invalid_input_p": "input non valid",
+      "select_range_p": "select which ones you wanna delete...",
+      "select_instructions_i": "type the number of the task, separete with a comma"
+    }
+  }
 }
