@@ -1,90 +1,99 @@
+from enum import Enum
 from uiInput import Feedback, parse_command
 from config import Defaults
+from fileManagers import load_json
+
+feedback_ui = load_json(Defaults.UI_PATH.value, "es.json")["ui"]["feedback"]
+input_ui = load_json(Defaults.UI_PATH.value, "es.json")["ui"]["input"]
 
 
-def user_feedback(question, type_of_answer, selection_limit):
+class Response(Enum):
+    YES = 0
+    NO = 1
+    CANCEL = 2
+
+
+def user_input(question, type_of_answer, selection_limit):
     while True:
-        response = parse_command(input(question))
+        response = parse_command(input(f"\n{question}:\n"))
         match response[0]:
-            case Feedback.ERR:
-                print("CANNOT UNDERSTAND YOUR INPUT, TRY AGAIN OR CANCEL.")
             case t if t == type_of_answer:
                 if (
                     type_of_answer == Feedback.SELECTION
                     and len(response[1]) > selection_limit
                 ):
-                    print("YOU SELECTED MORE ITEMS THAT YOU WHERE ASKED")
+                    print(feedback_ui["err_many_items"])
                     continue
                 return response[1]
             case Feedback.OUT:
-                print("AS YOU WISH, FUCKR...")
+                print(feedback_ui["cancel"])
                 return response[0]
             case _:
-                print("WRONG INPUT, TRY AGAIN... OR CANCEL")
+                print(feedback_ui["err"])
 
 
-def task_loop(task_manager, end_action, texts_ui, single, action_input=None):
+def task_loop(task_manager, callback, texts_ui, single, action_input=None):
     selection_limit = 1 if single else float("inf")
     while True:
-        search_for = input("Que busca prro???")
+        search_for = input(f'\n{input_ui["look_for"]}')
         task_manager.add_to_search_by_task(search_for)
 
         if len(task_manager.search_results) == 0:
-            print("SIN RESULTADOS QUE COINCIDAN...")
+            print(feedback_ui["search_no_match"])
         elif len(task_manager.search_results) == 1:
-            action = user_feedback(
-                "SI, NO O QUÉ???",
+            print(feedback_ui["warn"])
+            print(f'"{task_manager.search_results[0][1].task}"')
+            action = user_input(
+                input_ui["confirmation"],
                 Feedback.CONFIRM,
                 selection_limit,
             )
-            if action == 0:
-                print("SISAS")
-                break
-            if action == 1:
-                print("NONAS, de nuevo")
-                continue
-            if action == 2:
-                print("CANCELARRRR")
-                return
-        else:
-            print("resultados de la busqueda")
-            print("-------------------------")
-            for i, task in task_manager.search_results:
-                print(f"{i}) {task.task}")
-                if i >= Defaults.SEARCH_RESULTS.value:
-                    print("Prro, selecione mejor, porque mucho resultado")
+            match Response(action):
+                case Response.YES:
                     break
-            print("-------------------------")
-            print("ea ea ea salieron varias")
-            select = user_feedback(
-                "Cuales???",
+                case Response.NO:
+                    continue
+                case _:
+                    return
+        else:
+            print(f'\n{feedback_ui["search_results"]}')
+            print(feedback_ui["line"] * len(feedback_ui["search_results"]))
+            for i, task in task_manager.search_results:
+                if i > Defaults.SEARCH_RESULTS.value:
+                    print(feedback_ui["search_overflow"])
+                    break
+                print(f"{i}) {task.task}")
+            print(feedback_ui["line"] * len(feedback_ui["search_results"]))
+            select = user_input(
+                input_ui["which_one"] if single else input_ui["which_ones"],
                 Feedback.SELECTION,
                 selection_limit,
             )
-            print(select)
             if select == Feedback.OUT:
-                print("SUETERRRRRRR :)")
                 return
             task_manager.select_from_search(select)
-            action = user_feedback(
-                "Seguro prro?",
+            print(feedback_ui["line"] * len(feedback_ui["search_results"]))
+            print(feedback_ui["selection"])
+            for i, task in task_manager.search_results:
+                print(f"{i}) {task.task}")
+            print(feedback_ui["line"] * len(feedback_ui["search_results"]))
+            action = user_input(
+                input_ui["confirmation"],
                 Feedback.CONFIRM,
                 selection_limit,
             )
-            if action == 0:
-                print("SISAS")
-                break
-            if action == 1:
-                print("NONAS, de nuevo")
-                continue
-            if action == 2:
-                print("CANCELARRRR")
-                return
+            match Response(action):
+                case Response.YES:
+                    break
+                case Response.NO:
+                    continue
+                case _:
+                    return
 
     if action_input is not None:
-        string = input("escribe la nueva cadena")
-        end_action(string)
+        string = input(input_ui["new_data"])
+        callback(string)
     else:
-        end_action()
+        callback()
 
-    print("LISTONES!!!")
+    print(feedback_ui["done"])

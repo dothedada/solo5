@@ -20,6 +20,9 @@ class UIRegex:
 
     @staticmethod
     def _compile_regex(regex_list):
+        if type(regex_list) is str:
+            return re.compile(regex_list, re.IGNORECASE)
+
         compiled_regex = []
         for regex in regex_list:
             compiled_regex.append(re.compile(regex, re.IGNORECASE))

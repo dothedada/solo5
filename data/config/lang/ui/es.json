@@ -1,19 +1,59 @@
 {
   "hi": "hola",
   "confirmation": ["\\bsi?\\b", "\\bno?\\b", "\\bc(?:ancelar)?\\b"],
-  "exit": ["salir"],
+  "exit": "salir",
+  "commands": {
+    "add_tasks": "\\ba(?:gregar|[nñ]adir)?\\b",
+    "make_today": "\\bh(?:acer hoy)?\\b",
+    "update_task": "\\bact(?:uali[sz]ar)?\\b",
+    "mark_done": "\\bt(?:erminada)\\b",
+    "delete_tasks": "\\bborrar\\b",
+    "in_today": "\\bh(?:oy)?\\b",
+    "in_global": "\\bt(?:odo)?\\b",
+    "in_done": "\\bter(?:minadas)?\\b",
+    "search": "\\bb(?:uscar)?\\b",
+    "exit": "\\bs(?:alir)?\\b",
+    "purge": "\\bpurgar\\b",
+    "fix_dates": "\\barreglar\\b",
+    "encore": "\\bextra\\b",
+    "help": "\\bayuda\\b"
+  },
   "ui": {
-    "confirmation": "[s]i | [n]o, buscar de nuevo | [c]ancelar",
-    "delete": {
-      "search_i": "What tasks do you want to delete:\n",
-      "search_no_results_p": "Sorry, 0 tasks match.",
-      "search_one_match_p": "Do you want to delete:",
-      "search_results_p": "Search results:",
-      "confirm_i": "[y]es | [n]o, search again | [c]ancel\n",
-      "deleted_p": "deleted!",
-      "invalid_input_p": "input non valid",
-      "select_range_p": "select which ones you wanna delete...",
-      "select_instructions_i": "type the number of the task, separete with a comma"
+    "commands": {
+      "add_tasks": "[a]gregar",
+      "make_today": "[h]acer hoy",
+      "update_task": "[act]ualizar",
+      "mark_done": "[t]erminada",
+      "delete_tasks": "[borrar]",
+      "in_today": "[hoy]",
+      "in_global": "[t]odo",
+      "in_done": "[ter]minadas",
+      "search": "[b]uscar",
+      "exit": "[s]alir",
+      "purge": "[purgar]",
+      "fix_dates": "[arreglar]",
+      "encore": "[extra]",
+      "help": "[ayuda]"
+    },
+    "feedback": {
+      "err": "No puedo entender el input, escribe de nuevo o cancela",
+      "err_many_items": "Seleccionaste más ítems de los requeridos",
+      "cancel": "AS YOU WISH, FUCKR...",
+      "search_no_match": "No se enontraron resultados que coincidan...",
+      "search_results": "Resultados de la búsqueda:",
+      "search_overflow": "Demasiados resultados... selecciona de la lista o escribe [0] para reiniciar",
+      "selection": "seleccionaste:",
+      "warn": "vas a cambiar esta tarea:",
+      "warn_several": "vas a cambiar esta tareas:",
+      "done": "Listo!!!",
+      "line": "/"
+    },
+    "input": {
+      "look_for": "¿Qué tarea?\n",
+      "confirmation": "[s]i | [n]o | [c]ancelar",
+      "which_one": "¿cuál?",
+      "which_ones": "¿cuáles?",
+      "new_data": "Escribe la nueva informacion:\n"
     }
   }
 }

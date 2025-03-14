@@ -17,6 +17,7 @@ class Defaults(Enum):
     URG_W = data_config["urgent_weight"]
     DIF_W = data_config["diffficulty_weight"]
 
-    SEARCH_RESULTS = 5
+    SEARCH_RESULTS = 5  # Limitar la salida de los resultados
+    CARPE_DIEM = False  # No confirmar acciones
 
     COUNT_CURRENT_DAY = data_config["count_current_day"] == "False"
