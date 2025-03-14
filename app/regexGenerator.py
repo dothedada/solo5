@@ -3,6 +3,29 @@ from fileManagers import load_json
 from config import Defaults
 
 
+class UIRegex:
+    _lang = {}
+
+    @classmethod
+    def of(cls, lang):
+        if lang in cls._lang:
+            return cls._lang[lang]
+
+        file = load_json(Defaults.UI_PATH.value, f"{lang}.json")
+        cls._lang[lang] = {}
+        cls._lang[lang]["confirm"] = UIRegex._compile_regex(file["confirm"])
+        cls._lang[lang]["exit"] = UIRegex._compile_regex(file["exit"])
+
+        return cls._lang[lang]
+
+    @staticmethod
+    def _compile_regex(regex_list):
+        compiled_regex = []
+        for regex in regex_list:
+            compiled_regex.append(re.compile(regex, re.IGNORECASE))
+        return compiled_regex
+
+
 class GetRegex:
     _lang = {}
 
