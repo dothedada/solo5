@@ -22,7 +22,7 @@ def command(input_str):
     return None
 
 
-def select(input_str, from_length):
+def select(input_str, task_list_length):
     if input_str.isdigit():
         return {int(input_str)}
 
@@ -37,7 +37,8 @@ def select(input_str, from_length):
             if not start.isdigit() or not end.isdigit():
                 return None
             floor = max(1, int(start))
-            ceil = min(from_length, int(end))
+            # TODO: mientras soluciono el paso de la tabla
+            ceil = min(task_list_length, int(end))
             selection.update(range(floor, ceil + 1))
         else:
             return None
@@ -45,8 +46,8 @@ def select(input_str, from_length):
     return selection if len(selection) > 0 else None
 
 
-def get_response(response_type, string_str):
-    if string_str == "0":
+def get_response(response_type, *args):
+    if args and args[0] == "0":
         return (Response.OUT, None)
 
     handlers = {
@@ -57,7 +58,7 @@ def get_response(response_type, string_str):
     }
 
     if handler := handlers.get(response_type):
-        if response := handler(string_str):
+        if response := handler(*args):
             return (response_type, response)
 
     return (Response.ERR, None)

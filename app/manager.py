@@ -122,11 +122,8 @@ class TaskManager:
         self.search_results.clear()
 
     def update_task(self, task_string):
-        if len(self.search_results) != 1 or task_string is None:
-            return None
-
-        task_info = task_string.split(Defaults.TASK_SPLIT.value)[0]
         self.delete_task()
+        task_info = task_string.split(Defaults.TASK_SPLIT.value)[0]
         self.add_tasks(task_info)
         self.search_results.clear()
 
