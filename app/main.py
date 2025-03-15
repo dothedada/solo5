@@ -1,5 +1,5 @@
 from manager import TaskManager
-from taskParser import InputParser
+import parser_input as usr_input
 from ui import task_loop
 
 
@@ -10,7 +10,6 @@ def main():
     print(taskManager._tasks)
     print(taskManager.get_today())
 
-    usr_input = InputParser()
     print(usr_input.confirm("sis i si si").value)
 
     while True:

@@ -159,7 +159,6 @@ def prioritizer(task):
     urgency = get_urgency(task.due_date)
 
     return int(
-        (undelayable * Defaults.UND_W.value)
+        (undelayable * Defaults.UND_W.value) * (urgency * Defaults.URG_W.value)
         + (dificulty * Defaults.DIF_W.value)
-        + (urgency * Defaults.URG_W.value)
     )

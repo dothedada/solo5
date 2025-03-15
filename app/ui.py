@@ -1,7 +1,7 @@
-from uiInput import Feedback, parse_command
+from parser_input import Response, command
 from config import Defaults
 from fileManagers import load_json
-from taskParser import Confirm
+from parser_input import Confirm
 
 feedback_ui = load_json(Defaults.UI_PATH.value, "es.json")["ui"]["feedback"]
 input_ui = load_json(Defaults.UI_PATH.value, "es.json")["ui"]["input"]
@@ -9,17 +9,17 @@ input_ui = load_json(Defaults.UI_PATH.value, "es.json")["ui"]["input"]
 
 def user_input(question, type_of_answer, selection_limit):
     while True:
-        response = parse_command(input(f"\n{question}:\n"))
+        response = command(input(f"\n{question}:\n"))
         match response[0]:
             case t if t == type_of_answer:
                 if (
-                    type_of_answer == Feedback.SELECTION
+                    type_of_answer == Response.SELECTION
                     and len(response[1]) > selection_limit
                 ):
                     print(feedback_ui["err_many_items"])
                     continue
                 return response[1]
-            case Feedback.OUT:
+            case Response.OUT:
                 print(feedback_ui["cancel"])
                 return response[0]
             case _:
@@ -53,10 +53,10 @@ def task_loop(task_manager, callback, single, action_input=None):
             print_tasks_in(task_manager.search_results, True)
             select = user_input(
                 input_ui["which_one"] if single else input_ui["which_ones"],
-                Feedback.SELECTION,
+                Response.SELECTION,
                 selection_limit,
             )
-            if select == Feedback.OUT:
+            if select == Response.OUT:
                 return
 
             task_manager.select_from_search(select)
@@ -68,7 +68,7 @@ def task_loop(task_manager, callback, single, action_input=None):
 
         action = user_input(
             input_ui["confirmation"],
-            Feedback.CONFIRM,
+            Response.CONFIRM,
             selection_limit,
         )
 

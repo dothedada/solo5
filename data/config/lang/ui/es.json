@@ -6,19 +6,19 @@
       "cancel": "\\bc(?:ancelar)?\\b"
     },
     "command": {
-      "add_tasks": "\\ba(?:gregar|[nñ]adir)?\\b",
-      "make_today": "\\bh(?:acer hoy)?\\b",
-      "update_task": "\\bact(?:uali[sz]ar)?\\b",
-      "mark_done": "\\bt(?:erminada)\\b",
-      "delete_tasks": "\\bborrar\\b",
       "in_today": "\\bh(?:oy)?\\b",
       "in_global": "\\bt(?:odo)?\\b",
       "in_done": "\\bter(?:minadas)?\\b",
+      "add_tasks": "\\ba(?:gregar|[nñ]adir)?\\b",
+      "update_task": "\\bact(?:uali[sz]ar)?\\b",
+      "done_task": "\\bt(?:erminada)\\b",
+      "delete_tasks": "\\bborrar\\b",
+      "make_today": "\\bh(?:acer hoy)?\\b",
+      "encore_today": "\\bextra\\b",
       "search": "\\bb(?:uscar)?\\b",
       "exit": "\\bs(?:alir)?\\b",
       "purge": "\\bpurgar\\b",
       "fix_dates": "\\barreglar\\b",
-      "encore": "\\bextra\\b",
       "help": "\\bayuda\\b"
     }
   },

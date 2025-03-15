@@ -1,5 +1,5 @@
 from config import Defaults
-from taskParser import TaskParser
+import parser_task as task_parse
 from fileManagers import load_csv, sync_csv, add_record_csv, clean_directory
 from heap import Heap
 from datetime import date, timedelta
@@ -9,7 +9,6 @@ from task import DoneTask, TASK_DONE_KEYS, TASK_KEYS
 class TaskManager:
     def __init__(self):
         self._filepath = Defaults.DATA_PATH.value
-        self._parser = TaskParser()
         self._tasks = Heap()
         self.search_results = []
         self.today_tasks = set()
@@ -29,7 +28,7 @@ class TaskManager:
             if done or cutoff_date < date.fromisoformat(task["done_date"]):
                 loaded_tasks.append(task)
 
-        tasks = self._parser.make_tasks_from_csv(loaded_tasks)
+        tasks = task_parse.make_tasks_from_csv(loaded_tasks)
         self._tasks.push(tasks)
 
     def load_csv_to_today(self):
@@ -38,7 +37,7 @@ class TaskManager:
             print("No tasks for today")
             return None
 
-        today_tasks = self._parser.make_tasks_from_csv(today)
+        today_tasks = task_parse.make_tasks_from_csv(today)
         for task in today_tasks:
             self.today_tasks.add(task)
 
@@ -72,7 +71,7 @@ class TaskManager:
 
     def add_to_search_by_date(self, date_string):
         self.search_results.clear()
-        parsed_date = self._parser.parse_date(date_string)
+        parsed_date = task_parse.get_date(date_string)
         tasks_list = list(
             filter(
                 lambda item: str(item.due_date) == str(parsed_date),
@@ -81,16 +80,7 @@ class TaskManager:
         )
         self.add_to_search(tasks_list)
 
-    def select_from_search(self, user_selection, just_one=False):
-        selection = set()
-        for select in user_selection:
-            if 0 < select <= len(self.search_results):
-                selection.add(select)
-
-        if not selection:
-            # BUG: manejar el texto en la ui
-            raise ValueError("ERROR! rango de seleccion no valido")
-
+    def select_from_search(self, selection, just_one=False):
         if just_one:
             selection = {min(selection)}
 
@@ -98,7 +88,7 @@ class TaskManager:
         self.search_results = selected_tasks
 
     def add_tasks(self, tasks_string):
-        tasks = self._parser.make_task(tasks_string)
+        tasks = task_parse.make_task(tasks_string)
         self._tasks.push(tasks)
 
     def mark_tasks_done(self, is_done=True):
