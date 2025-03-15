@@ -13,33 +13,59 @@ def program_loop(manager):
     while True:
         do = get_response(
             Response.COMMAND,
-            input("[a]gregar, [act]ualizar, [borrar]"),
+            input("[A]GREGAR, [ACT]UALIZAR, [BORRAR]"),
         )
 
         if do[0] != Response.COMMAND:
             raise ValueError("ÑO ENTENDÍ")
         match do[1]:
             case Command.ADD_TASKS:
-                tasks_str = input("Add tasks:\n")
+                tasks_str = input("ADD TASKS:\n")
                 manager.add_tasks(tasks_str)
             case Command.DELETE_TASKS:
-                action_loop(manager, manager.delete_task, False, where)
-            case "Update":
-                action_loop(manager, manager.update_task, True, True)
+                action_loop(manager, manager.delete_task, where, False)
+            case Command.UPDATE_TASK:
+                action_loop(manager, manager.update_task, where, True, True)
             case "Done":
-                action_loop(manager, manager.mark_tasks_done(), False)
+                action_loop(manager, manager.mark_tasks_done, False)
             case "Save":
                 manager.save_tasks_to_csv()
-                print("Tasks saved")
+                print("TASKS SAVED")
             case Command.EXIT:
                 return
             case _:
-                print("No command were choose...")
+                print("NO COMMAND WERE CHOOSE...")
 
         print(manager._tasks)
 
 
-def action_loop(task_manager, callback, single, where):
+def selection_loop(task_manager, single):
+    while True:
+        print_tasks_in(task_manager.search_results, True)
+        select = input_loop(
+            input_ui["which_one"] if single else input_ui["which_ones"],
+            Response.SELECTION,
+            len(task_manager.search_results),
+        )
+        if select == Response.OUT:
+            task_manager.search_results.clear()
+            return
+        if len(task_manager.search_results) == 0:
+            print("NO SELECCIONASTE NARAAAA")
+            return
+
+        task_manager.select_from_search(select)
+
+        if single and len(task_manager.search_results) > 1:
+            print("\nSOLO UNO PERRO")
+            continue
+
+        print(feedback_ui["selection"])
+        print_tasks_in(task_manager.search_results, False)
+        break
+
+
+def action_loop(task_manager, callback, where, single, action_imput=False):
     while True:
         search_for = input(f'\n{input_ui["look_for"]}')
         task_manager.add_to_search_by_task(search_for)
@@ -51,20 +77,8 @@ def action_loop(task_manager, callback, single, where):
             print(feedback_ui["warn"])
             print(f'"{task_manager.search_results[0][1].task}"')
         else:
-            where = task_manager.search_results
             print(f'\n{feedback_ui["search_results"]}')
-            print_tasks_in(task_manager.search_results, True)
-            select = input_loop(
-                input_ui["which_one"] if single else input_ui["which_ones"],
-                Response.SELECTION,
-                len(where),
-            )
-            if select == Response.OUT:
-                return
-
-            task_manager.select_from_search(select)
-            print(feedback_ui["selection"])
-            print_tasks_in(task_manager.search_results, False)
+            selection_loop(task_manager, single)
 
         if Defaults.CARPE_DIEM.value:
             break
@@ -83,11 +97,11 @@ def action_loop(task_manager, callback, single, where):
                 print(feedback_ui["cancel"])
                 return
 
-    # if action_input is not None:
-    #     string = input(input_ui["new_data"])
-    #     callback(string)
-    # else:
-    callback()
+    if action_imput:
+        string = input(input_ui["new_data"])
+        callback(string)
+    else:
+        callback()
 
     print(feedback_ui["done"])
 
@@ -95,7 +109,6 @@ def action_loop(task_manager, callback, single, where):
 def input_loop(question, answer_type, *args):
     while True:
         response = get_response(answer_type, input(f"\n{question}:\n"), *args)
-        print(response)
         match response[0]:
             case t if t == answer_type:
                 return response[1]

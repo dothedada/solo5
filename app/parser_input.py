@@ -24,6 +24,9 @@ def command(input_str):
 
 def select(input_str, task_list_length):
     if input_str.isdigit():
+        if 1 > int(input_str) or int(input_str) > task_list_length:
+            print("FUERA DEL RANGO DE SELECCION")
+            return None
         return {int(input_str)}
 
     selection = set()
@@ -35,11 +38,15 @@ def select(input_str, task_list_length):
         elif token.count("-") == 1:
             start, end = map(str.strip, token.split("-"))
             if not start.isdigit() or not end.isdigit():
+                print("LOS PARAMETROS DEL RANGO DEBEN SER NUMEROS")
                 return None
-            floor = max(1, int(start))
-            # TODO: mientras soluciono el paso de la tabla
-            ceil = min(task_list_length, int(end))
-            selection.update(range(floor, ceil + 1))
+            start = int(start)
+            end = int(end)
+            if start < 1 or end > task_list_length:
+                print("FUERA DEL RANGO DE SELECCION")
+                return None
+
+            selection.update(range(start, end + 1))
         else:
             return None
 
