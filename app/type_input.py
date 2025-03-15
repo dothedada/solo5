@@ -18,6 +18,7 @@ class Command(Enum):
     MAKE_TODAY = "make_today"
     ENCORE_TODAY = "encore"
     SEARCH = "search"
+    SAVE = "save"
     EXIT = "exit"
     PURGE = "purge"
     FIX_DATES = "fix_dates"

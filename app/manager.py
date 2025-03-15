@@ -172,6 +172,7 @@ class TaskManager:
             if task.done:
                 continue
             tasks_not_done.append(task)
+        self._tasks.clear()
         self._tasks.push(tasks_not_done)
 
         # Purge done tasks file from old done tasks

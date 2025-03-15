@@ -1,5 +1,5 @@
 from manager import TaskManager
-from ui import program_loop
+from ui_loops import program_loop
 
 
 def main():
