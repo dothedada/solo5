@@ -79,16 +79,15 @@ def action_loop(task_manager, callback, single, where):
                 break
             case Confirm.NO:
                 continue
-            case Confirm.ERR:
-                print(feedback_ui["err"])
-            case _:
+            case Confirm.CANCEL:
+                print(feedback_ui["cancel"])
                 return
 
-    if action_input is not None:
-        string = input(input_ui["new_data"])
-        callback(string)
-    else:
-        callback()
+    # if action_input is not None:
+    #     string = input(input_ui["new_data"])
+    #     callback(string)
+    # else:
+    callback()
 
     print(feedback_ui["done"])
 
@@ -96,6 +95,7 @@ def action_loop(task_manager, callback, single, where):
 def input_loop(question, answer_type, *args):
     while True:
         response = get_response(answer_type, input(f"\n{question}:\n"), *args)
+        print(response)
         match response[0]:
             case t if t == answer_type:
                 return response[1]

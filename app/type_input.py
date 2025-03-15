@@ -4,7 +4,7 @@ from enum import Enum
 class Confirm(Enum):
     YES = "yes"
     NO = "no"
-    OUT = "cancel"
+    CANCEL = "cancel"
 
 
 class Command(Enum):
