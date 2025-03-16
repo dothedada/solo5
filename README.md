@@ -42,7 +42,7 @@ As part of my Python learning journey, I wanted to strengthen my understanding o
       - add the next in line with the appropiate dificulty
 - [-] CSV manager
   - Create, read, write task in CSV
-- [] Interfase printer
+- [-] Interfase printer
   - set day
   - check (day, next day, all)
   - search task for: done,update, remove
@@ -50,6 +50,7 @@ As part of my Python learning journey, I wanted to strengthen my understanding o
   - mark done
   - edit task
   - remove task
+- [] Make package (inside program and single line commands in CLI)
 - [] Make documentation
 
 ## Parsing date structure

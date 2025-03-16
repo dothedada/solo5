@@ -12,6 +12,9 @@ input_ui = load_json(Defaults.UI_PATH.value, "es.json")["ui"]["input"]
 input_bar = bar_info()
 
 # NOTE: SOLUCIONAR LO DE UPDATE Y EL LOOP DE SELECCION EN LA ACCION A PARTIR DEL SEARCH
+# LA SOLUCION PUEDE ESTAR EN DONDE SE RECIBE LA ACCION Y NO EN EL LOOP DE EVENTO
+# QUE UPDATE SE ENCARGE DE QUE HACERR SI YA SEARCH VIENE CON ALGO, QUE DONE SE ENCARGE
+# DE SI MARCA COMO DONE O UNDONE
 
 # "make_today": "^h(?:acer hoy)?$",
 # "encore_today": "^extra$",
