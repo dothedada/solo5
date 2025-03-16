@@ -113,7 +113,7 @@ class Heap:
     def __repr__(self):
         string = "Heap [\n"
         for value, task in self._heap:
-            string += f"\t({value}, {task.task}, d:{task.done}, {task.id})\n"
+            string += f"\t({value}) {task.task}, d:{task.done}\n"
         string += "]\n"
         return string
 

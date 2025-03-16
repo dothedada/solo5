@@ -1,9 +1,9 @@
 {
   "RGX": {
     "confirm": {
-      "yes": "\\bsi?\\b",
-      "no": "\\bno?\\b",
-      "cancel": "\\bc(?:ancelar)?\\b"
+      "yes": "^si?$",
+      "no": "^no?$",
+      "cancel": "^c(?:ancelar)?$"
     },
     "command": {
       "in_today": "^h(?:oy)?$",

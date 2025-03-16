@@ -8,26 +8,43 @@ feedback_ui = load_json(Defaults.UI_PATH.value, "es.json")["ui"]["feedback"]
 input_ui = load_json(Defaults.UI_PATH.value, "es.json")["ui"]["input"]
 
 
+def bar_info():
+    state = ["", "", ""]
+
+    def context_manager(context=None, command=None, action=None):
+        for i, info in enumerate([context, command, action]):
+            if info is not None:
+                state[i] = info
+        return f"{'> '.join(filter(bool,state))}> "
+
+    return context_manager
+
+
+bar = bar_info()
+
+
 def program_loop(manager):
     where = manager._tasks
-    position = "> "
+    bar(context="GLOBAL")
     while True:
-        do = get_response(Response.COMMAND, input(position))
+        action = get_response(Response.COMMAND, input(bar()))
 
-        print("cmd:", do)
-
-        if do[0] != Response.COMMAND:
+        if action[0] != Response.COMMAND:
             print("ÑO ENTENDÍ")
 
-        match do[1]:
+        match action[1]:
             case Command.ADD_TASKS:
-                tasks_str = input("ADD TASKS:\n")
+                bar(command="AÑADIR")
+                tasks_str = input(bar())
                 manager.add_tasks(tasks_str)
             case Command.DELETE_TASKS:
+                bar(command="BORRAR")
                 action_loop(manager, Command.DELETE_TASKS, where, False)
             case Command.UPDATE_TASK:
+                bar(command="ACTUALIZAR")
                 action_loop(manager, Command.UPDATE_TASK, where, True)
             case Command.DONE_TASK:
+                bar(command="TERMINADAS")
                 action_loop(manager, Command.DONE_TASK, where, False)
             case Command.SAVE:
                 manager.save_tasks_to_csv()
@@ -40,12 +57,13 @@ def program_loop(manager):
             case _:
                 print("UNKNOWN COMMAND")
 
-        print(manager._tasks)
+        bar(command="", action="")
 
 
 def action_loop(task_manager, action, where, single):
     while True:
-        search_for = input(f'\n{input_ui["look_for"]}')
+        bar(action="BUSCAR")
+        search_for = input(bar())
         if get_exit(search_for):
             print(feedback_ui["cancel"])
             return
@@ -61,19 +79,26 @@ def action_loop(task_manager, action, where, single):
             print(f'"{task_manager.search_results[0][1].task}"')
         else:
             print(f'\n{feedback_ui["search_results"]}')
+            bar(action="SELECCIONAR")
             selection_loop(task_manager, single)
+
+        if not task_manager.search_results:
+            return
 
         if Defaults.CARPE_DIEM.value:
             break
 
-        confirmation = input_loop(input_ui["confirmation"], Response.CONFIRM)
+        bar(action="CONFIRMAR")
+        print(input_ui["confirmation"])
+        confirmation = input_loop(Response.CONFIRM)
+        print(confirmation)
         match Confirm(confirmation):
             case Confirm.YES:
                 break
             case Confirm.CANCEL:
                 print(feedback_ui["cancel"])
                 return
-            case _:
+            case Confirm.NO:
                 pass
 
     resolve_action(task_manager, action)
@@ -97,8 +122,8 @@ def resolve_action(task_manager, command):
 def selection_loop(task_manager, single):
     while True:
         print_tasks_in(task_manager.search_results, True)
+        print(input_ui["which_one"] if single else input_ui["which_ones"])
         select = input_loop(
-            input_ui["which_one"] if single else input_ui["which_ones"],
             Response.SELECTION,
             len(task_manager.search_results),
         )
@@ -120,9 +145,9 @@ def selection_loop(task_manager, single):
         break
 
 
-def input_loop(question, answer_type, *args):
+def input_loop(answer_type, *args):
     while True:
-        response = get_response(answer_type, input(f"\n{question}:\n"), *args)
+        response = get_response(answer_type, input(bar()), *args)
         match response[0]:
             case t if t == answer_type:
                 return response[1]
