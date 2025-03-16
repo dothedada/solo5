@@ -174,7 +174,7 @@ def make_tasks_from_csv(tasks_list):
     return tasks
 
 
-def make_task(string):
+def make_tasks(string):
     tasks = []
 
     for i, task_raw in enumerate(string.split(Defaults.TASK_SPLIT.value)):

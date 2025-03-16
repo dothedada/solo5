@@ -70,6 +70,12 @@ def program_loop(task_manager):
             case Command.PURGE:
                 task_manager.purge_done()
                 print("DONE TASKS WERE PURGE")
+            case Command.FIX_DATES:
+                fixed_tasks = task_manager.fix_dates()
+                if fixed_tasks:
+                    print("ALL TASK DUE DATES WERE UPDATES", fixed_tasks)
+                else:
+                    print("NO DUE DATES NEEDED TO BE FIXED")
             case _:
                 print("UNKNOWN COMMAND")
 

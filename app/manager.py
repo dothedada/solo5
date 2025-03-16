@@ -90,7 +90,7 @@ class TaskManager:
         self.search_results = selected_tasks
 
     def add_tasks(self, tasks_string):
-        tasks = task_parse.make_task(tasks_string)
+        tasks = task_parse.make_tasks(tasks_string)
         self.tasks.push(tasks)
 
     def mark_tasks_done(self, is_done=True):
@@ -189,3 +189,22 @@ class TaskManager:
         # Save tasks
         self.save_tasks_to_csv()
         sync_csv("done.csv", self._filepath, tasks_done, TASK_DONE_KEYS)
+
+    def fix_dates(self):
+        today = date.today()
+        tasks = []
+        amount = 0
+        for task in self.tasks:
+            if task.due_date and task.due_date < today:
+                fixed_task = task_parse.make_tasks(task.task)
+                print("qweqweqwe", fixed_task, task.task)
+                tasks.extend(fixed_task)
+                amount += 1
+                continue
+            tasks.append(task)
+
+        if amount:
+            self.tasks.clear()
+            self.tasks.push(tasks)
+
+        return amount
