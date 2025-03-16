@@ -43,20 +43,6 @@ def program_loop(manager):
         print(manager._tasks)
 
 
-def resolve_action(task_manager, command):
-    actions = {
-        Command.ADD_TASKS: task_manager.add_tasks,
-        Command.DELETE_TASKS: task_manager.delete_task,
-        Command.DONE_TASK: task_manager.mark_tasks_done,  # str arg
-        Command.UPDATE_TASK: task_manager.update_task,  # bool arg
-    }
-
-    if command == Command.UPDATE_TASK:
-        actions[command](input(input_ui["new_data"]))
-    else:
-        actions[command]()
-
-
 def action_loop(task_manager, action, where, single):
     while True:
         search_for = input(f'\n{input_ui["look_for"]}')
@@ -92,6 +78,20 @@ def action_loop(task_manager, action, where, single):
 
     resolve_action(task_manager, action)
     print(feedback_ui["done"])
+
+
+def resolve_action(task_manager, command):
+    actions = {
+        Command.ADD_TASKS: task_manager.add_tasks,
+        Command.DELETE_TASKS: task_manager.delete_task,
+        Command.DONE_TASK: task_manager.mark_tasks_done,  # str arg
+        Command.UPDATE_TASK: task_manager.update_task,  # bool arg
+    }
+
+    if command == Command.UPDATE_TASK:
+        actions[command](input(input_ui["new_data"]))
+    else:
+        actions[command]()
 
 
 def selection_loop(task_manager, single):
