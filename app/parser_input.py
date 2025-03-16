@@ -53,6 +53,10 @@ def select(input_str, task_list_length):
     return selection if len(selection) > 0 else None
 
 
+def get_exit(input_str):
+    return command(input_str) == Command.EXIT
+
+
 def get_response(response_type, *args):
     if args and args[0] == "0":
         return (Response.OUT, None)

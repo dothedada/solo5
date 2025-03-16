@@ -1,4 +1,4 @@
-from parser_input import get_response
+from parser_input import get_response, get_exit
 from type_input import Response, Confirm, Command
 from config import Defaults
 from fileManagers import load_json
@@ -10,27 +10,25 @@ input_ui = load_json(Defaults.UI_PATH.value, "es.json")["ui"]["input"]
 
 def program_loop(manager):
     where = manager._tasks
+    position = "> "
     while True:
-        do = get_response(
-            Response.COMMAND,
-            input("[A]GREGAR, [ACT]UALIZAR, [BORRAR]"),
-        )
+        do = get_response(Response.COMMAND, input(position))
 
-        print("asdasdasd", do)
+        print("cmd:", do)
 
         if do[0] != Response.COMMAND:
-            raise ValueError("ÑO ENTENDÍ")
+            print("ÑO ENTENDÍ")
 
         match do[1]:
             case Command.ADD_TASKS:
                 tasks_str = input("ADD TASKS:\n")
                 manager.add_tasks(tasks_str)
             case Command.DELETE_TASKS:
-                action_loop(manager, manager.delete_task, where, False)
+                action_loop(manager, Command.DELETE_TASKS, where, False)
             case Command.UPDATE_TASK:
-                action_loop(manager, manager.update_task, where, True, True)
+                action_loop(manager, Command.UPDATE_TASK, where, True)
             case Command.DONE_TASK:
-                action_loop(manager, manager.mark_tasks_done, where, False)
+                action_loop(manager, Command.DONE_TASK, where, False)
             case Command.SAVE:
                 manager.save_tasks_to_csv()
                 print("TASKS SAVED")
@@ -40,20 +38,39 @@ def program_loop(manager):
                 manager.purge_done()
                 print("DONE TASKS WERE PURGE")
             case _:
-                print("NO COMMAND WERE CHOOSE...")
+                print("UNKNOWN COMMAND")
 
         print(manager._tasks)
 
 
-def action_loop(task_manager, callback, where, single, action_imput=False):
+def resolve_action(task_manager, command):
+    actions = {
+        Command.ADD_TASKS: task_manager.add_tasks,
+        Command.DELETE_TASKS: task_manager.delete_task,
+        Command.DONE_TASK: task_manager.mark_tasks_done,  # str arg
+        Command.UPDATE_TASK: task_manager.update_task,  # bool arg
+    }
+
+    if command == Command.UPDATE_TASK:
+        actions[command](input(input_ui["new_data"]))
+    else:
+        actions[command]()
+
+
+def action_loop(task_manager, action, where, single):
     while True:
         search_for = input(f'\n{input_ui["look_for"]}')
+        if get_exit(search_for):
+            print(feedback_ui["cancel"])
+            return
+
         task_manager.add_to_search_by_task(search_for)
 
         if len(task_manager.search_results) == 0:
             print(feedback_ui["search_no_match"])
             continue
-        elif len(task_manager.search_results) == 1:
+
+        if len(task_manager.search_results) == 1:
             print(feedback_ui["warn"])
             print(f'"{task_manager.search_results[0][1].task}"')
         else:
@@ -63,26 +80,17 @@ def action_loop(task_manager, callback, where, single, action_imput=False):
         if Defaults.CARPE_DIEM.value:
             break
 
-        action = input_loop(
-            input_ui["confirmation"],
-            Response.CONFIRM,
-        )
-
-        match Confirm(action):
+        confirmation = input_loop(input_ui["confirmation"], Response.CONFIRM)
+        match Confirm(confirmation):
             case Confirm.YES:
                 break
-            case Confirm.NO:
-                continue
             case Confirm.CANCEL:
                 print(feedback_ui["cancel"])
                 return
+            case _:
+                pass
 
-    if action_imput:
-        string = input(input_ui["new_data"])
-        callback(string)
-    else:
-        callback()
-
+    resolve_action(task_manager, action)
     print(feedback_ui["done"])
 
 

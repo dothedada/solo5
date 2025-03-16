@@ -17,10 +17,11 @@
       "encore_today": "\\bextra\\b",
       "search": "\\bb(?:uscar)?\\b",
       "save": "\\bg(?:uardar)?\\b",
-      "exit": "\\bs(?:alir)?\\b",
+      "exit": "\\bsalir\\b",
       "purge": "\\bpurgar\\b",
       "fix_dates": "\\barreglar\\b",
-      "help": "\\bayuda\\b"
+      "help": "\\bayuda\\b",
+      "forecast": "\\bm(?:a[nñ]ana)?\\b"
     }
   },
   "ui": {
@@ -45,7 +46,8 @@
       "exit": "[s]alir",
       "purge": "[purgar]",
       "fix_dates": "[arreglar]",
-      "help": "[ayuda]"
+      "help": "[ayuda]",
+      "forecast": "[m]añana"
     },
     "feedback": {
       "err": "No puedo entender el input, escribe de nuevo o cancela",

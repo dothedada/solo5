@@ -23,6 +23,7 @@ class Command(Enum):
     PURGE = "purge"
     FIX_DATES = "fix_dates"
     HELP = "help"
+    FORECAST = "forecast"
 
 
 class Response(Enum):
