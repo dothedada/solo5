@@ -1,5 +1,5 @@
 from parser_input import get_response, get_exit
-from ui_elements import bar_info, print_tasks_in
+from ui_elements import bar_info, print_tasks_in, print_context
 from type_input import Response, Confirm, Command
 from config import Defaults
 from fileManagers import load_json
@@ -11,9 +11,10 @@ input_ui = load_json(Defaults.UI_PATH.value, "es.json")["ui"]["input"]
 
 input_bar = bar_info()
 
+# NOTE: SOLUCIONAR LO DE UPDATE Y EL LOOP DE SELECCION EN LA ACCION A PARTIR DEL SEARCH
+
 # "make_today": "^h(?:acer hoy)?$",
 # "encore_today": "^extra$",
-# "search": "^b(?:uscar)?$",
 # "fix_dates": "^arreglar$",
 # "help": "^ayuda$",
 # "forecast": "^m(?:a[nñ]ana)?$"
@@ -29,27 +30,32 @@ def program_loop(manager):
             print("ÑO ENTENDÍ")
 
         match action[1]:
+            case Command.IN_TODAY:
+                where = change_context(where, manager.today_tasks, "HOY")
+            case Command.IN_GLOBAL:
+                where = change_context(where, manager.tasks, "GLOBAL")
+            case Command.IN_DONE:
+                where = change_context(where, manager.done_tasks, "TERMINADAS")
+            case Command.PRINT:
+                print_context(where)
             case Command.ADD_TASKS:
                 input_bar(command="AÑADIR")
                 tasks_str = input(input_bar())
                 manager.add_tasks(tasks_str)
-            case Command.DELETE_TASKS:
-                input_bar(command="BORRAR")
-                action_loop(manager, Command.DELETE_TASKS, where, False)
             case Command.UPDATE_TASK:
                 input_bar(command="ACTUALIZAR")
                 action_loop(manager, Command.UPDATE_TASK, where, True)
             case Command.DONE_TASK:
                 input_bar(command="TERMINADAS")
                 action_loop(manager, Command.DONE_TASK, where, False)
-            case Command.IN_GLOBAL:
-                change_context(where, manager.tasks, "GLOBAL")
-            case Command.IN_TODAY:
-                change_context(where, manager.today_tasks, "HOY")
-            case Command.IN_DONE:
-                change_context(where, manager.done_tasks, "TERMINADAS")
-            case Command.PRINT:
-                print_tasks_in(where, float("inf"))
+            case Command.DELETE_TASKS:
+                input_bar(command="BORRAR")
+                action_loop(manager, Command.DELETE_TASKS, where, False)
+
+            case Command.SEARCH:
+                manager.add_to_search_by_task(input("bla bla "), where)
+                print(manager.search_results)
+                print("QUE QUIERES HACER CON EL RESULTADO???")
             case Command.SAVE:
                 manager.save_tasks_to_csv()
                 print("TASKS SAVED")
@@ -63,18 +69,24 @@ def program_loop(manager):
 
         input_bar(command="", action="")
 
+        # print(manager.tasks)
+
 
 def change_context(current_context, new_context, context_name):
     if current_context != new_context:
-        current_context = new_context
-        input_bar(context=context_name)
         print("CONTEXTO CAMBIADO", context_name)
     else:
         print("YA ESTAS EN CONTEXTO", context_name)
 
+    input_bar(context=context_name)
+    return new_context
+
 
 def action_loop(task_manager, action, where, single):
     while True:
+        if task_manager.search_results:
+            break
+
         input_bar(action="BUSCAR")
         search_for = input(input_bar())
         if get_exit(search_for):

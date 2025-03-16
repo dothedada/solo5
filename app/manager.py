@@ -72,10 +72,11 @@ class TaskManager:
             self.search_results.append((index, task))
             index += 1
 
-    def add_to_search_by_task(self, string, global_tasks=True):
+    def add_to_search_by_task(self, string, task_list=None):
         self.search_results.clear()
-        task_list = self.tasks if global_tasks else self.today_tasks
         results = []
+        if task_list is None:
+            task_list = self.tasks
         for task in task_list:
             if string.lower() in task.task.lower():
                 results.append(task)

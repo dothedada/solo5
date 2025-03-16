@@ -17,11 +17,21 @@ def bar_info():
 
 
 def print_context(context):
+    if len(context) == 0:
+        print("SIN TAREAS EN EL CONTEXTO")
+        return
+
     print(feedback_ui["line"] * len(feedback_ui["search_results"]))
+    pending = 0
+    done = 0
     for i, task in enumerate(context):
-        if task.done:
+        if task.done_date:
+            done += 1
             print(f"X) {task.task}")
+            continue
         print(f"{i}) {task.task}")
+        pending += 1
+    print(f"{(done * 100) / len(context)}% DE {len(context)} TAREAS")
 
 
 def print_tasks_in(task_list, limit):

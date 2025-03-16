@@ -129,6 +129,9 @@ class Heap:
         self._iter_index += 1
         return task
 
+    def __len__(self):
+        return len(self._heap)
+
 
 def get_urgency(task_urgency):
     if task_urgency is None:
