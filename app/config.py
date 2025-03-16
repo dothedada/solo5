@@ -20,6 +20,8 @@ class Defaults(Enum):
     SEARCH_RESULTS = 5  # Limitar la salida de los resultados
     CARPE_DIEM = False  # No confirmar acciones
 
+    CONTEXT = "global"
+
     SAVE_IN_CICLE = True
     SAVE_ON_EXIT = True
 

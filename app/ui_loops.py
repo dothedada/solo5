@@ -1,5 +1,5 @@
 from parser_input import get_response, get_exit
-from ui_elements import bar_info, print_tasks_in, print_context
+from ui_elements import context_wrapper, print_search, print_context
 from type_input import Response, Confirm, Command
 from config import Defaults
 from fileManagers import load_json
@@ -9,10 +9,9 @@ feedback_ui = load_json(Defaults.UI_PATH.value, "es.json")["ui"]["feedback"]
 input_ui = load_json(Defaults.UI_PATH.value, "es.json")["ui"]["input"]
 
 
-status_bar = bar_info()
+state = context_wrapper()
 
 # TODO:
-# 1. fix dates
 # 2. pensar en status_bar como administrador de contexto
 # 3. asignar textos de UI
 # 4. todo lo relacionado con today (make, encore, forecast)
@@ -22,44 +21,43 @@ status_bar = bar_info()
 
 
 def program_loop(task_manager):
-    where = task_manager.tasks
-    status_bar(manager=task_manager, context="GLOBAL")
+    state(manager=task_manager)
     while True:
-        action = get_response(Response.COMMAND, input(status_bar()))
+        action = get_response(Response.COMMAND, input(state()["bar"]))
 
         if action[0] != Response.COMMAND:
             print("ÑO ENTENDÍ")
 
         match action[1]:
             case Command.IN_TODAY:
-                where = change_context(where, task_manager.today_tasks, "HOY")
+                state(context="today")
             case Command.IN_GLOBAL:
-                where = change_context(where, task_manager.tasks, "GLOBAL")
+                state(context="global")
             case Command.IN_DONE:
-                where = change_context(where, task_manager.done_tasks, "TERMINADAS")
+                state(context="done")
             case Command.PRINT:
-                print_context(where)
+                print_context(state()["where"])
             case Command.ADD_TASKS:
                 # TODO: bloquear en DONE, complementar en TODAY
-                status_bar(command="AÑADIR")
-                tasks_str = input(status_bar())
+                state(command=Command.ADD_TASKS)
+                tasks_str = input(state()["bar"])
                 task_manager.add_tasks(tasks_str)
             case Command.UPDATE_TASK:
                 # TODO: bloquear en DONE, complementar en TODAY
-                status_bar(command="ACTUALIZAR")
-                action_loop(task_manager, Command.UPDATE_TASK, True, where)
+                state(command=Command.UPDATE_TASK)
+                action_loop(task_manager, Command.UPDATE_TASK, True)
             case Command.DONE_TASK:
                 # TODO: marcar como UNDONE, devolver a task
-                status_bar(command="TERMINADAS")
-                action_loop(task_manager, Command.DONE_TASK, False, where)
+                state(command=Command.DONE_TASK)
+                action_loop(task_manager, Command.DONE_TASK, False)
             case Command.DELETE_TASKS:
                 # TODO: al borrar de GLOBAL se elimina de HOY
-                status_bar(command="BORRAR")
-                action_loop(task_manager, Command.DELETE_TASKS, False, where)
+                state(command=Command.DELETE_TASKS)
+                action_loop(task_manager, Command.DELETE_TASKS, False)
 
             case Command.SEARCH:
                 task_manager.search_results.clear()
-                search_loop(task_manager, where, True)
+                search_loop(task_manager, True)
             case Command.CLEAR:
                 task_manager.search_results.clear()
             case Command.SAVE:
@@ -79,18 +77,8 @@ def program_loop(task_manager):
             case _:
                 print("UNKNOWN COMMAND")
 
-        status_bar(command="", action="")
+        state(command="", action="")
         print("----")
-
-
-def change_context(current_context, new_context, context_name):
-    if current_context != new_context:
-        print("CONTEXTO CAMBIADO", context_name)
-    else:
-        print("YA ESTAS EN CONTEXTO", context_name)
-
-    status_bar(context=context_name)
-    return new_context
 
 
 def resolve_action(task_manager, command):
@@ -110,15 +98,15 @@ def resolve_action(task_manager, command):
         actions[command]()
 
 
-def search_loop(task_manager, where, single):
+def search_loop(task_manager, single):
     while True:
 
-        look_for = input(status_bar(action="BUSCAR"))
+        look_for = input(state(action="BUSCAR")["bar"])
         if get_exit(look_for):
             print(feedback_ui["cancel"])
             return False
 
-        task_manager.add_to_search_by_task(look_for, where)
+        task_manager.add_to_search_by_task(look_for, state()["where"])
 
         if task_manager.search_results:
             print("--LEEA AQUI--", single)
@@ -127,23 +115,23 @@ def search_loop(task_manager, where, single):
                 print(f'"{task_manager.search_results[0][1].task}"')
             else:
                 print(f'\n{feedback_ui["search_results"]}')
-                status_bar(action="SELECCIONAR")
+                state(action="SELECCIONAR")
                 selection_loop(task_manager, single)
             return True
 
         print(feedback_ui["search_no_match"])
 
 
-def action_loop(task_manager, action, single, where):
+def action_loop(task_manager, action, single):
     while True:
         if not task_manager.search_results:
-            if search_loop(task_manager, where, single) is False:
+            if search_loop(task_manager, single) is False:
                 return
 
         if Defaults.CARPE_DIEM.value:
             break
 
-        status_bar(action="CONFIRMAR")
+        state(action="CONFIRMAR")
         print(input_ui["confirmation"])
         confirmation = input_loop(Response.CONFIRM)
         match Confirm(confirmation):
@@ -161,7 +149,7 @@ def action_loop(task_manager, action, single, where):
 
 def selection_loop(task_manager, single):
     while True:
-        print_tasks_in(task_manager.search_results, True)
+        print_search(task_manager.search_results, True)
         print(input_ui["which_one"] if single else input_ui["which_ones"])
         select = input_loop(
             Response.SELECTION,
@@ -181,13 +169,13 @@ def selection_loop(task_manager, single):
             continue
 
         print(feedback_ui["selection"])
-        print_tasks_in(task_manager.search_results, False)
+        print_search(task_manager.search_results, False)
         break
 
 
 def input_loop(answer_type, *args):
     while True:
-        response = get_response(answer_type, input(status_bar()), *args)
+        response = get_response(answer_type, input(state()["bar"]), *args)
         match response[0]:
             case t if t == answer_type:
                 return response[1]

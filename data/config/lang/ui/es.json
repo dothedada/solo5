@@ -33,6 +33,11 @@
         "greeting": "¿Qué quieres hacer?"
       }
     },
+    "context": {
+      "global": "Global",
+      "today": "Hoy",
+      "done": "Terminadas"
+    },
     "command": {
       "in_today": "[hoy]",
       "in_global": "[t]odo",
