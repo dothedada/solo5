@@ -36,6 +36,7 @@ class Task:
                 continue
             setattr(self, key, value)
         setattr(self, "creation_date", date.today())
+        setattr(self, "done_date", None)
 
     @staticmethod
     def make_id_for(string):

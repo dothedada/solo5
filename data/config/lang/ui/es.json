@@ -16,14 +16,14 @@
       "delete_tasks": "^borrar$",
       "make_today": "^h(?:acer hoy)?$",
       "encore_today": "^extra$",
+      "forecast": "^m(?:a[nñ]ana)?$",
       "search": "^b(?:uscar)?$",
       "clear": "^l(?:impiar)?$",
       "save": "^g(?:uardar)?$",
       "exit": "^salir$",
       "purge": "^purgar$",
       "fix_dates": "^arreglar$",
-      "help": "^ayuda$",
-      "forecast": "^m(?:a[nñ]ana)?$"
+      "help": "^ayuda$"
     }
   },
   "ui": {
@@ -44,14 +44,14 @@
       "delete_tasks": "[borrar]",
       "make_today": "[h]acer hoy",
       "encore_today": "[extra]",
+      "forecast": "[m]añana",
       "search": "[b]uscar",
       "clear": "[l]impiar",
       "save": "[g]uardar",
       "exit": "[s]alir",
       "purge": "[purgar]",
       "fix_dates": "[arreglar]",
-      "help": "[ayuda]",
-      "forecast": "[m]añana"
+      "help": "[ayuda]"
     },
     "feedback": {
       "err": "No puedo entender el input, escribe de nuevo o cancela",

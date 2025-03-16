@@ -82,17 +82,6 @@ class TaskManager:
                 results.append(task)
         self.add_to_search(results)
 
-    def add_to_search_by_date(self, date_string):
-        self.search_results.clear()
-        parsed_date = task_parse.get_date(date_string)
-        tasks_list = list(
-            filter(
-                lambda item: str(item.due_date) == str(parsed_date),
-                self.tasks,
-            )
-        )
-        self.add_to_search(tasks_list)
-
     def select_from_search(self, selection, just_one=False):
         if just_one:
             selection = {min(selection)}
@@ -108,6 +97,7 @@ class TaskManager:
         for task in self.search_results:
             task[1].done = True if is_done else False
             task[1].done_date = date.today() if is_done else None
+        self.search_results.clear()
 
     def save_tasks_done(self):
         done_tasks = []

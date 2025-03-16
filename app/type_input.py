@@ -18,13 +18,14 @@ class Command(Enum):
     DELETE_TASKS = "delete_tasks"
     MAKE_TODAY = "make_today"
     ENCORE_TODAY = "encore"
+    FORECAST = "forecast"
     SEARCH = "search"
+    CLEAR = "clear"
     SAVE = "save"
     EXIT = "exit"
     PURGE = "purge"
     FIX_DATES = "fix_dates"
     HELP = "help"
-    FORECAST = "forecast"
 
 
 class Response(Enum):

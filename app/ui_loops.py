@@ -11,11 +11,14 @@ input_ui = load_json(Defaults.UI_PATH.value, "es.json")["ui"]["input"]
 
 status_bar = bar_info()
 
-# "make_today": "^h(?:acer hoy)?$",
-# "encore_today": "^extra$",
-# "fix_dates": "^arreglar$",
-# "help": "^ayuda$",
-# "forecast": "^m(?:a[nñ]ana)?$"
+# TODO:
+# 1. fix dates
+# 2. pensar en status_bar como administrador de contexto
+# 3. asignar textos de UI
+# 4. todo lo relacionado con today (make, encore, forecast)
+# 5. completar condicionales del program loop
+# 6. revisar textos ui
+# 7. documentacion
 
 
 def program_loop(task_manager):
@@ -37,21 +40,28 @@ def program_loop(task_manager):
             case Command.PRINT:
                 print_context(where)
             case Command.ADD_TASKS:
+                # TODO: bloquear en DONE, complementar en TODAY
                 status_bar(command="AÑADIR")
                 tasks_str = input(status_bar())
                 task_manager.add_tasks(tasks_str)
             case Command.UPDATE_TASK:
+                # TODO: bloquear en DONE, complementar en TODAY
                 status_bar(command="ACTUALIZAR")
-                action_loop(task_manager, Command.UPDATE_TASK, True)
+                action_loop(task_manager, Command.UPDATE_TASK, True, where)
             case Command.DONE_TASK:
+                # TODO: marcar como UNDONE, devolver a task
                 status_bar(command="TERMINADAS")
-                action_loop(task_manager, Command.DONE_TASK, False)
+                action_loop(task_manager, Command.DONE_TASK, False, where)
             case Command.DELETE_TASKS:
+                # TODO: al borrar de GLOBAL se elimina de HOY
                 status_bar(command="BORRAR")
-                action_loop(task_manager, Command.DELETE_TASKS, False)
+                action_loop(task_manager, Command.DELETE_TASKS, False, where)
 
             case Command.SEARCH:
-                search_loop(task_manager, True)
+                task_manager.search_results.clear()
+                search_loop(task_manager, where, True)
+            case Command.CLEAR:
+                task_manager.search_results.clear()
             case Command.SAVE:
                 task_manager.save_tasks_to_csv()
                 print("TASKS SAVED")
@@ -64,6 +74,7 @@ def program_loop(task_manager):
                 print("UNKNOWN COMMAND")
 
         status_bar(command="", action="")
+        print("----")
 
 
 def change_context(current_context, new_context, context_name):
@@ -93,7 +104,7 @@ def resolve_action(task_manager, command):
         actions[command]()
 
 
-def search_loop(task_manager, single):
+def search_loop(task_manager, where, single):
     while True:
 
         look_for = input(status_bar(action="BUSCAR"))
@@ -101,7 +112,7 @@ def search_loop(task_manager, single):
             print(feedback_ui["cancel"])
             return False
 
-        task_manager.add_to_search_by_task(look_for)
+        task_manager.add_to_search_by_task(look_for, where)
 
         if task_manager.search_results:
             print("--LEEA AQUI--", single)
@@ -117,11 +128,10 @@ def search_loop(task_manager, single):
         print(feedback_ui["search_no_match"])
 
 
-def action_loop(task_manager, action, single):
+def action_loop(task_manager, action, single, where):
     while True:
-
         if not task_manager.search_results:
-            if search_loop(task_manager, single) is False:
+            if search_loop(task_manager, where, single) is False:
                 return
 
         if Defaults.CARPE_DIEM.value:
