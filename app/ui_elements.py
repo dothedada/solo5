@@ -5,9 +5,18 @@ feedback_ui = load_json(Defaults.UI_PATH.value, "es.json")["ui"]["feedback"]
 
 
 def bar_info():
-    state = ["", "", ""]
+    state = ["", "", "", ""]
+    task_manager = None
 
-    def context_manager(context=None, command=None, action=None):
+    def context_manager(manager=None, context=None, command=None, action=None):
+        nonlocal task_manager
+
+        if manager:
+            task_manager = manager
+
+        if task_manager:
+            state[3] = "V " if task_manager.search_results else ""
+
         for i, info in enumerate([context, command, action]):
             if info is not None:
                 state[i] = info
