@@ -9,14 +9,16 @@ from task import DoneTask, TASK_DONE_KEYS, TASK_KEYS
 class TaskManager:
     def __init__(self):
         self._filepath = Defaults.DATA_PATH.value
-        self._tasks = Heap()
+        self.tasks = Heap()
         self.search_results = []
         self.today_tasks = set()
+        self.done_tasks = []
         self.load_csv_to_heap()
         self.load_csv_to_today()
+        self.load_csv_to_done()
 
     def load_csv_to_heap(self):
-        self._tasks.clear()
+        self.tasks.clear()
         tasks_in_file = load_csv("tasks.csv", self._filepath)
         if tasks_in_file is None:
             return
@@ -29,20 +31,30 @@ class TaskManager:
                 loaded_tasks.append(task)
 
         tasks = task_parse.make_tasks_from_csv(loaded_tasks)
-        self._tasks.push(tasks)
+        self.tasks.push(tasks)
 
     def load_csv_to_today(self):
         today = load_csv(f"today_{date.today()}", self._filepath)
         if today is None:
-            print("No tasks for today")
+            print("NO TASKS FOR TODAY")
             return None
 
         today_tasks = task_parse.make_tasks_from_csv(today)
         for task in today_tasks:
             self.today_tasks.add(task)
 
+    def load_csv_to_done(self):
+        done = load_csv("done.csv", self._filepath)
+        if done is None:
+            print("NOT DONE TASKS RECENTLY")
+            return None
+
+        for task in done:
+            print(task)
+            self.done_tasks.append(DoneTask(task))
+
     def save_tasks_to_csv(self):
-        heap_list = [task.to_dict() for task in self._tasks]
+        heap_list = [task.to_dict() for task in self.tasks]
         sync_csv("tasks.csv", self._filepath, heap_list, TASK_KEYS)
 
         if self.today_tasks:
@@ -62,7 +74,7 @@ class TaskManager:
 
     def add_to_search_by_task(self, string, global_tasks=True):
         self.search_results.clear()
-        task_list = self._tasks if global_tasks else self.today_tasks
+        task_list = self.tasks if global_tasks else self.today_tasks
         results = []
         for task in task_list:
             if string.lower() in task.task.lower():
@@ -75,7 +87,7 @@ class TaskManager:
         tasks_list = list(
             filter(
                 lambda item: str(item.due_date) == str(parsed_date),
-                self._tasks,
+                self.tasks,
             )
         )
         self.add_to_search(tasks_list)
@@ -89,7 +101,7 @@ class TaskManager:
 
     def add_tasks(self, tasks_string):
         tasks = task_parse.make_task(tasks_string)
-        self._tasks.push(tasks)
+        self.tasks.push(tasks)
 
     def mark_tasks_done(self, is_done=True):
         for task in self.search_results:
@@ -102,7 +114,7 @@ class TaskManager:
         for done_task in load_csv("done.csv", self._filepath) or []:
             done_id.add(done_task["id"])
 
-        for task in self._tasks:
+        for task in self.tasks:
             if task.done and task.id not in done_id:
                 done_tasks.append(DoneTask(task).to_dict())
         add_record_csv("done.csv", self._filepath, done_tasks, TASK_DONE_KEYS)
@@ -113,12 +125,12 @@ class TaskManager:
             tasks_ids.add(task[1].id)
 
         tasks = []
-        for task in self._tasks:
+        for task in self.tasks:
             if task.id in tasks_ids:
                 continue
             tasks.append(task)
-        self._tasks.clear()
-        self._tasks.push(tasks)
+        self.tasks.clear()
+        self.tasks.push(tasks)
         self.search_results.clear()
 
     def update_task(self, task_string):
@@ -129,8 +141,8 @@ class TaskManager:
 
     def make_today(self):
         # TODO: Algoritmo de priorizacion
-        for _ in range(min(Defaults.TASK_AMOUNT.value, len(self._tasks))):
-            self.today_tasks.add(self._tasks.pop())
+        for _ in range(min(Defaults.TASK_AMOUNT.value, len(self.tasks))):
+            self.today_tasks.add(self.tasks.pop())
 
         filename = f"today_{date.today()}.csv"
         sync_csv(filename, self._filepath, self.today_tasks, TASK_KEYS)
@@ -168,12 +180,12 @@ class TaskManager:
 
         # Purge heap tasks from heap
         tasks_not_done = []
-        for task in self._tasks:
+        for task in self.tasks:
             if task.done:
                 continue
             tasks_not_done.append(task)
-        self._tasks.clear()
-        self._tasks.push(tasks_not_done)
+        self.tasks.clear()
+        self.tasks.push(tasks_not_done)
 
         # Purge done tasks file from old done tasks
         tasks_done = []

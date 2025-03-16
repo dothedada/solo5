@@ -1,4 +1,5 @@
 from parser_input import get_response, get_exit
+from ui_elements import bar_info, print_tasks_in
 from type_input import Response, Confirm, Command
 from config import Defaults
 from fileManagers import load_json
@@ -8,44 +9,38 @@ feedback_ui = load_json(Defaults.UI_PATH.value, "es.json")["ui"]["feedback"]
 input_ui = load_json(Defaults.UI_PATH.value, "es.json")["ui"]["input"]
 
 
-def bar_info():
-    state = ["", "", ""]
-
-    def context_manager(context=None, command=None, action=None):
-        for i, info in enumerate([context, command, action]):
-            if info is not None:
-                state[i] = info
-        return f"{'> '.join(filter(bool,state))}> "
-
-    return context_manager
-
-
-bar = bar_info()
+input_bar = bar_info()
 
 
 def program_loop(manager):
-    where = manager._tasks
-    bar(context="GLOBAL")
+    where = manager.tasks
+    input_bar(context="GLOBAL")
     while True:
-        action = get_response(Response.COMMAND, input(bar()))
+        action = get_response(Response.COMMAND, input(input_bar()))
 
         if action[0] != Response.COMMAND:
             print("ÑO ENTENDÍ")
 
         match action[1]:
             case Command.ADD_TASKS:
-                bar(command="AÑADIR")
-                tasks_str = input(bar())
+                input_bar(command="AÑADIR")
+                tasks_str = input(input_bar())
                 manager.add_tasks(tasks_str)
             case Command.DELETE_TASKS:
-                bar(command="BORRAR")
+                input_bar(command="BORRAR")
                 action_loop(manager, Command.DELETE_TASKS, where, False)
             case Command.UPDATE_TASK:
-                bar(command="ACTUALIZAR")
+                input_bar(command="ACTUALIZAR")
                 action_loop(manager, Command.UPDATE_TASK, where, True)
             case Command.DONE_TASK:
-                bar(command="TERMINADAS")
+                input_bar(command="TERMINADAS")
                 action_loop(manager, Command.DONE_TASK, where, False)
+            case Command.IN_GLOBAL:
+                change_context(where, manager.tasks, "GLOBAL")
+            case Command.IN_TODAY:
+                change_context(where, manager.today_tasks, "HOY")
+            case Command.IN_DONE:
+                change_context(where, manager.done_tasks, "TERMINADAS")
             case Command.SAVE:
                 manager.save_tasks_to_csv()
                 print("TASKS SAVED")
@@ -57,13 +52,22 @@ def program_loop(manager):
             case _:
                 print("UNKNOWN COMMAND")
 
-        bar(command="", action="")
+        input_bar(command="", action="")
+
+
+def change_context(current_context, new_context, context_name):
+    if current_context != new_context:
+        current_context = new_context
+        input_bar(context=context_name)
+        print("CONTEXTO CAMBIADO", context_name)
+    else:
+        print("YA ESTAS EN CONTEXTO", context_name)
 
 
 def action_loop(task_manager, action, where, single):
     while True:
-        bar(action="BUSCAR")
-        search_for = input(bar())
+        input_bar(action="BUSCAR")
+        search_for = input(input_bar())
         if get_exit(search_for):
             print(feedback_ui["cancel"])
             return
@@ -79,7 +83,7 @@ def action_loop(task_manager, action, where, single):
             print(f'"{task_manager.search_results[0][1].task}"')
         else:
             print(f'\n{feedback_ui["search_results"]}')
-            bar(action="SELECCIONAR")
+            input_bar(action="SELECCIONAR")
             selection_loop(task_manager, single)
 
         if not task_manager.search_results:
@@ -88,10 +92,9 @@ def action_loop(task_manager, action, where, single):
         if Defaults.CARPE_DIEM.value:
             break
 
-        bar(action="CONFIRMAR")
+        input_bar(action="CONFIRMAR")
         print(input_ui["confirmation"])
         confirmation = input_loop(Response.CONFIRM)
-        print(confirmation)
         match Confirm(confirmation):
             case Confirm.YES:
                 break
@@ -147,7 +150,7 @@ def selection_loop(task_manager, single):
 
 def input_loop(answer_type, *args):
     while True:
-        response = get_response(answer_type, input(bar()), *args)
+        response = get_response(answer_type, input(input_bar()), *args)
         match response[0]:
             case t if t == answer_type:
                 return response[1]
@@ -156,13 +159,3 @@ def input_loop(answer_type, *args):
                 return response[0]
             case _:
                 print(feedback_ui["err"])
-
-
-def print_tasks_in(task_list, limit):
-    print(feedback_ui["line"] * len(feedback_ui["search_results"]))
-    for i, task in task_list:
-        if limit and i > Defaults.SEARCH_RESULTS.value:
-            print(f'\n{feedback_ui["search_overflow"]}')
-            break
-        print(f"{i}) {task.task}")
-    print(feedback_ui["line"] * len(feedback_ui["search_results"]))
