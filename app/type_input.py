@@ -11,6 +11,7 @@ class Command(Enum):
     IN_TODAY = "in_today"
     IN_GLOBAL = "in_global"
     IN_DONE = "in_done"
+    PRINT = "print"
     ADD_TASKS = "add_tasks"
     UPDATE_TASK = "update_task"
     DONE_TASK = "done_task"

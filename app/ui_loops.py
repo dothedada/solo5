@@ -11,6 +11,13 @@ input_ui = load_json(Defaults.UI_PATH.value, "es.json")["ui"]["input"]
 
 input_bar = bar_info()
 
+# "make_today": "^h(?:acer hoy)?$",
+# "encore_today": "^extra$",
+# "search": "^b(?:uscar)?$",
+# "fix_dates": "^arreglar$",
+# "help": "^ayuda$",
+# "forecast": "^m(?:a[nñ]ana)?$"
+
 
 def program_loop(manager):
     where = manager.tasks
@@ -41,6 +48,8 @@ def program_loop(manager):
                 change_context(where, manager.today_tasks, "HOY")
             case Command.IN_DONE:
                 change_context(where, manager.done_tasks, "TERMINADAS")
+            case Command.PRINT:
+                print_tasks_in(where, float("inf"))
             case Command.SAVE:
                 manager.save_tasks_to_csv()
                 print("TASKS SAVED")
