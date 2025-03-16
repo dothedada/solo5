@@ -6,22 +6,22 @@
       "cancel": "\\bc(?:ancelar)?\\b"
     },
     "command": {
-      "in_today": "\\bh(?:oy)?\\b",
-      "in_global": "\\bt(?:odo)?\\b",
-      "in_done": "\\bter(?:minadas)?\\b",
-      "add_tasks": "\\ba(?:gregar|[nñ]adir)?\\b",
-      "update_task": "\\bact(?:uali[sz]ar)?\\b",
-      "done_task": "\\br(?:ealizada)?\\b",
-      "delete_tasks": "\\bborrar\\b",
-      "make_today": "\\bh(?:acer hoy)?\\b",
-      "encore_today": "\\bextra\\b",
-      "search": "\\bb(?:uscar)?\\b",
-      "save": "\\bg(?:uardar)?\\b",
-      "exit": "\\bsalir\\b",
-      "purge": "\\bpurgar\\b",
-      "fix_dates": "\\barreglar\\b",
-      "help": "\\bayuda\\b",
-      "forecast": "\\bm(?:a[nñ]ana)?\\b"
+      "in_today": "^h(?:oy)?$",
+      "in_global": "^t(?:odo)?$",
+      "in_done": "^ter(?:minadas)?$",
+      "add_tasks": "^a(?:gregar|[nñ]adir)?$",
+      "update_task": "^act(?:uali[sz]ar)?$",
+      "done_task": "^r(?:ealizada)?$",
+      "delete_tasks": "^borrar$",
+      "make_today": "^h(?:acer hoy)?$",
+      "encore_today": "^extra$",
+      "search": "^b(?:uscar)?$",
+      "save": "^g(?:uardar)?$",
+      "exit": "^salir$",
+      "purge": "^purgar$",
+      "fix_dates": "^arreglar$",
+      "help": "^ayuda$",
+      "forecast": "^m(?:a[nñ]ana)?$"
     }
   },
   "ui": {
