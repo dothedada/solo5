@@ -12,7 +12,7 @@ class TaskManager:
         self.tasks = Heap()
         self.search_results = []
         self.today_tasks = set()
-        self.done_tasks = []
+        self.done_tasks = set()
         self.load_csv_to_heap()
         self.load_csv_to_today()
         self.load_csv_to_done()
@@ -26,8 +26,8 @@ class TaskManager:
         loaded_tasks = []
         cutoff_date = date.today() - timedelta(days=1)
         for task in tasks_in_file:
-            done = task["done"] == "False"
-            if done or cutoff_date < date.fromisoformat(task["done_date"]):
+            done_date = task["done_date"]
+            if done_date == "" or cutoff_date < date.fromisoformat(done_date):
                 loaded_tasks.append(task)
 
         tasks = task_parse.make_tasks_from_csv(loaded_tasks)
@@ -46,12 +46,12 @@ class TaskManager:
     def load_csv_to_done(self):
         done = load_csv("done.csv", self._filepath)
         if done is None:
-            print("NOT DONE TASKS RECENTLY")
             return None
 
-        for task in done:
-            print(task)
-            self.done_tasks.append(DoneTask(task))
+        if len(done):
+            for task in done:
+                self.done_tasks.add(DoneTask(task))
+        return self.done_tasks
 
     def save_tasks_to_csv(self):
         heap_list = [task.to_dict() for task in self.tasks]
@@ -94,19 +94,25 @@ class TaskManager:
         self.tasks.push(tasks)
 
     def mark_tasks_done(self, is_done=True):
-        for task in self.search_results:
-            task[1].done = True if is_done else False
-            task[1].done_date = date.today() if is_done else None
+        for _, task in self.search_results:
+            task.done = True if is_done else False
+            task.done_date = date.today() if is_done else None
+            # FIX: HANDLE CURRENT TASK IN HEAP PRIORITY
+
+            d_task = DoneTask(task)
+            self.done_tasks.add(d_task)
+
         self.search_results.clear()
 
     def save_tasks_done(self):
-        done_tasks = []
         done_id = set()
-        for done_task in load_csv("done.csv", self._filepath) or []:
-            done_id.add(done_task["id"])
+        for task in load_csv("done.csv", self._filepath) or []:
+            done_id.add(task["id"])
 
-        for task in self.tasks:
-            if task.done and task.id not in done_id:
+        done_tasks = []
+        for task in self.done_tasks:
+            print("*******", task, done_id)
+            if task.id not in done_id:
                 done_tasks.append(DoneTask(task).to_dict())
         add_record_csv("done.csv", self._filepath, done_tasks, TASK_DONE_KEYS)
 

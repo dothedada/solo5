@@ -1,3 +1,4 @@
+from types import SimpleNamespace
 from fileManagers import load_json
 from config import Defaults
 from type_input import Command
@@ -8,7 +9,7 @@ commands_ui = load_json(Defaults.UI_PATH.value, "es.json")["ui"]["command"]
 
 def context_wrapper():
     task_manager = None
-    state = ["", "", "", ""]  # [context_str, command_str, action_str, search_i
+    state = SimpleNamespace(context="", command="", action="", search_i="")
     where = None
 
     def context_manager(manager=None, context=None, command=None, action=None):
@@ -26,21 +27,27 @@ def context_wrapper():
         }
 
         if where is None:
-            state[0] = context_values[Defaults.CONTEXT.value][0]
+            state.context = context_values[Defaults.CONTEXT.value][0]
             where = context_values[Defaults.CONTEXT.value][1]
 
-        if context:
-            state[0] = context_values[context][0]
+        if context is not None:
+            state.context = context_values[context][0]
             where = change_context(where, context)
 
-        state[1] = commands_ui[command.value] if command else state[1]
-        state[2] = action if action else state[2]
+        if command is not None:
+            if isinstance(command, Command):
+                state.command = commands_ui[command.value]
+            else:
+                state.command = ""
+
+        if action is not None:
+            state.action = action
 
         search_items = len(task_manager.search_results)
-        state[3] = f"{search_items} ITEMS " if search_items else ""
+        state.search_i = f"{search_items} ITEMS " if search_items else ""
 
         return {
-            "bar": f"{'> '.join(filter(bool,state))}> ",
+            "bar": f"{'> '.join(filter(bool,[state.context, state.command, state.action, state.search_i]))}> ",
             "where": where,
         }
 
@@ -48,7 +55,7 @@ def context_wrapper():
 
 
 def change_context(current, new):
-    print("YA ESTAS EN CONTEXTO" if current != new else "CONTEXTO CAMBIADO")
+    print("YA ESTAS EN CONTEXTO" if current == new else "CONTEXTO CAMBIADO")
     return new
 
 

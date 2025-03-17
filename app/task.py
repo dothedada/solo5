@@ -30,13 +30,14 @@ class Task:
         if "task" not in task_dict:
             raise TypeError("Task must have id and task parameters")
 
+        # First set, and if the values exist, it will overwrite
         setattr(self, "id", Task.make_id_for(task_dict["task"]))
+        setattr(self, "creation_date", date.today())
+        setattr(self, "done_date", None)
         for key, value in task_dict.items():
             if key not in self.keys_allowed:
                 continue
             setattr(self, key, value)
-        setattr(self, "creation_date", date.today())
-        setattr(self, "done_date", None)
 
     @staticmethod
     def make_id_for(string):
@@ -61,7 +62,7 @@ class Task:
         return self.id == other.id
 
     def __hash__(self):
-        return self.id
+        return int(self.id, base=16)
 
     def __repr__(self):
         output = "Task { \n"
@@ -76,7 +77,6 @@ class DoneTask(Task):
 
     def __init__(self, task_dict):
         if isinstance(task_dict, Task):
-            super().__init__(task_dict.to_dict())
-            setattr(self, "date_done", date.today())
-        elif isinstance(task_dict, dict):
-            super().__init__(task_dict)
+            task_dict = task_dict.to_dict()
+
+        super().__init__(task_dict)
