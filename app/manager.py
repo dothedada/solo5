@@ -96,11 +96,9 @@ class TaskManager:
     def mark_tasks_done(self, is_done=True):
         for _, task in self.search_results:
             task.done = True if is_done else False
-            task.done_date = date.today() if is_done else None
-            # FIX: HANDLE CURRENT TASK IN HEAP PRIORITY
-
-            d_task = DoneTask(task)
-            self.done_tasks.add(d_task)
+            task.done_date = date.today()
+            self.tasks.update_task(task)
+            self.done_tasks.add(DoneTask(task))
 
         self.search_results.clear()
 
@@ -127,12 +125,16 @@ class TaskManager:
             tasks.append(task)
         self.tasks.clear()
         self.tasks.push(tasks)
+
         self.search_results.clear()
 
     def update_task(self, task_string):
-        self.delete_task()
+        id = self.search_results[0][1].id
         task_info = task_string.split(Defaults.TASK_SPLIT.value)[0]
-        self.add_tasks(task_info)
+        task_updated = task_parse.make_tasks(task_info)[0]
+        task_updated.id = id
+        self.tasks.update_task(task_updated)
+
         self.search_results.clear()
 
     def make_today(self):

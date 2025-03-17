@@ -184,3 +184,5 @@ def prioritizer(task):
     priority = 0
     priority += undelayable
     priority += urgency * difficulty
+
+    return round(priority, 2)
