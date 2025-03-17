@@ -111,7 +111,6 @@ def search_loop(task_manager, single):
         task_manager.add_to_search_by_task(look_for, state()["where"])
 
         if task_manager.search_results:
-            print("--LEEA AQUI--", single)
             if len(task_manager.search_results) == 1:
                 print(feedback_ui["warn"])
                 print(f'"{task_manager.search_results[0][1].task}"')
@@ -119,6 +118,10 @@ def search_loop(task_manager, single):
                 print(f'\n{feedback_ui["search_results"]}')
                 state(action="SELECCIONAR")
                 selection_loop(task_manager, single)
+
+            if not task_manager.search_results:
+                return False
+
             return True
 
         print(feedback_ui["search_no_match"])

@@ -32,7 +32,7 @@ def context_wrapper():
 
         if context is not None:
             state.context = context_values[context][0]
-            where = change_context(where, context)
+            where = change_context(where, context_values[context][1])
 
         if command is not None:
             if isinstance(command, Command):
@@ -46,8 +46,13 @@ def context_wrapper():
         search_items = len(task_manager.search_results)
         state.search_i = f"{search_items} ITEMS " if search_items else ""
 
+        bar = filter(
+            bool,
+            [state.context, state.command, state.action, state.search_i],
+        )
+
         return {
-            "bar": f"{'> '.join(filter(bool,[state.context, state.command, state.action, state.search_i]))}> ",
+            "bar": f"{'> '.join(bar)}> ",
             "where": where,
         }
 
