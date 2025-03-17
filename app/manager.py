@@ -62,6 +62,17 @@ class TaskManager:
             today_filename = f"today_{date.today()}.csv"
             sync_csv(today_filename, self._filepath, today_list, TASK_KEYS)
 
+    def save_tasks_done(self):
+        done_id = set()
+        for task in load_csv("done.csv", self._filepath) or []:
+            done_id.add(task["id"])
+
+        done_tasks = []
+        for task in self.done_tasks:
+            if task.id not in done_id:
+                done_tasks.append(DoneTask(task).to_dict())
+        add_record_csv("done.csv", self._filepath, done_tasks, TASK_DONE_KEYS)
+
     def add_to_search(self, tasks):
         index = 1
 
@@ -102,38 +113,18 @@ class TaskManager:
 
         self.search_results.clear()
 
-    def save_tasks_done(self):
-        done_id = set()
-        for task in load_csv("done.csv", self._filepath) or []:
-            done_id.add(task["id"])
-
-        done_tasks = []
-        for task in self.done_tasks:
-            if task.id not in done_id:
-                done_tasks.append(DoneTask(task).to_dict())
-        add_record_csv("done.csv", self._filepath, done_tasks, TASK_DONE_KEYS)
-
-    def delete_task(self):
-        tasks_ids = set()
-        for task in self.search_results:
-            tasks_ids.add(task[1].id)
-
-        tasks = []
-        for task in self.tasks:
-            if task.id in tasks_ids:
-                continue
-            tasks.append(task)
-        self.tasks.clear()
-        self.tasks.push(tasks)
-
-        self.search_results.clear()
-
     def update_task(self, task_string):
         id = self.search_results[0][1].id
         task_info = task_string.split(Defaults.TASK_SPLIT.value)[0]
         task_updated = task_parse.make_tasks(task_info)[0]
         task_updated.id = id
         self.tasks.update_task(task_updated)
+
+        self.search_results.clear()
+
+    def delete_task(self):
+        for _, task in self.search_results:
+            self.tasks.remove_task(task)
 
         self.search_results.clear()
 

@@ -110,6 +110,30 @@ class Heap:
     def get_r_child_ind(self, index):
         return (index * 2) + 2
 
+    def remove_task(self, task_to_remove):
+        index = None
+        old_priority = None
+
+        for i, (priority, task) in enumerate(self._heap):
+            if task_to_remove == task:
+                index = i
+                old_priority = priority
+                break
+
+        if index is None:
+            return
+
+        if index == len(self._heap) - 1:
+            self._heap.pop()
+            return
+
+        self._heap[index] = self._heap.pop()
+
+        if old_priority > self._heap[index][0]:
+            self.heappify_down(index)
+        else:
+            self.heappify_up(index)
+
     def update_task(self, new_task):
         index = None
         old_priority = None
