@@ -12,7 +12,6 @@ input_ui = load_json(Defaults.UI_PATH.value, "es.json")["ui"]["input"]
 state = context_wrapper()
 
 # TODO:
-# 2. revisar priorizacion, algo no me esta cuadrando con los valors
 # 3. asignar textos de UI
 # 3.1 crear ALL para seleccionar todas las casillas en select y NONE para 0
 # 4. todo lo relacionado con today (make, encore, forecast)
@@ -20,10 +19,6 @@ state = context_wrapper()
 # 5. completar condicionales del program loop
 # 6. revisar textos ui
 # 7. documentacion
-
-
-# FIX:
-# No esta guardando archivo de DONE al guardar
 
 
 def program_loop(task_manager):
@@ -149,6 +144,8 @@ def action_loop(task_manager, action, single):
                 return
             case Confirm.NO:
                 pass
+            case Response.OUT:
+                return
 
     resolve_action(task_manager, action)
     state(command="", action="")
@@ -184,6 +181,7 @@ def selection_loop(task_manager, single):
 def input_loop(answer_type, *args):
     while True:
         response = get_response(answer_type, input(state()["bar"]), *args)
+        print(response)
         match response[0]:
             case t if t == answer_type:
                 return response[1]

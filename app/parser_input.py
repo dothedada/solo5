@@ -54,11 +54,11 @@ def select(input_str, task_list_length):
 
 
 def get_exit(input_str):
-    return command(input_str) == Command.EXIT
+    return command(input_str) == Command.EXIT or input_str == "0"
 
 
 def get_response(response_type, *args):
-    if args and args[0] == "0":
+    if args and get_exit(args[0]):
         return (Response.OUT, None)
 
     handlers = {
