@@ -110,6 +110,26 @@ class Heap:
     def get_r_child_ind(self, index):
         return (index * 2) + 2
 
+    def update_task(self, new_task):
+        index = None
+        old_priority = None
+        new_priority = prioritizer(new_task)
+
+        for i, (priority, old_task) in enumerate(self._heap):
+            if old_task == new_task:
+                old_priority = priority
+                self._heap[i] = (new_priority, new_task)
+                index = i
+                break
+
+        if index is None:
+            return
+
+        if old_priority > new_priority:
+            self.heappify_down(index)
+        else:
+            self.heappify_up(index)
+
     def __repr__(self):
         string = "Heap [\n"
         for value, task in self._heap:
@@ -135,33 +155,32 @@ class Heap:
 
 def get_urgency(task_urgency):
     if task_urgency is None:
-        return 1
+        return 0.7
 
     days_available = (task_urgency - date.today()).days
 
-    if days_available > 14:
+    if days_available >= 14:
+        return 1
+    if days_available >= 7:
+        return 1.2
+    if days_available >= 3:
+        return 1.5
+    if days_available >= 2:
         return 2
-    if days_available > 7:
+    if days_available >= 1:
         return 3
-    if days_available > 3:
-        return 5
-    if days_available > 2:
-        return 7
-    if days_available > 1:
-        return 11
-    if days_available > 0:
-        return 13
     if days_available == 0:
-        return 17
-    return 29
+        return 4
+    return 5
 
 
 def prioritizer(task):
-    undelayable = 1 if task.undelayable else 0
-    dificulty = task.dificulty * (task.dificulty - 1)
-    urgency = get_urgency(task.due_date)
+    if task.done:
+        return 0
+    urgency = (get_urgency(task.due_date) + 1) ** 1.5 * Defaults.URG_W.value
+    undelayable = (1 if task.undelayable else 0) * Defaults.UND_W.value
+    difficulty = task.dificulty * Defaults.DIF_W.value
 
-    return int(
-        (undelayable * Defaults.UND_W.value) * (urgency * Defaults.URG_W.value)
-        + (dificulty * Defaults.DIF_W.value)
-    )
+    priority = 0
+    priority += undelayable
+    priority += urgency * difficulty

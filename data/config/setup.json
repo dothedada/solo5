@@ -6,8 +6,8 @@
   "task_split": "//",
   "task_amount": 5,
   "base_difficulty": 3,
-  "undelayable_weight": 13,
-  "urgent_weight": 17,
-  "diffficulty_weight": 11,
+  "undelayable_weight": 2,
+  "urgent_weight": 1.2,
+  "diffficulty_weight": 1.5,
   "count_current_day": "False"
 }

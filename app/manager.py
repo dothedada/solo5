@@ -111,7 +111,6 @@ class TaskManager:
 
         done_tasks = []
         for task in self.done_tasks:
-            print("*******", task, done_id)
             if task.id not in done_id:
                 done_tasks.append(DoneTask(task).to_dict())
         add_record_csv("done.csv", self._filepath, done_tasks, TASK_DONE_KEYS)
