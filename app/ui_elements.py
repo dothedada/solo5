@@ -74,7 +74,6 @@ def print_context(context):
     print(feedback_ui["line"] * len(feedback_ui["search_results"]))
     pending = 0
     done = 0
-    print(context)
     for i, task in enumerate(context):
         if task.done_date:
             done += 1

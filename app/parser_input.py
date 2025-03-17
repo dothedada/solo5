@@ -59,7 +59,7 @@ def get_exit(input_str):
 
 def get_response(response_type, *args):
     if args and get_exit(args[0]):
-        return (Response.OUT, None)
+        return (Response.OUT, Command.EXIT)
 
     handlers = {
         Response.CONFIRM: confirm,

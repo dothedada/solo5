@@ -51,7 +51,6 @@ class TaskManager:
         if len(done):
             for task in done:
                 self.done_tasks.add(DoneTask(task))
-        print(self.done_tasks)
         return self.done_tasks
 
     def save_tasks_to_csv(self):

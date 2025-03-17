@@ -12,6 +12,7 @@ input_ui = load_json(Defaults.UI_PATH.value, "es.json")["ui"]["input"]
 state = context_wrapper()
 
 # TODO:
+# 2. Revisar los EXIT y los CANCEL, y el clear que deben detonar
 # 3. asignar textos de UI
 # 3.1 crear ALL para seleccionar todas las casillas en select y NONE para 0
 # 4. todo lo relacionado con today (make, encore, forecast)
@@ -40,8 +41,7 @@ def program_loop(task_manager):
                 print_context(state()["where"])
             case Command.ADD_TASKS:
                 # TODO: bloquear en DONE, complementar en TODAY
-                state(command=Command.ADD_TASKS)
-                tasks_str = input(state()["bar"])
+                tasks_str = input(state(command=Command.ADD_TASKS)["bar"])
                 task_manager.add_tasks(tasks_str)
             case Command.UPDATE_TASK:
                 # TODO: bloquear en DONE, complementar en TODAY
@@ -139,11 +139,15 @@ def action_loop(task_manager, action, single):
         state(action="CONFIRMAR")
         print(input_ui["confirmation"])
         confirmation = input_loop(Response.CONFIRM)
+        if confirmation == Response.OUT:
+            task_manager.search_results.clear()
+            return
         match Confirm(confirmation):
             case Confirm.YES:
                 break
             case Confirm.CANCEL:
                 print(feedback_ui["cancel"])
+                task_manager.search_results.clear()
                 return
             case Confirm.NO:
                 pass
