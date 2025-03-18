@@ -21,7 +21,11 @@ def parse_response(response_type, *args):
     }
 
     if handler := handlers.get(response_type):
-        if response := handler(*args):
+        response = handler(*args)
+
+        if isinstance(response, tuple):
+            return response  # Error tuple
+        else:
             return (response_type, response)
 
     return (Response.ERR, "NO MATCH FOR THE REQUEST")
@@ -96,7 +100,7 @@ def select_string(input_str, task_list_length):
         return set()  # Empty Selection
 
     if select_string == Select.ALL:
-        return set()
+        return set(range(1, task_list_length + 1))
 
 
 def select_single_number(input_str, task_list_length):
@@ -105,7 +109,7 @@ def select_single_number(input_str, task_list_length):
 
     number = int(input_str)
     return (
-        number
+        {number}
         if 0 < number <= task_list_length
         else (Response.ERR, f"FUERA DEL RANGO DE SELECCION '{number}'")
     )
