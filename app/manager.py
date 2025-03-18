@@ -73,31 +73,29 @@ class TaskManager:
                 done_tasks.append(DoneTask(task).to_dict())
         add_record_csv("done.csv", self._filepath, done_tasks, TASK_DONE_KEYS)
 
-    def add_to_search(self, tasks):
-        index = 1
-
-        if len(self.search_results):
-            index = self.search_results[len(self.search_results) - 1][0]
-
-        for task in tasks:
-            self.search_results.append((index, task))
-            index += 1
-
-    def add_to_search_by_task(self, string, task_list=None):
+    def add_to_search(self, string, task_list=None):
         self.search_results.clear()
-        results = []
+        searched_tasks = []
+
         if task_list is None:
             task_list = self.tasks
+
         for task in task_list:
             if string.lower() in task.task.lower():
-                results.append(task)
-        self.add_to_search(results)
+                searched_tasks.append(task)
 
-    def select_from_search(self, selection, just_one=False):
-        if just_one:
-            selection = {min(selection)}
+        enumeration = 1
+        for task in searched_tasks:
+            self.search_results.append((enumeration, task))
+            enumeration += 1
 
-        selected_tasks = [t for t in self.search_results if t[0] in selection]
+    def select_from_search(self, selection):
+        selected_tasks = []
+        new_index = 1
+        for old_index, task in self.search_results:
+            if old_index in selection:
+                selected_tasks.append((new_index, task))
+                new_index += 1
         self.search_results = selected_tasks
 
     def add_tasks(self, tasks_string):

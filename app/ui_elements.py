@@ -86,9 +86,11 @@ def print_context(context):
 
 def print_search(task_list, limit):
     print(feedback_ui["line"] * len(feedback_ui["search_results"]))
-    for i, task in task_list:
-        if limit and i > Defaults.SEARCH_RESULTS.value:
+    task_number = 1
+    for _, task in task_list:
+        if limit and task_number > Defaults.SEARCH_RESULTS.value:
             print(f'\n{feedback_ui["search_overflow"]}')
             break
-        print(f"{i}) {task.task}")
+        print(f"{task_number}) {task.task}")
+        task_number += 1
     print(feedback_ui["line"] * len(feedback_ui["search_results"]))

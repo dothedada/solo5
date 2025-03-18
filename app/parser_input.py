@@ -50,7 +50,8 @@ def instruction(instruction_type):
         for response, regex in _PARSER[instruction_type].items():
             if re.match(regex, input_str):
                 return instruction_enum(response)
-        return None
+
+        return (Response.ERR, f"NO INSTRUCTION BY {input_str}")
 
     return parse_input
 
@@ -58,6 +59,7 @@ def instruction(instruction_type):
 def text_input(input_str):
     forbidden_chars = r"[&|;`$<>\\]"
     clean_string = re.sub(forbidden_chars, "", input_str)
+    # NOTE: LIMPIAR CADENA CON METODO PARSER DEL TASK
     if clean_string.strip():
         return clean_string[: Defaults.TASK_MAX_LENGTH.value]
     else:
@@ -78,17 +80,19 @@ def select(input_str, task_list_length):
 
     for token in tokens:
         if set_digit := select_single_number(token, task_list_length):
+            if isinstance(set_digit, tuple) and set_digit[0] == Response.ERR:
+                return set_digit
+
             selection.update(set_digit)
             continue
         if set_range := select_range(token, task_list_length):
+            if isinstance(set_range, tuple) and set_range[0] == Response.ERR:
+                return set_range
+
             selection.update(set_range)
             continue
 
-    return (
-        selection
-        if selection
-        else (Response.ERR, f"NO SE PUDO IBTENER UN RANGO DE '{input_str}'")
-    )
+    return selection
 
 
 def select_string(input_str, task_list_length):
