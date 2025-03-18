@@ -22,6 +22,8 @@ class Defaults(Enum):
 
     CONTEXT = "global"
 
+    TASK_MAX_LENGTH = 140
+
     SAVE_IN_CICLE = True
     SAVE_ON_EXIT = True
 

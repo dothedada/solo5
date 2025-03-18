@@ -4,7 +4,7 @@ from ui_loops import program_loop
 
 def main():
     taskManager = TaskManager()
-    print("asdasd", taskManager.tasks)
+    print("--MAIN--", taskManager.tasks)
     program_loop(taskManager)
     print("Chao BB...")
 

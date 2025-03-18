@@ -1,4 +1,4 @@
-from parser_input import get_response, get_exit
+from parser_input import parse_response
 from ui_elements import context_wrapper, print_search, print_context
 from type_input import Response, Confirm, Command
 from config import Defaults
@@ -25,10 +25,12 @@ state = context_wrapper()
 def program_loop(task_manager):
     state(manager=task_manager)
     while True:
-        action = get_response(Response.COMMAND, input(state()["bar"]))
+        action = parse_response(Response.COMMAND, input(state()["bar"]))
 
         if action[0] != Response.COMMAND:
             print("ÑO ENTENDÍ")
+
+        print("--global--", action)
 
         match action[1]:
             case Command.IN_TODAY:
@@ -58,6 +60,7 @@ def program_loop(task_manager):
 
             case Command.SEARCH:
                 task_manager.search_results.clear()
+                # FIX: no se va el letrero de buscar cuando se cancela
                 search_loop(task_manager, True)
             case Command.CLEAR:
                 task_manager.search_results.clear()
@@ -94,43 +97,20 @@ def resolve_action(task_manager, command):
     if command == Command.UPDATE_TASK:
         if len(task_manager.search_results) != 1:
             raise RuntimeError("TOO MANY ELEMENTS ON FOR THE ACTION")
+        updated_input = input(input_ui["new_data"])
 
-        actions[command](input(input_ui["new_data"]))
+        actions[command](updated_input)
     else:
         actions[command]()
 
-
-def search_loop(task_manager, single):
-    while True:
-
-        look_for = input(state(action="BUSCAR")["bar"])
-        if get_exit(look_for):
-            print(feedback_ui["cancel"])
-            return False
-
-        task_manager.add_to_search_by_task(look_for, state()["where"])
-
-        if task_manager.search_results:
-            if len(task_manager.search_results) == 1:
-                print(feedback_ui["warn"])
-                print(f'"{task_manager.search_results[0][1].task}"')
-            else:
-                print(f'\n{feedback_ui["search_results"]}')
-                state(action="SELECCIONAR")
-                selection_loop(task_manager, single)
-
-            if not task_manager.search_results:
-                return False
-
-            return True
-
-        print(feedback_ui["search_no_match"])
+    # state(command="", action="")
 
 
 def action_loop(task_manager, action, single):
     while True:
         if not task_manager.search_results:
-            if search_loop(task_manager, single) is False:
+            search = search_loop(task_manager, single)
+            if search[0] == Command.EXIT:
                 return
 
         if Defaults.CARPE_DIEM.value:
@@ -139,18 +119,19 @@ def action_loop(task_manager, action, single):
         state(action="CONFIRMAR")
         print(input_ui["confirmation"])
         confirmation = input_loop(Response.CONFIRM)
-        if confirmation == Response.OUT:
+        if confirmation[0] == Command.EXIT:
             task_manager.search_results.clear()
             return
-        match Confirm(confirmation):
+        match Confirm(confirmation[1]):
             case Confirm.YES:
                 break
+            case Confirm.NO:
+                task_manager.search_results.clear()
+                continue
             case Confirm.CANCEL:
                 print(feedback_ui["cancel"])
                 task_manager.search_results.clear()
                 return
-            case Confirm.NO:
-                pass
             case Response.OUT:
                 return
 
@@ -159,22 +140,60 @@ def action_loop(task_manager, action, single):
     print(feedback_ui["done"])
 
 
+def search_loop(task_manager, single):
+    while True:
+        search_value = parse_response(
+            Response.TEXT_INPUT,
+            input(state(action="BUSCAR")["bar"]),
+        )
+        if search_value[1] == Command.EXIT:
+            task_manager.search_results.clear()
+            return search_value
+
+        if search_value[0] == Response.ERR:  # search_value[1] == "":
+            print("NEED TEXT TO SEARCH")
+            continue
+
+        task_manager.add_to_search_by_task(search_value[1], state()["where"])
+
+        if task_manager.search_results:
+            if len(task_manager.search_results) == 1:
+                print(feedback_ui["warn"])
+                print(f'"{task_manager.search_results[0][1].task}"')
+            else:
+                print(f'\n{feedback_ui["search_results"]}')
+                state(action="SELECCIONAR")
+                selection = selection_loop(task_manager, single)
+
+                if selection and selection[0] == Command.EXIT:
+                    task_manager.search_results.clear()
+                    return selection
+
+            if not task_manager.search_results:
+                continue
+
+            return search_value
+
+        print(feedback_ui["search_no_match"])
+
+
 def selection_loop(task_manager, single):
     while True:
         print_search(task_manager.search_results, True)
         print(input_ui["which_one"] if single else input_ui["which_ones"])
-        select = input_loop(
+        selection = input_loop(
             Response.SELECTION,
             len(task_manager.search_results),
         )
-        if select == Response.OUT:
+        if selection[1] == Command.EXIT:
             task_manager.search_results.clear()
-            return
+            return selection
+
         if len(task_manager.search_results) == 0:
             print("NO SELECCIONASTE NARAAAA")
             return
 
-        task_manager.select_from_search(select)
+        task_manager.select_from_search(selection[1])
 
         if single and len(task_manager.search_results) > 1:
             print("\nSOLO UNO PERRO")
@@ -187,13 +206,24 @@ def selection_loop(task_manager, single):
 
 def input_loop(answer_type, *args):
     while True:
-        response = get_response(answer_type, input(state()["bar"]), *args)
-        print(response)
+        response = parse_response(answer_type, input(state()["bar"]), *args)
+
+        # FIX: ESTA separacion de aca no me cuadra, deberia integrarse,
+        # el command.exit debe ir en posicion 1 para ser consecuente con el
+        # empaquetado de la respuesta
+
+        if response[1] == Command.EXIT:
+            print("EXIT CON EXIT, EXIT")
+            return response
+
         match response[0]:
             case t if t == answer_type:
-                return response[1]
+                return response
             case Response.OUT:
                 print(feedback_ui["cancel"])
-                return response[0]
-            case _:
+                return response
+            case Response.ERR:
+                print("INGRESAAAAAA UN INPUT VALIDO O LARGUESE")
                 print(feedback_ui["err"])
+            case _:
+                raise ValueError("UNKNOWN INPUT")

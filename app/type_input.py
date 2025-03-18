@@ -1,10 +1,25 @@
 from enum import Enum
 
 
+class Response(Enum):
+    CONFIRM = "confirm"
+    COMMAND = "command"
+    SELECTION = "selection"
+    TEXT_INPUT = "text_input"
+    OUT = "out"
+
+    ERR = "error"
+
+
 class Confirm(Enum):
     YES = "yes"
     NO = "no"
     CANCEL = "cancel"
+
+
+class Select(Enum):
+    ALL = "all"
+    NONE = "none"
 
 
 class Command(Enum):
@@ -26,13 +41,3 @@ class Command(Enum):
     PURGE = "purge"
     FIX_DATES = "fix_dates"
     HELP = "help"
-
-
-class Response(Enum):
-    CONFIRM = "confirm"
-    COMMAND = "command"
-    SELECTION = "selection"
-    TASKS = "tasks"
-    OUT = "out"
-
-    ERR = "error"

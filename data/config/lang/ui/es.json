@@ -24,6 +24,10 @@
       "purge": "^purgar$",
       "fix_dates": "^arreglar$",
       "help": "^ayuda$"
+    },
+    "select": {
+      "all": "^t(?:odo)?$",
+      "none": "^n(?:ada)?$"
     }
   },
   "ui": {

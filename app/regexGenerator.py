@@ -15,6 +15,7 @@ class UIRegex:
         cls._lang[lang] = {}
         cls._lang[lang]["confirm"] = cls.compile_regex(file["RGX"]["confirm"])
         cls._lang[lang]["command"] = cls.compile_regex(file["RGX"]["command"])
+        cls._lang[lang]["select"] = cls.compile_regex(file["RGX"]["select"])
 
         return cls._lang[lang]
 
