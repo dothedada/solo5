@@ -6,7 +6,6 @@ class Response(Enum):
     COMMAND = "command"
     SELECTION = "selection"
     TEXT_INPUT = "text_input"
-    OUT = "out"  # NOTE: PARECE INNECESARIO
 
     ERR = "error"
 

@@ -12,7 +12,7 @@ input_ui = load_json(Defaults.UI_PATH.value, "es.json")["ui"]["input"]
 state = context_wrapper()
 
 # TODO:
-# 2. Revisar los EXIT y los CANCEL, y el arbol de loops
+# 2. select NONE!!!
 # 3. asignar textos de UI
 # 4. todo lo relacionado con today (make, encore, forecast)
 # 4.1 algoritmo para armar día
@@ -57,7 +57,6 @@ def program_loop(task_manager):
 
             case Command.SEARCH:
                 task_manager.search_results.clear()
-                # FIX: no se va el letrero de buscar cuando se cancela
                 search_loop(task_manager, True)
             case Command.CLEAR:
                 task_manager.search_results.clear()
@@ -123,7 +122,7 @@ def action_loop(manager, action, single):
         confirmation = input_loop(Response.CONFIRM)
 
         match confirmation:
-            case Command.EXIT:
+            case Command.EXIT | Confirm.CANCEL:
                 manager.search_results.clear()
                 return
             case Confirm.YES:
@@ -131,10 +130,8 @@ def action_loop(manager, action, single):
             case Confirm.NO:
                 manager.search_results.clear()
                 continue
-            case Confirm.CANCEL:
-                # NOTE: Parece redundante con el exit...
-                manager.search_results.clear()
-                return
+            case _:
+                raise Exception("INPUT DESCONOCIDO")
 
     resolve_action(manager, action)
     state(command="", action="")
@@ -174,8 +171,6 @@ def search_loop(task_manager, single):
                 return Command.EXIT
 
             if selection is False:
-                task_manager.search_results.clear()
-                print("NO HAS SELECCIONADO NADA")
                 continue
 
         return
@@ -195,6 +190,9 @@ def selection_loop(manager, single):
 
         if not manager.search_results or not selection:
             print("NO SELECCIONASTE NARAAAA")
+            manager.search_results.clear()
+            return False
+
             continue
 
         manager.select_from_search(selection)
@@ -221,11 +219,9 @@ def input_loop(answer_type, *args):
                 return Command.EXIT
             case (t, data) if t == answer_type:
                 return data
-            case (_, Response.OUT):  # NOTE: parece innecesario RESPONSE.OUT
-                print(feedback_ui["cancel"])
-                return Response.OUT
             case (Response.ERR, message):
                 print(feedback_ui["err"])
+                print("ERROR", message)
                 return Response.ERR
             case _:
                 raise ValueError("UNKNOWN INPUT")
