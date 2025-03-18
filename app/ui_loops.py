@@ -12,9 +12,8 @@ input_ui = load_json(Defaults.UI_PATH.value, "es.json")["ui"]["input"]
 state = context_wrapper()
 
 # TODO:
-# 2. Revisar los EXIT y los CANCEL, y el clear que deben detonar
+# 2. Revisar los EXIT y los CANCEL, y el arbol de loops
 # 3. asignar textos de UI
-# 3.1 crear ALL para seleccionar todas las casillas en select y NONE para 0
 # 4. todo lo relacionado con today (make, encore, forecast)
 # 4.1 algoritmo para armar día
 # 5. completar condicionales del program loop

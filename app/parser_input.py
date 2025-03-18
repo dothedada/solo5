@@ -24,7 +24,7 @@ def parse_response(response_type, *args):
         if response := handler(*args):
             return (response_type, response)
 
-    return (Response.ERR, "NO PUDO INTERPRETAR EL INPUT")
+    return (Response.ERR, "NO MATCH FOR THE REQUEST")
 
 
 def exit_command(input_str):
@@ -33,9 +33,13 @@ def exit_command(input_str):
 
 def instruction(instruction_type):
     if instruction_type not in _PARSER:
-        raise ValueError(f"Key '{instruction_type}' not in Input parser")
+        raise ValueError(f"'{instruction_type}' NOT IN INPUT PARSER")
 
-    instructions = {"confirm": Confirm, "command": Command, "select": Select}
+    instructions = {
+        "confirm": Confirm,
+        "command": Command,
+        "select": Select,
+    }
     instruction_enum = instructions.get(instruction_type)
 
     def parse_input(input_str):
@@ -57,7 +61,8 @@ def text_input(input_str):
 
 
 def select(input_str, task_list_length):
-    if batch_selection := select_string(input_str, task_list_length):
+    batch_selection = select_string(input_str, task_list_length)
+    if batch_selection is not None:
         return batch_selection
 
     input_str = input_str.strip(" ,-")
@@ -75,19 +80,23 @@ def select(input_str, task_list_length):
             selection.update(set_range)
             continue
 
-    if not selection:
-        return (Response.ERR, "ERROR AL OBTENER LA SELECCIÓN")
-
-    return selection
+    return (
+        selection
+        if selection
+        else (Response.ERR, f"NO SE PUDO IBTENER UN RANGO DE '{input_str}'")
+    )
 
 
 def select_string(input_str, task_list_length):
     select_string = instruction("select")(input_str)
-    if select_string is None or select_string == Select.NONE:
+    if select_string is None:
         return None
 
+    if select_string == Select.NONE:
+        return set()  # Empty Selection
+
     if select_string == Select.ALL:
-        return set(range(1, task_list_length + 1))
+        return set()
 
 
 def select_single_number(input_str, task_list_length):
@@ -95,10 +104,11 @@ def select_single_number(input_str, task_list_length):
         return None
 
     number = int(input_str)
-    if 0 < number <= task_list_length:
-        return {number}
-
-    return (Response.ERR, f"FUERA DEL RANGO DE SELECCION '{number}'")
+    return (
+        number
+        if 0 < number <= task_list_length
+        else (Response.ERR, f"FUERA DEL RANGO DE SELECCION '{number}'")
+    )
 
 
 def select_range(input_str, task_list_length):
@@ -107,8 +117,7 @@ def select_range(input_str, task_list_length):
 
     start, end = map(str.strip, input_str.split("-"))
     if not (start.isdigit() and end.isdigit()):
-        print()
-        return (Response.ERR, f"RANGO SOLO ACEPTA NUMEROS '{start}-{end}'")
+        return (Response.ERR, f"RANGO SOLO ACEPTA NUMEROS '{input_str}'")
 
     start, end = int(start), int(end)
     if 0 < start <= task_list_length and 1 < end <= task_list_length:
