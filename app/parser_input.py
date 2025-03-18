@@ -3,6 +3,7 @@ import re
 from config import Defaults
 from regexGenerator import UIRegex
 from type_input import Confirm, Command, Response, Select
+from parser_task import sanitize_text
 
 
 _PARSER = UIRegex.of(Defaults.LANG.value)
@@ -46,24 +47,19 @@ def instruction(instruction_type):
     }
     instruction_enum = instructions.get(instruction_type)
 
-    def parse_input(input_str):
+    def parse_input(string):
         for response, regex in _PARSER[instruction_type].items():
-            if re.match(regex, input_str):
+            if re.match(regex, string):
                 return instruction_enum(response)
 
-        return (Response.ERR, f"NO INSTRUCTION BY {input_str}")
+        return (Response.ERR, f"NO INSTRUCTION BY {string}")
 
     return parse_input
 
 
 def text_input(input_str):
-    forbidden_chars = r"[&|;`$<>\\]"
-    clean_string = re.sub(forbidden_chars, "", input_str)
-    # NOTE: LIMPIAR CADENA CON METODO PARSER DEL TASK
-    if clean_string.strip():
-        return clean_string[: Defaults.TASK_MAX_LENGTH.value]
-    else:
-        return None
+    string = sanitize_text(input_str)
+    return string if string else None
 
 
 def select(input_str, task_list_length):

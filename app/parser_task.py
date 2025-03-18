@@ -11,9 +11,9 @@ PARSERS = TaskRegex.of(Defaults.LANG.value)
 
 
 def _matcher(func):
-    def wrapper(string, regex_src):
+    def wrapper(input_str, regex_src):
         for i, pattern in enumerate(PARSERS["regex_for"][regex_src]):
-            match = re.search(pattern, string)
+            match = re.search(pattern, input_str)
             if match:
                 return func(match=match, match_index=i)
 
@@ -131,11 +131,13 @@ def _get_dificulty(task_raw):
     return int(dificulty_l.group()[1:])
 
 
-def sanitize_text(string):
-    string = string.strip()
+def sanitize_text(input_str):
+    forbidden_chars = r"[|`<>\\]"
+    string = input_str.strip()
+    string = re.sub(forbidden_chars, "", string)
     string = re.sub(r"\s+", " ", string)
 
-    return string
+    return string[: Defaults.TASK_MAX_LENGTH.value]
 
 
 def normalize_date(year, month, day):
@@ -174,10 +176,10 @@ def make_tasks_from_csv(tasks_list):
     return tasks
 
 
-def make_tasks(string):
+def make_tasks(input_str):
     tasks = []
 
-    for i, task_raw in enumerate(string.split(Defaults.TASK_SPLIT.value)):
+    for i, task_raw in enumerate(input_str.split(Defaults.TASK_SPLIT.value)):
         if task_raw.strip() == "":
             continue
 
