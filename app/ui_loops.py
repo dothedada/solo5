@@ -1,5 +1,6 @@
 from parser_input import parse_response
-from ui_elements import context_wrapper, print_search, print_context
+from ui_elements import print_search, print_context
+from context import context_wrapper
 from type_input import Response, Confirm, Command
 from config import Defaults, ui_txt
 from fileManagers import load_json
@@ -74,7 +75,7 @@ def program_loop(manager):
                 print(ui_txt["unknown"])
 
         state(command="", action="")
-        print("__separador__")
+        print("__PROGRAM LOOP__")
 
 
 def resolve_action(task_manager, command):
@@ -132,6 +133,7 @@ def action_loop(manager, action, single):
     state(command="", action="")
     manager.search_results.clear()
     print(ui_txt["done"])
+    print("__ACTION LOOP__")
 
 
 def search_loop(task_manager, single):
@@ -168,6 +170,7 @@ def search_loop(task_manager, single):
             if selection is False:
                 continue
 
+        print("__SEARCH LOOP__")
         return
 
 
@@ -201,6 +204,7 @@ def selection_loop(manager, single):
     print(ui_txt["selection"])
     print_search(manager.search_results, False)
 
+    print("__SELECTION LOOP__")
     return True
 
 
@@ -219,3 +223,4 @@ def input_loop(answer_type, *args):
                 return Response.ERR
             case _:
                 raise ValueError(ui_txt["unknown"])
+    print("__INPUT LOOP__")
