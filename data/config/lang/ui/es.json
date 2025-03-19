@@ -31,11 +31,13 @@
     }
   },
   "ui": {
+    "layout": {
+      "line": "_"
+    },
     "main": {
-      "feedback": {
-        "header": "///// SOLO5 /////",
-        "greeting": "¿Qué quieres hacer?"
-      }
+      "head": "XXXXX solo5 XXXXX",
+      "tag": "¿Qué quieres hacer ahora?",
+      "exit": "Chao bb, picos pues, mua mua."
     },
     "context": {
       "global": "Global",
@@ -61,6 +63,15 @@
       "purge": "[purgar]",
       "fix_dates": "[arreglar]",
       "help": "[ayuda]"
+    },
+    "printer": {
+      "empty_context": "no tiene tareas en este momento",
+      "no_found": "no se encontraron tareas",
+      "found": "tareas encontradas",
+      "done": "tareas realizadas",
+      "header_context": "Tareas en",
+      "total": "total",
+      "overflow": "Demasiados resultados... selecciona o reinicia la busqueda"
     },
     "feedback": {
       "err": "No puedo entender el input, escribe de nuevo o cancela",
