@@ -1,29 +1,33 @@
 from types import SimpleNamespace
 from fileManagers import load_json
-from config import Defaults
+from config import Defaults, ui_txt
 from type_input import Command
 
-feedback_ui = load_json(Defaults.UI_PATH.value, "es.json")["ui"]["feedback"]
 commands_ui = load_json(Defaults.UI_PATH.value, "es.json")["ui"]["command"]
 
 
 def context_wrapper():
-    task_manager = None
+    manager = None
     state = SimpleNamespace(context="", command="", action="", search_i="")
     where = None
 
-    def context_manager(manager=None, context=None, command=None, action=None):
-        nonlocal task_manager, state, where
+    def context_manager(
+        task_manager=None,
+        context=None,
+        command=None,
+        action=None,
+    ):
+        nonlocal manager, state, where
 
-        task_manager = manager if manager else task_manager
+        manager = task_manager if task_manager else manager
 
-        if task_manager is None:
-            raise ValueError("a MANAGER needs to be assigned before use")
+        if manager is None:
+            raise ValueError(ui_txt["context_manager_manager_error"])
 
         context_values = {
-            "global": ["global_str", task_manager.tasks],
-            "today": ["today_str", task_manager.today_tasks],
-            "done": ["done_str", task_manager.done_tasks],
+            "global": ["global_str", manager.tasks],
+            "today": ["today_str", manager.today_tasks],
+            "done": ["done_str", manager.done_tasks],
         }
 
         if where is None:
@@ -43,8 +47,8 @@ def context_wrapper():
         if action is not None:
             state.action = action
 
-        search_items = len(task_manager.search_results)
-        state.search_i = f"{search_items} ITEMS " if search_items else ""
+        tasks = len(manager.search_results)
+        state.search_i = f"{tasks} {ui_txt['task_name']} " if tasks else ""
 
         bar = filter(
             bool,
@@ -60,7 +64,9 @@ def context_wrapper():
 
 
 def change_context(current, new):
-    print("YA ESTAS EN CONTEXTO" if current == new else "CONTEXTO CAMBIADO")
+    print(
+        ui_txt["context_same"] if current == new else ui_txt["context_change"],
+    )
     return new
 
 
@@ -68,10 +74,10 @@ def print_context(context):
     # NOTE: SORT search???
 
     if len(context) == 0:
-        print("SIN TAREAS EN EL CONTEXTO")
+        print(ui_txt["no_tasks_in_context"])
         return
 
-    print(feedback_ui["line"] * len(feedback_ui["search_results"]))
+    print(ui_txt["line"] * len(ui_txt["search_results"]))
     pending = 0
     done = 0
     for i, task in enumerate(context):
@@ -81,16 +87,17 @@ def print_context(context):
             continue
         print(f"{i}) {task.task}")
         pending += 1
-    print(f"{(done * 100) / len(context)}% DE {len(context)} TAREAS")
+    print(f"{(done * 100) / len(context)}{ui_txt['done_%_of']}")
+    print(f"{len(context)} {ui_txt['total_tasks_context']}")
 
 
 def print_search(task_list, limit):
-    print(feedback_ui["line"] * len(feedback_ui["search_results"]))
+    print(ui_txt["line"] * len(ui_txt["search_results"]))
     task_number = 1
     for _, task in task_list:
         if limit and task_number > Defaults.SEARCH_RESULTS.value:
-            print(f'\n{feedback_ui["search_overflow"]}')
+            print(f'\n{ui_txt["search_overflow"]}')
             break
         print(f"{task_number}) {task.task}")
         task_number += 1
-    print(feedback_ui["line"] * len(feedback_ui["search_results"]))
+    print(ui_txt["line"] * len(ui_txt["search_results"]))

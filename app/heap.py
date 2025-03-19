@@ -11,7 +11,7 @@ class Heap:
 
     def task_wrapper(self, task):
         if isinstance(task, Task) is False:
-            raise TypeError("Objext must be a Task instance")
+            raise TypeError("Object must be a Task instance")
 
         triage = prioritizer(task)
         return (triage, task)
