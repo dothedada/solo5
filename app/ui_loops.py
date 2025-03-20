@@ -138,7 +138,6 @@ def action_loop(manager, action, single):
     state(command="", action="")
     manager.search_results.clear()
     print_ui("output", "done")
-    print("__ACTION LOOP__")
 
 
 def search_loop(task_manager, single):
@@ -175,7 +174,6 @@ def search_loop(task_manager, single):
             if selection is False:
                 continue
 
-        print("__SEARCH LOOP__")
         return
 
 
@@ -207,8 +205,6 @@ def selection_loop(manager, single):
         break
 
     print_search(manager.search_results, False, selected=True)
-
-    print("__SELECTION LOOP__")
     return True
 
 
@@ -227,4 +223,3 @@ def input_loop(answer_type, *args):
                 return Response.ERR
             case _:
                 raise ValueError("Unknown Command")
-    print("__INPUT LOOP__")

@@ -24,7 +24,7 @@ def context_wrapper():
         manager = task_manager if task_manager else manager
 
         if manager is None:
-            raise ValueError(ui_feed["context_manager_manager_error"])
+            raise ValueError("Task manager needs to be assigned in context")
 
         context_values = {
             "global": [ui_txt["context"]["global"], manager.tasks],
@@ -58,7 +58,7 @@ def context_wrapper():
         )
 
         return {
-            "bar": f"{'> '.join(bar)}> ",
+            "bar": f"\033[1m{'> '.join(bar)}> \033[0m",
             "where": where,
             "where_name": state.context,
         }
