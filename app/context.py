@@ -3,7 +3,7 @@ from config import Defaults, ui_txt
 from type_input import Command
 from fileManagers import load_json
 
-ui_feed = ui_txt["feedback"]
+ui_feed = ui_txt["feedback_"]
 # FIX: esta linea de abajo se va
 commands_ui = load_json(Defaults.UI_PATH.value, "es.json")["ui"]["command"]
 

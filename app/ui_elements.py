@@ -36,7 +36,7 @@ def print_line(text, **settings):
 def print_div(**settings):
     style = make_style(settings.get("style", ""))
     color = make_color(settings.get("color", ""))
-    divider = settings.get("divider", ui_txt["layout"]["line"])
+    divider = settings.get("div", ui_txt["layout"]["line"])
     width = max(
         shutil.get_terminal_size().columns // 2,
         settings.get("width", 0),
@@ -86,26 +86,29 @@ def print_context(context, context_name):
 
     tasks_in = 0
     done = 0
+    overdue = 0
     for task in sorted_context:
         tasks_in += 1
+        color = "red" if task.due_date and task.due_date < date.today() else ""
+        style = "strike" if task.done_date else ""
         if task.done_date:
             done += 1
-            print_line(f"{tasks_in}) {task.task}", style="strike")
-            continue
-        print_line(f"{tasks_in}) {task.task}")
+        if task.due_date and task.due_date < date.today():
+            overdue += 1
+        print_line(f"- {task.task}", color=color, style=style)
 
-    percent_done = f"{(done * 100) / len(context)}%"
-    print_ui("printer", "done", prepend=percent_done, top=True, color="green")
-    print_ui("printer", "total", prepend=tasks_in, divider=" ", bottom=True)
+    percent_done = (done * 100) / len(context)
+    print_ui("printer", "total", prepend=tasks_in, top=True)
+    if percent_done:
+        print_ui("printer", "done", prepend=percent_done, color="green")
+    if overdue:
+        print_ui("printer", "overdue", prepend=overdue, color="red")
+    print()
 
 
-def print_search(tasks, limit):
-    if not tasks:
-        print_ui("printer", "no_found", color="red")
-
-    print_ui("printer", "found", both=True)
-    i = 1
-    for _, task in tasks:
+def print_search(tasks, limit, selected=False):
+    print_ui("printer", "selected" if selected else "found", both=True)
+    for i, task in tasks:
         if limit and i > Defaults.SEARCH_RESULTS.value:
             print_ui("printer", "search_overflow", color="red")
             break
@@ -113,7 +116,6 @@ def print_search(tasks, limit):
             print_line(f"{i}) {task.task}", style="strike")
         else:
             print_line(f"{i}) {task.task}")
-        i += 1
 
     print_ui("printer", "total", prepend=f"{len(tasks)}", top=True)
     print()

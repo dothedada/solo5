@@ -1,5 +1,11 @@
 from parser_input import parse_response
-from ui_elements import print_search, print_context
+from ui_elements import (
+    print_search,
+    print_context,
+    print_ui,
+    print_line,
+    print_div,
+)
 from context import context_wrapper
 from type_input import Response, Confirm, Command
 from config import Defaults, ui_txt
@@ -59,35 +65,34 @@ def program_loop(manager):
             case Command.SAVE:
                 manager.save_tasks_to_csv()
                 manager.save_tasks_done()
-                print(ui_txt["save"])
+                print_ui("output", "save", color="green", div=" ", bottom=True)
             case Command.EXIT:
                 return
             case Command.PURGE:
                 manager.purge_done()
-                print(ui_txt["purge"])
+                print_ui("output", "purge", color="green")
             case Command.FIX_DATES:
                 fixed_tasks = manager.fix_dates()
                 if fixed_tasks:
-                    print(fixed_tasks, ui_txt["fix_dates"])
+                    print_ui("output", "fix_dates", color="green")
                 else:
-                    print(ui_txt["fix_dates_not"])
+                    print_ui("output", "fix_dates_not", color="green")
             case _:
-                print(ui_txt["unknown"])
+                print_ui("output", "unknown", color="red")
 
         state(command="", action="")
-        print("__PROGRAM LOOP__")
 
 
-def resolve_action(task_manager, command):
+def resolve_action(manager, command):
     actions = {
-        Command.ADD_TASKS: task_manager.add_tasks,
-        Command.DELETE_TASKS: task_manager.delete_task,
-        Command.DONE_TASK: task_manager.mark_tasks_done,  # str arg
-        Command.UPDATE_TASK: task_manager.update_task,  # bool arg
+        Command.ADD_TASKS: manager.add_tasks,
+        Command.DELETE_TASKS: manager.delete_task,
+        Command.DONE_TASK: manager.mark_tasks_done,  # str arg
+        Command.UPDATE_TASK: manager.update_task,  # bool arg
     }
 
     if command == Command.UPDATE_TASK:
-        if len(task_manager.search_results) != 1:
+        if len(manager.search_results) != 1:
             raise RuntimeError(ui_txt["too_many_items"])
 
         update_str = parse_response(
@@ -114,7 +119,7 @@ def action_loop(manager, action, single):
             break
 
         state(action="CONFIRMAR")
-        print(input_ui["confirmation"])
+        print_ui("output", "confirmation", style="bold", color="blue")
         confirmation = input_loop(Response.CONFIRM)
 
         match confirmation:
@@ -132,7 +137,7 @@ def action_loop(manager, action, single):
     resolve_action(manager, action)
     state(command="", action="")
     manager.search_results.clear()
-    print(ui_txt["done"])
+    print_ui("output", "done")
     print("__ACTION LOOP__")
 
 
@@ -147,19 +152,19 @@ def search_loop(task_manager, single):
             return Command.EXIT
 
         if not search_value:  # search_value == "", empty string:
-            print(ui_txt["need_search_input"])
+            print_ui("output", "search_no_input", color="red", style="bold")
             continue
 
         task_manager.add_to_search(search_value, state()["where"])
         if not task_manager.search_results:
-            print(ui_txt["search_no_match"])
+            print_ui("output", "search_no_match", color="red", style="bold")
             continue
 
         if len(task_manager.search_results) == 1:
-            print(ui_txt["warn"])
-            print(f'"{task_manager.search_results[0][1].task}"')
+            print_ui("output", "warn", top=True, div=" ")
+            print_line(task_manager.search_results[0][1].task, style="bold")
+            print_div()
         else:
-            # print(f'\n{ui_txt["search_results"]}')
             state(action="SELECCIONAR")
 
             selection = selection_loop(task_manager, single)
@@ -177,7 +182,7 @@ def search_loop(task_manager, single):
 def selection_loop(manager, single):
     while True:
         print_search(manager.search_results, True)
-        print(input_ui["which_one"] if single else input_ui["which_ones"])
+        print_ui("output", "select_one" if single else "select")
         selection = input_loop(Response.SELECTION, len(manager.search_results))
         if selection == Command.EXIT:
             manager.search_results.clear()
@@ -187,7 +192,7 @@ def selection_loop(manager, single):
             continue
 
         if not manager.search_results or not selection:
-            print(ui_txt["empty_selection"])
+            print_ui("output", "select_cancel", color="red")
             manager.search_results.clear()
             return False
 
@@ -196,13 +201,12 @@ def selection_loop(manager, single):
         manager.select_from_search(selection)
 
         if single and len(manager.search_results) > 1:
-            print(ui_txt["just_one_task"])
+            print_ui("output", "select_reminder", color="red", style="bold")
             continue
 
         break
 
-    print(ui_txt["selection"])
-    print_search(manager.search_results, False)
+    print_search(manager.search_results, False, selected=True)
 
     print("__SELECTION LOOP__")
     return True
@@ -214,13 +218,13 @@ def input_loop(answer_type, *args):
 
         match response:
             case (_, Command.EXIT):
-                print(ui_txt["exit"])
+                print_ui("output", "cancel")
                 return Command.EXIT
             case (t, data) if t == answer_type:
                 return data
             case (Response.ERR, message):
-                print("ERR:", message)
+                print_line(f"ERROR: {message}", color="red", style="bold")
                 return Response.ERR
             case _:
-                raise ValueError(ui_txt["unknown"])
+                raise ValueError("Unknown Command")
     print("__INPUT LOOP__")

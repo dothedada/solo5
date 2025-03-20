@@ -68,20 +68,40 @@
       "header_context": "Tareas en:",
       "empty_context": "Sin tareas en:",
       "found": "tareas encontradas",
+      "selected": "seleccionaste:",
       "no_found": "no se encontraron tareas",
       "done": "tareas realizadas",
+      "overdue": "tareas vencidas",
       "total": "tareas en total",
       "overflow": "Demasiados resultados... selecciona o reinicia la busqueda"
     },
-    "feedback": {
+    "output": {
+      "save": "Todas las tareas han sido guardadas :)",
+      "purge": "Se han eliminado las tareas marcadas como Terminadas",
+      "fix_dates": "Fechas de finalizacion recalculadas",
+      "fix_dates_not": "No hay fechas que necesite se recalculadas",
+      "unknown": "Comando desconocido",
+      "confirmation": "[s]i | [n]o | [c]ancelar",
+      "done": "Listo!!!",
+      "search_no_input": "Que texto puede tener la tarea que buscas",
+      "search_no_match": "No se enontraron resultados que coincidan...",
+      "search_results": "Resultados de la búsqueda:",
+      "warn": "vas a cambiar esta tarea:",
+      "search_overflow": "Demasiados resultados... selecciona de la lista o escribe [0] para reiniciar",
+      "select_one": "Selecciona una tarea...",
+      "select": "Selecciona una o más tareas...",
+      "select_cancel": "Selección cancelada",
+      "select_reminder": "Selecciona SÓLO UNA tarea",
+      "selection": "\nseleccionaste:",
+      "cancel": "AS YOU WISH, FUCKR..."
+    },
+    "feedback_": {
       "err": "No puedo entender el input, escribe de nuevo o cancela",
       "err_many_items": "Seleccionaste más ítems de los requeridos",
-      "cancel": "AS YOU WISH, FUCKR...",
       "search_no_match": "No se enontraron resultados que coincidan...",
       "search_results": "Resultados de la búsqueda:",
       "search_overflow": "Demasiados resultados... selecciona de la lista o escribe [0] para reiniciar",
       "selection": "\nseleccionaste:",
-      "warn": "vas a cambiar esta tarea:",
       "warn_several": "vas a cambiar esta tareas:",
       "done": "\nListo!!!\n",
       "line": "/",
@@ -89,7 +109,6 @@
       "purge": "Las tareas realizadas han sido removidas de las tareas relevantes",
       "fix_dates": "fechas de tareas recalculadas",
       "fix_dates_not": "No hay fechas que necesiten se recalculadas",
-      "unknown": "Comando desconocido",
       "too_many_items": "Solo se puede realizar esta acción a una tarea sola",
       "need_search_input": "Que texto puede tener la tarea que buscas",
       "empty_selection": "Selección cancelada",
@@ -106,9 +125,6 @@
     },
     "input": {
       "look_for": "¿Qué tarea?\n",
-      "confirmation": "[s]i | [n]o | [c]ancelar",
-      "which_one": "¿cuál?",
-      "which_ones": "¿cuáles?",
       "new_data": "Escribe la nueva informacion:\n"
     }
   }
