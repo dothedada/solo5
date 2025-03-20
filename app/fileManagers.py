@@ -5,8 +5,6 @@ import tempfile
 import shutil
 import os
 
-from task import TASK_KEYS
-
 BASE_DIRECTORY = Path.cwd()
 
 
@@ -70,6 +68,8 @@ def sync_csv(filename, path, tasks, keys):
     ) as temp_file:
         fieldnames = list(keys)
         writer = csv.DictWriter(temp_file, fieldnames=fieldnames)
+
+        print("--asdasd", tasks)
 
         try:
             writer.writeheader()

@@ -139,13 +139,13 @@ class TaskManager:
         self.search_results.clear()
 
     def make_today(self):
-        # TODO: Algoritmo de priorizacion
-        for i in range(min(Defaults.TASK_AMOUNT.value, len(self.tasks))):
+        for _ in range(min(Defaults.TASK_AMOUNT.value, len(self.tasks))):
             self.today_tasks.add(self.tasks.pop())
 
         self.tasks.push(self.today_tasks)
-        # filename = f"today_{date.today()}.csv"
-        # sync_csv(filename, self._filepath, self.today_tasks, TASK_KEYS)
+        filename = f"today_{date.today()}.csv"
+        tasks = [t.to_dict() for t in self.today_tasks]
+        sync_csv(filename, self._filepath, tasks, TASK_KEYS)
 
     def get_today(self):
         today = []
