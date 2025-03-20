@@ -33,7 +33,7 @@ def program_loop(manager):
             case Command.IN_DONE:
                 state(context="done")
             case Command.PRINT:
-                print_context(state()["where"])
+                print_context(state()["where"], state()["where_name"])
             case Command.ADD_TASKS:
                 # TODO: bloquear en DONE, complementar en TODAY
                 tasks_str = input(state(command=Command.ADD_TASKS)["bar"])
@@ -159,7 +159,7 @@ def search_loop(task_manager, single):
             print(ui_txt["warn"])
             print(f'"{task_manager.search_results[0][1].task}"')
         else:
-            print(f'\n{ui_txt["search_results"]}')
+            # print(f'\n{ui_txt["search_results"]}')
             state(action="SELECCIONAR")
 
             selection = selection_loop(task_manager, single)

@@ -60,6 +60,7 @@ def context_wrapper():
         return {
             "bar": f"{'> '.join(bar)}> ",
             "where": where,
+            "where_name": state.context,
         }
 
     return context_manager

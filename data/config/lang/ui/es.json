@@ -32,10 +32,10 @@
   },
   "ui": {
     "layout": {
-      "line": "_"
+      "line": "─"
     },
     "main": {
-      "head": "XXXXX solo5 XXXXX",
+      "head": "solo5 >>>>>>\n",
       "tag": "¿Qué quieres hacer ahora?",
       "exit": "Chao bb, picos pues, mua mua."
     },
@@ -65,12 +65,12 @@
       "help": "[ayuda]"
     },
     "printer": {
-      "empty_context": "no tiene tareas en este momento",
-      "no_found": "no se encontraron tareas",
+      "header_context": "Tareas en:",
+      "empty_context": "Sin tareas en:",
       "found": "tareas encontradas",
+      "no_found": "no se encontraron tareas",
       "done": "tareas realizadas",
-      "header_context": "Tareas en",
-      "total": "total",
+      "total": "tareas en total",
       "overflow": "Demasiados resultados... selecciona o reinicia la busqueda"
     },
     "feedback": {

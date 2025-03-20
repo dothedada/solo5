@@ -31,18 +31,3 @@ class Defaults(Enum):
 
 
 ui_txt = load_json(Defaults.UI_PATH.value, "es.json")["ui"]
-
-colors = {
-    "red": "\033[31m",
-    "green": "\033[32m",
-    "yellow": "\033[33m",
-    "blue": "\033[34m",
-    "magenta": "\033[35m",
-    "cyan": "\033[36m",
-}
-
-styles = {
-    "bold": "\033[1m",
-    "underline": "\033[4m",
-    "strike": "\033[9m",
-}

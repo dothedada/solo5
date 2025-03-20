@@ -84,8 +84,19 @@ class TaskManager:
             if string.lower() in task.task.lower():
                 searched_tasks.append(task)
 
+        sort_search = list(
+            sorted(
+                searched_tasks,
+                key=lambda t: (
+                    t.done,
+                    t.due_date is None,
+                    t.due_date or date.max,
+                ),
+            )
+        )
+
         enumeration = 1
-        for task in searched_tasks:
+        for task in sort_search:
             self.search_results.append((enumeration, task))
             enumeration += 1
 
