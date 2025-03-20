@@ -73,7 +73,15 @@ def program_loop(manager):
             case Command.FIX_DATES:
                 fixed_tasks = manager.fix_dates()
                 if fixed_tasks:
-                    print_ui("output", "fix_dates", color="green")
+                    for i, (task, old, new) in enumerate(fixed_tasks):
+                        print_line(f"{i}) {task}\n\t{old} -> {new}")
+                    print_ui(
+                        "output",
+                        "fix_dates",
+                        top=True,
+                        prepend=len(fixed_tasks),
+                        color="green",
+                    )
                 else:
                     print_ui("output", "fix_dates_not", color="green")
             case _:

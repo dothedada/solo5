@@ -130,6 +130,7 @@ class TaskManager:
         self.tasks.update_task(task_updated)
 
         self.search_results.clear()
+        return task_updated
 
     def delete_task(self):
         for _, task in self.search_results:
@@ -199,19 +200,13 @@ class TaskManager:
 
     def fix_dates(self):
         today = date.today()
-        tasks = []
-        amount = 0
+        self.search_results.clear()
+        fix_tasks = []
         for task in self.tasks:
             if task.due_date and task.due_date < today:
-                fixed_task = task_parse.make_tasks(task.task)
-                print("qweqweqwe", fixed_task, task.task)
-                tasks.extend(fixed_task)
-                amount += 1
-                continue
-            tasks.append(task)
+                old_d = task.due_date
+                self.search_results.append((0, task))
+                new_task = self.update_task(task.task)
+                fix_tasks.append([new_task.task, old_d, new_task.due_date])
 
-        if amount:
-            self.tasks.clear()
-            self.tasks.push(tasks)
-
-        return amount
+        return fix_tasks
