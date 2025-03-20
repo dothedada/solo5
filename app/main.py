@@ -11,6 +11,9 @@ def main():
 
     print_ui("main", "head", top=True, style="bold", full=True)
     taskManager = TaskManager()
+
+    # NOTE: Print today
+
     print("\n")
     print_ui("main", "tag")
 

@@ -58,7 +58,8 @@ def program_loop(manager):
 
             case Command.MAKE_TODAY:
                 manager.make_today()
-                # print_context("today", "today")
+                state(context="today")
+                print_context(state()["where"], state()["where_name"])
 
             case Command.SEARCH:
                 manager.search_results.clear()

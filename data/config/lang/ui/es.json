@@ -76,7 +76,7 @@
       "done": "tareas realizadas",
       "overdue": "tareas vencidas",
       "total": "tareas en total",
-      "overflow": "Demasiados resultados... selecciona o reinicia la busqueda"
+      "overflow": "Demasiados resultados... selecciona o haz una búsqueda más específica"
     },
     "output": {
       "save": "Todas las tareas han sido guardadas :)",

@@ -69,8 +69,6 @@ def sync_csv(filename, path, tasks, keys):
         fieldnames = list(keys)
         writer = csv.DictWriter(temp_file, fieldnames=fieldnames)
 
-        print("--asdasd", tasks)
-
         try:
             writer.writeheader()
             writer.writerows(tasks)

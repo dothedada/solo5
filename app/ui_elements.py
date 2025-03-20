@@ -67,27 +67,25 @@ def print_ui(*data, **settings):
         print_div(width=len(text) + 2, **settings)
 
 
+def sort_key(task):
+    return {
+        getattr(task, "done", False),
+        task.due_date is None,
+        task.due_date or date.max,
+    }
+
+
 def print_context(context, context_name):
     if len(context) == 0:
         print_ui("printer", "empty_context", append=context_name, color="red")
         return
 
     print_ui("printer", "header_context", append=context_name, both=True)
-    sorted_context = list(
-        sorted(
-            context,
-            key=lambda t: (
-                getattr(t, "done", False),
-                t.due_date is None,
-                t.due_date or date.max,
-            ),
-        )
-    )
 
     tasks_in = 0
     done = 0
     overdue = 0
-    for task in sorted_context:
+    for task in list(sorted(context, key=sort_key)):
         tasks_in += 1
         color = "red" if task.due_date and task.due_date < date.today() else ""
         style = "strike" if task.done_date else ""
@@ -108,9 +106,9 @@ def print_context(context, context_name):
 
 def print_search(tasks, limit, selected=False):
     print_ui("printer", "selected" if selected else "found", both=True)
-    for i, task in tasks:
+    for i, task in list(sorted(tasks, key=lambda t: sort_key(t[1]))):
         if limit and i > Defaults.SEARCH_RESULTS.value:
-            print_ui("printer", "search_overflow", color="red")
+            print_ui("printer", "overflow", color="red")
             break
         if task.done:
             print_line(f"{i}) {task.task}", style="strike")

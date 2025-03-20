@@ -34,14 +34,15 @@ class TaskManager:
         self.tasks.push(tasks)
 
     def load_csv_to_today(self):
-        today = load_csv(f"today_{date.today()}", self._filepath)
+        today = load_csv(f"today_{date.today()}.csv", self._filepath)
         if today is None:
-            print("NO TASKS FOR TODAY")
             return None
 
         today_tasks = task_parse.make_tasks_from_csv(today)
         for task in today_tasks:
             self.today_tasks.add(task)
+
+        return self.today_tasks
 
     def load_csv_to_done(self):
         done = load_csv("done.csv", self._filepath)
@@ -140,7 +141,8 @@ class TaskManager:
 
     def make_today(self):
         for _ in range(min(Defaults.TASK_AMOUNT.value, len(self.tasks))):
-            self.today_tasks.add(self.tasks.pop())
+            if (task := self.tasks.pop()) and task.done is False:
+                self.today_tasks.add(task)
 
         self.tasks.push(self.today_tasks)
         filename = f"today_{date.today()}.csv"
@@ -155,12 +157,12 @@ class TaskManager:
         return today
 
     def add_to_today(self, new_tasks_str=""):
-        if not self.search_results:
-            return
-
         if new_tasks_str:
             new_tasks = self.add_tasks(new_tasks_str)
             self.add_to_search(new_tasks)
+
+        if not self.search_results:
+            return
 
         for _, task in self.search_results:
             self.today_tasks.add(task)
