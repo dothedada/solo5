@@ -21,7 +21,7 @@ state = context_wrapper()
 # 4. todo lo relacionado con today (make, encore, forecast)
 # 4.1 algoritmo para armar día
 # 5. completar condicionales del program loop
-# 6. revisar textos ui
+# 6. Configuracion
 # 7. documentacion
 
 
@@ -56,6 +56,10 @@ def program_loop(manager):
                 state(command=Command.DELETE_TASKS)
                 action_loop(manager, Command.DELETE_TASKS, False)
 
+            case Command.MAKE_TODAY:
+                manager.make_today()
+                # print_context("today", "today")
+
             case Command.SEARCH:
                 manager.search_results.clear()
                 search_loop(manager, True)
@@ -84,12 +88,11 @@ def program_loop(manager):
                     )
                 else:
                     print_ui("output", "fix_dates_not", color="green")
+                print()
             case _:
                 print_ui("output", "unknown", color="red")
 
         state(command="", action="")
-
-    print()
 
 
 def resolve_action(manager, command):

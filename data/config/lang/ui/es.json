@@ -14,7 +14,7 @@
       "update_task": "^act(?:uali[sz]ar)?$",
       "done_task": "^r(?:ealizada)?$",
       "delete_tasks": "^borrar$",
-      "make_today": "^h(?:acer hoy)?$",
+      "make_today": "^p(?:ara hoy)?$",
       "encore_today": "^extra$",
       "forecast": "^m(?:a[nñ]ana)?$",
       "search": "^b(?:uscar)?$",

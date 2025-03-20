@@ -43,17 +43,16 @@ class Heap:
         if len(self._heap) == 0:
             return None
 
-        task = self.peek()
-        last_item = self._heap.pop()
-        self._heap[0] = last_item
-        self.heappify_down(0)
-        return task
+        task = self._heap[0][1]
+        alocate_task = self._heap.pop()
 
-    def peek(self):
         if len(self._heap) == 0:
-            return None
+            return task
 
-        return self._heap[0][1]
+        self._heap[0] = alocate_task
+        self.heappify_down(0)
+
+        return task
 
     def heappify_up(self, index):
         if index == 0:
