@@ -35,7 +35,7 @@ As part of my Python learning journey, I wanted to strengthen my understanding o
   - arrange tasks
   - search tasks
   - import - export task batches
-- [] in manager, set taks for today ->
+- [-] in manager, set taks for today ->
       - get 5 by priority
       - based on energy,
       - put asside the able ones to delay

@@ -80,6 +80,12 @@ class TaskManager:
                 done_tasks.append(DoneTask(task).to_dict())
         add_record_csv("done.csv", self._filepath, done_tasks, TASK_DONE_KEYS)
 
+    def sync_tasks_done(self):
+        done_tasks = []
+        for task in self.done_tasks:
+            done_tasks.append(DoneTask(task).to_dict())
+        sync_csv("done.csv", self._filepath, done_tasks, TASK_DONE_KEYS)
+
     def add_to_search(self, string, task_list=None):
         self.search_results.clear()
         searched_tasks = []
@@ -111,9 +117,9 @@ class TaskManager:
         self.tasks.push(tasks)
         return tasks
 
-    def mark_tasks_done(self, is_done=True):
+    def mark_tasks_done(self):
         for _, task in self.search_results:
-            task.done = True if is_done else False
+            task.done = True
             task.done_date = date.today()
             self.tasks.update_task(task)
             self.done_tasks.add(DoneTask(task))
@@ -150,12 +156,14 @@ class TaskManager:
 
         self.tasks.push(self.today_tasks)
 
-    def get_today(self):
-        today = []
-        for i, task in enumerate(self.today_tasks):
-            enumerator = f"{i}, done)" if task.done else f"{i})"
-            today.append((enumerator, task))
-        return today
+    def get_forecast(self):
+        tomorrow = set()
+        for _ in range(min(Defaults.TASK_AMOUNT.value, len(self.tasks))):
+            if (task := self.tasks.pop()) and task.done is False:
+                tomorrow.add(task)
+
+        self.tasks.push(self.today_tasks)
+        return tomorrow
 
     def add_to_today(self, new_tasks_str):
         if not new_tasks_str:
@@ -194,7 +202,7 @@ class TaskManager:
 
         # Save tasks
         self.save_tasks_to_csv()
-        sync_csv("done.csv", self._filepath, tasks_done, TASK_DONE_KEYS)
+        self.sync_tasks_done()
 
     def fix_dates(self):
         today = date.today()

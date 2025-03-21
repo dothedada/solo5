@@ -39,4 +39,5 @@ class Command(Enum):
     EXIT = "exit"
     PURGE = "purge"
     FIX_DATES = "fix_dates"
+    CONFIG = "config"
     HELP = "help"

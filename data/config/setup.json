@@ -1,13 +1,19 @@
 {
-  "lang": "es",
   "data_path": "./data/tasks",
   "rgx_path": "./data/config/lang/regex",
   "ui_path": "./data/config/lang/ui",
   "task_split": "//",
-  "task_amount": 5,
-  "base_difficulty": 3,
   "undelayable_weight": 2,
   "urgent_weight": 1.2,
   "diffficulty_weight": 1.5,
-  "count_current_day": "False"
+
+  "lang": "es",
+  "task_amount": 5,
+  "base_dif": 3,
+  "search_results": 10,
+  "context": "today",
+  "task_max_length": 140,
+  "carpe_diem": "False",
+  "save_in_cicle": "False",
+  "save_on_exit": "True"
 }

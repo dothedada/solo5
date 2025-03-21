@@ -9,18 +9,11 @@ from ui_elements import (
 from context import context_wrapper
 from type_input import Response, Confirm, Command
 from config import Defaults, ui_txt
-from fileManagers import load_json
-
-# NOTE: UBICAR en algún puto lado
-input_ui = load_json(Defaults.UI_PATH.value, "es.json")["ui"]["input"]
 
 
 state = context_wrapper()
 
 # TODO:
-# 3. forecast
-# 3.1 if done, not done
-# 6. Configuracion
 # 7. documentacion
 # 4.1 algoritmo para armar día
 
@@ -30,15 +23,24 @@ def program_loop(manager):
     while True:
         action = parse_response(Response.COMMAND, input(state()["bar"]))
 
+        print(action)
+        if action[0] == Response.ERR:
+            print_line(action[1], color="red", style="bold")
+            continue
+
         match action[1]:
             case Command.IN_TODAY:
                 state(context="today")
+
             case Command.IN_GLOBAL:
                 state(context="global")
+
             case Command.IN_DONE:
                 state(context="done")
+
             case Command.PRINT:
                 print_context(state()["where"], state()["where_name"])
+
             case Command.ADD_TASKS:
                 if state()["where"] == manager.done_tasks:
                     print("ESTE COMANDO NO TIENE EFECTO EN DONE")
@@ -48,18 +50,21 @@ def program_loop(manager):
                     manager.add_to_today(tasks_str)
                 else:
                     manager.add_tasks(tasks_str)
+
             case Command.UPDATE_TASK:
                 if state()["where"] == manager.done_tasks:
                     print("ESTE COMANDO NO TIENE EFECTO EN DONE")
                     continue
                 state(command=Command.UPDATE_TASK)
                 action_loop(manager, Command.UPDATE_TASK, True)
+
             case Command.DONE_TASK:
                 if state()["where"] == manager.done_tasks:
                     print("ESTE COMANDO NO TIENE EFECTO EN DONE")
                     continue
                 state(command=Command.DONE_TASK)
                 action_loop(manager, Command.DONE_TASK, False)
+
             case Command.DELETE_TASKS:
                 state(command=Command.DELETE_TASKS)
                 action_loop(manager, Command.DELETE_TASKS, False)
@@ -81,22 +86,30 @@ def program_loop(manager):
                     print("-- pailas, termine lo que mepezo")
 
             case Command.FORECAST:
-                pass
+                if forecast := manager.get_forecast():
+                    print_context(forecast, "prediccion")
+                else:
+                    print("SIN TAREAS PAL JUTURO")
 
             case Command.SEARCH:
                 manager.search_results.clear()
                 search_loop(manager, True)
+
             case Command.CLEAR:
                 manager.search_results.clear()
+
             case Command.SAVE:
                 manager.save_tasks_to_csv()
                 manager.save_tasks_done()
                 print_ui("output", "save", color="green", div=" ", bottom=True)
+
             case Command.EXIT:
                 return
+
             case Command.PURGE:
                 manager.purge_done()
                 print_ui("output", "purge", color="green")
+
             case Command.FIX_DATES:
                 fixed_tasks = manager.fix_dates()
                 if fixed_tasks:
@@ -120,6 +133,9 @@ def program_loop(manager):
                 print_ui("output", "unknown", color="red")
 
         state(command="", action="")
+        if Defaults.SAVE_IN_CICLE.value:
+            manager.save_tasks_to_csv()
+            manager.save_tasks_done()
 
 
 def resolve_action(manager, command):
@@ -136,7 +152,7 @@ def resolve_action(manager, command):
 
         update_str = parse_response(
             Response.TEXT_INPUT,
-            input(input_ui["new_data"]),
+            input(ui_txt["input"]["new_data"]),
         )
 
         if isinstance(update_str, tuple) and update_str[1] == Command.EXIT:

@@ -77,3 +77,7 @@ class TaskRegex:
                     )
 
         return {**patterns, **cls._lang[lang]["definitions"]}
+
+
+parser_ui = UIRegex.of(Defaults.LANG.value)
+parser_task = TaskRegex.of(Defaults.LANG.value)

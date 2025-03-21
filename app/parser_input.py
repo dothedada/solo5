@@ -1,12 +1,9 @@
 import re
 
-from config import Defaults
-from regexGenerator import UIRegex
+from config import ui_txt
+from regexGenerator import parser_ui
 from type_input import Confirm, Command, Response, Select
 from parser_task import sanitize_text
-
-
-_PARSER = UIRegex.of(Defaults.LANG.value)
 
 
 def parse_response(response_type, *args):
@@ -29,16 +26,16 @@ def parse_response(response_type, *args):
         else:
             return (response_type, response)
 
-    return (Response.ERR, "NO MATCH FOR THE REQUEST")
+    return (Response.ERR, ui_txt["err"]["no_match"])
 
 
 def exit_command(input_str):
-    return bool(re.search(_PARSER["command"]["exit"], input_str))
+    return bool(re.search(parser_ui["command"]["exit"], input_str))
 
 
 def instruction(instruction_type):
-    if instruction_type not in _PARSER:
-        raise ValueError(f"'{instruction_type}' NOT IN INPUT PARSER")
+    if instruction_type not in parser_ui:
+        raise ValueError(f"'{instruction_type}' {ui_txt['err']['no_parser']}")
 
     instructions = {
         "confirm": Confirm,
@@ -48,11 +45,11 @@ def instruction(instruction_type):
     instruction_enum = instructions.get(instruction_type)
 
     def parse_input(string):
-        for response, regex in _PARSER[instruction_type].items():
+        for response, regex in parser_ui[instruction_type].items():
             if re.match(regex, string):
                 return instruction_enum(response)
 
-        return (Response.ERR, f"NO INSTRUCTION BY {string}")
+        return (Response.ERR, f"{ui_txt['err']['no_instruction']} '{string}'")
 
     return parse_input
 
@@ -111,7 +108,7 @@ def select_single_number(input_str, task_list_length):
     return (
         {number}
         if 0 < number <= task_list_length
-        else (Response.ERR, f"FUERA DEL RANGO DE SELECCION '{number}'")
+        else (Response.ERR, f"{ui_txt['err']['out_range']} '{number}'")
     )
 
 
@@ -121,10 +118,10 @@ def select_range(input_str, task_list_length):
 
     start, end = map(str.strip, input_str.split("-"))
     if not (start.isdigit() and end.isdigit()):
-        return (Response.ERR, f"RANGO SOLO ACEPTA NUMEROS '{input_str}'")
+        return (Response.ERR, f"{ui_txt['err']['only_int']} '{input_str}'")
 
     start, end = int(start), int(end)
     if 0 < start <= task_list_length and 1 < end <= task_list_length:
         return set(range(start, end + 1))
 
-    return (Response.ERR, f"FUERA DEL RANGO DE SELECCION '{start} - {end}'")
+    return (Response.ERR, f"{ui_txt['err']['out_range']} '{start} - {end}'")

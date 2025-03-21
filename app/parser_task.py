@@ -4,15 +4,12 @@ import calendar
 
 from task import Task
 from config import Defaults
-from regexGenerator import TaskRegex
-
-
-PARSERS = TaskRegex.of(Defaults.LANG.value)
+from regexGenerator import parser_task
 
 
 def _matcher(func):
     def wrapper(input_str, regex_src):
-        for i, pattern in enumerate(PARSERS["regex_for"][regex_src]):
+        for i, pattern in enumerate(parser_task["regex_for"][regex_src]):
             match = re.search(pattern, input_str)
             if match:
                 return func(match=match, match_index=i)
@@ -127,7 +124,7 @@ def _get_dificulty(task_raw):
     if parsed_diff == -1:
         return Defaults.BASE_DIF.value
 
-    dificulty_l = re.search(PARSERS["globals"]["dificulty"], task_raw)
+    dificulty_l = re.search(parser_task["globals"]["dificulty"], task_raw)
     return int(dificulty_l.group()[1:])
 
 

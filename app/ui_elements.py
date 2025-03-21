@@ -4,28 +4,6 @@ from config import Defaults, ui_txt, sort_key
 from datetime import date
 
 
-def make_color(color):
-    colors = {
-        "red": "\033[31m",
-        "green": "\033[32m",
-        "yellow": "\033[33m",
-        "blue": "\033[34m",
-        "magenta": "\033[35m",
-        "cyan": "\033[36m",
-    }
-    return colors.get(color, "")
-
-
-def make_style(style):
-    styles = {
-        "bold": "\033[1m",
-        "underline": "\033[4m",
-        "strike": "\033[9m",
-        "none": "\033[0m",
-    }
-    return styles.get(style, "")
-
-
 def print_line(text, **settings):
     style = make_style(settings.get("style", ""))
     color = make_color(settings.get("color", ""))
@@ -87,7 +65,7 @@ def print_context(context, context_name):
             overdue += 1
         print_line(f"- {task.task}", color=color, style=style)
 
-    percent_done = f"{(done * 100) / len(context)}%"
+    percent_done = f"{(done * 100) / len(context):.2f}%"
     print_ui("printer", "total", prepend=tasks_in, top=True)
     if percent_done:
         print_ui("printer", "done", prepend=percent_done, color="green")
@@ -110,3 +88,25 @@ def print_search(tasks, limit, selected=False):
 
     print_ui("printer", "total", prepend=f"{len(tasks)}", top=True)
     print()
+
+
+def make_color(color):
+    colors = {
+        "red": "\033[31m",
+        "green": "\033[32m",
+        "yellow": "\033[33m",
+        "blue": "\033[34m",
+        "magenta": "\033[35m",
+        "cyan": "\033[36m",
+    }
+    return colors.get(color, "")
+
+
+def make_style(style):
+    styles = {
+        "bold": "\033[1m",
+        "underline": "\033[4m",
+        "strike": "\033[9m",
+        "none": "\033[0m",
+    }
+    return styles.get(style, "")

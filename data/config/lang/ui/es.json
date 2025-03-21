@@ -23,6 +23,7 @@
       "exit": "^salir$",
       "purge": "^purgar$",
       "fix_dates": "^arreglar$",
+      "config": "^configurar$",
       "help": "^ayuda$"
     },
     "select": {
@@ -45,7 +46,7 @@
       "done": "Terminadas",
       "change": "Contexto cambiado",
       "same": "Ya estas en el contexto deseado",
-      "selected": "seleccionada(s)"
+      "selected": "tarea(s)"
     },
     "command": {
       "in_today": "[hoy]",
@@ -65,6 +66,7 @@
       "exit": "[s]alir",
       "purge": "[purgar]",
       "fix_dates": "[arreglar]",
+      "config": "[configurar]",
       "help": "[ayuda]"
     },
     "printer": {
@@ -77,6 +79,13 @@
       "overdue": "tareas vencidas",
       "total": "tareas en total",
       "overflow": "Demasiados resultados... selecciona o haz una búsqueda más específica"
+    },
+    "err": {
+      "no_match": "No hay coincidencias para la búsqueda",
+      "no_parser": "no es un interprete de instruccines válido",
+      "no_instruction": "No se reconoce una instrucion llamada",
+      "out_range": "Fuera del rango de selección",
+      "only_int": "Solo se aceptan números"
     },
     "output": {
       "save": "Todas las tareas han sido guardadas :)",
