@@ -34,13 +34,19 @@ class TaskManager:
         self.tasks.push(tasks)
 
     def load_csv_to_today(self):
-        today = load_csv(f"today_{date.today()}.csv", self._filepath)
-        if today is None:
-            return None
+        today = set()
+        if today_data := load_csv(f"today_{date.today()}.csv", self._filepath):
+            for today_item in today_data:
+                today.add(today_item["id"])
+        else:
+            return
 
-        today_tasks = task_parse.make_tasks_from_csv(today)
-        for task in today_tasks:
-            self.today_tasks.add(task)
+        for task in self.tasks:
+            if not today:
+                break
+            if task.id in today:
+                self.today_tasks.add(task)
+                today.remove(task.id)
 
         return self.today_tasks
 
@@ -59,9 +65,9 @@ class TaskManager:
         sync_csv("tasks.csv", self._filepath, heap_list, TASK_KEYS)
 
         if self.today_tasks:
-            today_list = [task.to_dict() for task in self.today_tasks]
+            today_list = [t.to_dict(only_id=True) for t in self.today_tasks]
             today_filename = f"today_{date.today()}.csv"
-            sync_csv(today_filename, self._filepath, today_list, TASK_KEYS)
+            sync_csv(today_filename, self._filepath, today_list, ("id",))
 
     def save_tasks_done(self):
         done_id = set()
@@ -85,19 +91,9 @@ class TaskManager:
             if string.lower() in task.task.lower():
                 searched_tasks.append(task)
 
-        sort_search = list(
-            sorted(
-                searched_tasks,
-                key=lambda t: (
-                    t.done,
-                    t.due_date is None,
-                    t.due_date or date.max,
-                ),
-            )
-        )
-
         enumeration = 1
-        for task in sort_search:
+        # NOTE añadir el sort
+        for task in searched_tasks:
             self.search_results.append((enumeration, task))
             enumeration += 1
 
@@ -113,6 +109,7 @@ class TaskManager:
     def add_tasks(self, tasks_string):
         tasks = task_parse.make_tasks(tasks_string)
         self.tasks.push(tasks)
+        return tasks
 
     def mark_tasks_done(self, is_done=True):
         for _, task in self.search_results:
@@ -128,6 +125,12 @@ class TaskManager:
         task_info = task_string.split(Defaults.TASK_SPLIT.value)[0]
         task_updated = task_parse.make_tasks(task_info)[0]
         task_updated.id = id
+
+        print("----asd", self.search_results[0] in self.today_tasks)
+        print("---actualiza hoy")
+        self.remove_from_today()
+        self.today_tasks.add(task_updated)
+
         self.tasks.update_task(task_updated)
 
         self.search_results.clear()
@@ -136,6 +139,7 @@ class TaskManager:
     def delete_task(self):
         for _, task in self.search_results:
             self.tasks.remove_task(task)
+            self.today_tasks.remove(task)
 
         self.search_results.clear()
 
@@ -145,9 +149,6 @@ class TaskManager:
                 self.today_tasks.add(task)
 
         self.tasks.push(self.today_tasks)
-        filename = f"today_{date.today()}.csv"
-        tasks = [t.to_dict() for t in self.today_tasks]
-        sync_csv(filename, self._filepath, tasks, TASK_KEYS)
 
     def get_today(self):
         today = []
@@ -156,18 +157,12 @@ class TaskManager:
             today.append((enumerator, task))
         return today
 
-    def add_to_today(self, new_tasks_str=""):
-        if new_tasks_str:
-            new_tasks = self.add_tasks(new_tasks_str)
-            self.add_to_search(new_tasks)
+    def add_to_today(self, new_tasks_str):
+        if not new_tasks_str:
+            return False
 
-        if not self.search_results:
-            return
-
-        for _, task in self.search_results:
-            self.today_tasks.add(task)
-
-        self.search_results.clear()
+        new_tasks = self.add_tasks(new_tasks_str)
+        self.today_tasks.update(new_tasks)
 
     def remove_from_today(self):
         for _, task in self.search_results:

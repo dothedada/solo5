@@ -48,10 +48,13 @@ class Task:
 
         return hex(base_id)[2:]
 
-    def to_dict(self):
+    def to_dict(self, only_id=False):
         dictionary = {}
-        for key in self.keys_allowed:
+        if only_id:
+            dictionary["id"] = getattr(self, "id")
+            return dictionary
 
+        for key in self.keys_allowed:
             dictionary[key] = getattr(self, key, None)
 
         return dictionary

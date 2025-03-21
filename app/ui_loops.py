@@ -18,11 +18,11 @@ input_ui = load_json(Defaults.UI_PATH.value, "es.json")["ui"]["input"]
 state = context_wrapper()
 
 # TODO:
-# 4. todo lo relacionado con today (make, encore, forecast)
-# 4.1 algoritmo para armar día
-# 5. completar condicionales del program loop
+# SOlucionar la implementacion de done y update, pues no está sync con today
+# 3. forecast
 # 6. Configuracion
 # 7. documentacion
+# 4.1 algoritmo para armar día
 
 
 def program_loop(manager):
@@ -40,19 +40,27 @@ def program_loop(manager):
             case Command.PRINT:
                 print_context(state()["where"], state()["where_name"])
             case Command.ADD_TASKS:
-                # TODO: bloquear en DONE, complementar en TODAY
+                if state()["where"] == manager.done_tasks:
+                    print("ESTE COMANDO NO TIENE EFECTO EN DONE")
+                    continue
                 tasks_str = input(state(command=Command.ADD_TASKS)["bar"])
-                manager.add_tasks(tasks_str)
+                if state()["where"] == manager.today_tasks:
+                    manager.add_to_today(tasks_str)
+                else:
+                    manager.add_tasks(tasks_str)
             case Command.UPDATE_TASK:
-                # TODO: bloquear en DONE, complementar en TODAY
+                if state()["where"] == manager.done_tasks:
+                    print("ESTE COMANDO NO TIENE EFECTO EN DONE")
+                    continue
                 state(command=Command.UPDATE_TASK)
                 action_loop(manager, Command.UPDATE_TASK, True)
             case Command.DONE_TASK:
-                # TODO: marcar como UNDONE, devolver a task
+                if state()["where"] == manager.done_tasks:
+                    print("ESTE COMANDO NO TIENE EFECTO EN DONE")
+                    continue
                 state(command=Command.DONE_TASK)
                 action_loop(manager, Command.DONE_TASK, False)
             case Command.DELETE_TASKS:
-                # TODO: al borrar de GLOBAL se elimina de HOY
                 state(command=Command.DELETE_TASKS)
                 action_loop(manager, Command.DELETE_TASKS, False)
 
