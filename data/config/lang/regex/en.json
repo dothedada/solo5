@@ -54,6 +54,14 @@
   },
   "dates": [
     "(?P<date>(?P<from>(?P<day>(?:\\b(0?[1-9]|[12][0-9]|3[01])\\b))(?:[/-]| of )(?:(?P<month_num>\\b(?:0?[1-9]|1[0-2])\\b)|(?P<month_name>{months}))))",
+    "(?P<from>on (?P<weekday>{week})) in (?P<modifier>(?P<amount>\\d+) ({time_structure}))",
+    "(?P<from>on |this |next )(?P<weekday>{week}) in (?P<modifier>(?P<amount>\\d+) ({time_structure}))",
+    "(?P<modifier>(?:in|within) (?P<amount>\\d+) ({time_structure}))",
+    "(?P<date>(?P<from>(?P<day_str>({enumeration_str})) of (?P<month_name>{months})))",
+    "(?P<date>(?P<from>(?P<today_rel>{today_rel})))"
+  ],
+  "d_ates": [
+    "(?P<date>(?P<from>(?P<day>(?:\\b(0?[1-9]|[12][0-9]|3[01])\\b))(?:[/-]| of )(?:(?P<month_num>\\b(?:0?[1-9]|1[0-2])\\b)|(?P<month_name>{months}))))",
     "(?P<from>from (?P<today_rel>{today_rel})|(?:this |the )(?P<weekday>{week})) in (?P<modifier>(?P<amount>\\d+) ({time_structure}))",
     "(?P<from>on (?P<weekday>{week})) (?P<modifier>(?P<unit_week>of the (?P<amount>next) week))",
     "(?P<from>on |this |the (?P<modifier>(?P<unit_week>(?P<amount>{amount_str}))) )(?P<weekday>{week})",

@@ -36,7 +36,7 @@
       "line": "─"
     },
     "main": {
-      "head": "solo5 >>>>>>\n",
+      "head": "solo5 >>>>>>",
       "tag": "¿Qué quieres hacer ahora?",
       "exit": "Chao bb, picos pues, mua mua."
     },
@@ -45,7 +45,7 @@
       "today": "Hoy",
       "done": "Terminadas",
       "change": "Contexto cambiado",
-      "same": "Ya estas en el contexto deseado",
+      "same": "Ya estás en el contexto deseado",
       "selected": "tarea(s)"
     },
     "command": {
@@ -74,7 +74,7 @@
       "empty_context": "Sin tareas en:",
       "found": "tareas encontradas",
       "selected": "seleccionaste:",
-      "no_found": "no se encontraron tareas",
+      "no_found": "No se encontraron tareas",
       "done": "tareas realizadas",
       "overdue": "tareas vencidas",
       "total": "tareas en total",
@@ -82,34 +82,33 @@
     },
     "err": {
       "no_match": "No hay coincidencias para la búsqueda",
-      "no_parser": "no es un interprete de instruccines válido",
-      "no_instruction": "No se reconoce una instrucion llamada",
+      "no_parser": "No es un intérprete de instrucciones válido",
+      "no_instruction": "No se reconoce una instrucción llamada",
       "out_range": "Fuera del rango de selección",
       "only_int": "Solo se aceptan números"
     },
     "output": {
       "save": "Todas las tareas han sido guardadas :)",
       "purge": "Se han eliminado las tareas marcadas como Terminadas",
-      "fix_dates": "Fechas de finalizacion recalculadas",
-      "fix_dates_not": "No hay fechas que necesite se recalculadas",
+      "fix_dates": "Fechas de finalización recalculadas",
+      "fix_dates_not": "No hay fechas que necesiten ser recalculadas",
       "unknown": "Comando desconocido",
       "confirmation": "[s]i | [n]o | [c]ancelar",
-      "done": "Listo!!!",
-      "search_no_input": "Que texto puede tener la tarea que buscas",
-      "search_no_match": "No se enontraron resultados que coincidan...",
+      "done": "¡Listo!",
+      "search_no_input": "¿Qué texto puede tener la tarea que buscas?",
+      "search_no_match": "No se encontraron resultados que coincidan...",
       "search_results": "Resultados de la búsqueda:",
-      "warn": "vas a cambiar esta tarea:",
+      "warn": "Vas a cambiar esta tarea:",
       "search_overflow": "Demasiados resultados... selecciona de la lista o escribe [0] para reiniciar",
       "select_one": "Selecciona una tarea...",
       "select": "Selecciona una o más tareas...",
       "select_cancel": "Selección cancelada",
       "select_reminder": "Selecciona SÓLO UNA tarea",
-      "selection": "\nseleccionaste:",
-      "cancel": "AS YOU WISH, FUCKR..."
+      "selection": "\nSeleccionaste:",
+      "cancel": "ok ok ok ok, cancelado."
     },
     "input": {
-      "look_for": "¿Qué tarea?\n",
-      "new_data": "Escribe la nueva informacion:\n"
+      "new_data": "Escribe la nueva información:\n"
     }
   }
 }

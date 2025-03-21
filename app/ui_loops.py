@@ -13,10 +13,6 @@ from config import Defaults, ui_txt
 
 state = context_wrapper()
 
-# TODO:
-# 7. documentacion
-# 4.1 algoritmo para armar día
-
 
 def program_loop(manager):
     state(task_manager=manager)

@@ -30,7 +30,7 @@ def print_ui(*data, **settings):
         try:
             text = text[level]
         except KeyError:
-            raise KeyError(f"No key '{level}' in ui_text")
+            raise KeyError(f"NO KEY '{level}' IN UI_TEXT")
 
     prepend = settings.get("prepend", "")
     append = settings.get("append", "")

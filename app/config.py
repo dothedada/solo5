@@ -25,7 +25,7 @@ class Defaults(Enum):
     SAVE_ON_EXIT = settings["save_on_exit"] == "True"
 
 
-ui_txt = load_json(Defaults.UI_PATH.value, "es.json")["ui"]
+ui_txt = load_json(Defaults.UI_PATH.value, f"{Defaults.LANG.value}.json")["ui"]
 
 
 def sort_key(task):

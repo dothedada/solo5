@@ -1,0 +1,114 @@
+{
+  "RGX": {
+    "confirm": {
+      "yes": "^y(?:es)?$",
+      "no": "^n(?:o)?$",
+      "cancel": "^c(?:ancel)?$"
+    },
+    "command": {
+      "in_today": "^today(?: tasks)?$",
+      "in_global": "^all(?: tasks)?$",
+      "in_done": "^done(?: tasks)?$",
+      "print": "^p(?:rint)?$",
+      "add_tasks": "^a(?:dd)?$",
+      "update_task": "^u(?:pdate)?$",
+      "done_task": "^d(?:one)?$",
+      "delete_tasks": "^del(?:ete)?$",
+      "make_today": "^for(?: today)?$",
+      "encore_today": "^encore$",
+      "forecast": "^tomorrow$",
+      "search": "^f(?:ind)?$",
+      "clear": "^c(?:lear)?$",
+      "save": "^s(?:ave)?$",
+      "exit": "^exit$",
+      "purge": "^purge$",
+      "fix_dates": "^fix dates$",
+      "config": "^configure$",
+      "help": "^help$"
+    },
+    "select": {
+      "all": "^all$",
+      "none": "^none$"
+    }
+  },
+  "ui": {
+    "layout": {
+      "line": "─"
+    },
+    "main": {
+      "head": "solo5 >>>>>>",
+      "tag": "What do you want to do?",
+      "exit": "Bye bb, kisses, mua mua."
+    },
+    "context": {
+      "global": "Global",
+      "today": "Today",
+      "done": "done",
+      "change": "Context changed",
+      "same": "You are already in the desired context",
+      "selected": "task(s)"
+    },
+    "command": {
+      "in_today": "[today] tasks",
+      "in_global": "[all] tasks",
+      "in_done": "[done] tasks",
+      "print": "[p]rint",
+      "add_tasks": "[a]dd",
+      "update_task": "[u]pdate",
+      "done_task": "[d]one",
+      "delete_tasks": "[del]ete",
+      "make_today": "[for] today",
+      "encore_today": "[encore]",
+      "forecast": "[tomorrow]",
+      "search": "[f]ind",
+      "clear": "[c]lear",
+      "save": "[s]ave",
+      "exit": "[exit]",
+      "purge": "[purge]",
+      "fix_dates": "[fix dates]",
+      "config": "[configure]",
+      "help": "[help]"
+    },
+    "printer": {
+      "header_context": "Tasks in:",
+      "empty_context": "No tasks in:",
+      "found": "tasks found",
+      "selected": "you selected:",
+      "no_found": "No tasks found",
+      "done": "tasks completed",
+      "overdue": "overdue tasks",
+      "total": "total tasks",
+      "overflow": "Too many results... select or make a more specific search"
+    },
+    "err": {
+      "no_match": "No matches for the search",
+      "no_parser": "Not a valid instruction parser",
+      "no_instruction": "No instruction named",
+      "out_range": "Out of selection range",
+      "only_int": "Only numbers are accepted"
+    },
+    "output": {
+      "save": "All tasks have been saved :)",
+      "purge": "Tasks marked as completed have been deleted",
+      "fix_dates": "Completion dates recalculated",
+      "fix_dates_not": "No dates need to be recalculated",
+      "unknown": "Unknown command",
+      "confirmation": "[y]es | [n]o | [c]ancel",
+      "done": "Done!!!",
+      "search_no_input": "What text might the task contain?",
+      "search_no_match": "No matching results found...",
+      "search_results": "Search results:",
+      "warn": "You are about to change this task:",
+      "search_overflow": "Too many results... select from the list or type [0] to restart",
+      "select_one": "Select a task...",
+      "select": "Select one or more tasks...",
+      "select_cancel": "Selection canceled",
+      "select_reminder": "Select ONLY ONE task",
+      "selection": "\nYou selected:",
+      "cancel": "AS YOU WISH, FUCKR..."
+    },
+    "input": {
+      "new_data": "Enter the new information:\n"
+    }
+  }
+}

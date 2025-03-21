@@ -7,7 +7,7 @@
   "urgent_weight": 1.2,
   "diffficulty_weight": 1.5,
 
-  "lang": "es",
+  "lang": "en",
   "task_amount": 5,
   "base_dif": 3,
   "search_results": 10,
