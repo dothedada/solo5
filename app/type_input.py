@@ -31,7 +31,7 @@ class Command(Enum):
     DONE_TASK = "done_task"
     DELETE_TASKS = "delete_tasks"
     MAKE_TODAY = "make_today"
-    ENCORE_TODAY = "encore"
+    ENCORE_TODAY = "encore_today"
     FORECAST = "forecast"
     SEARCH = "search"
     CLEAR = "clear"

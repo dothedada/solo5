@@ -1,3 +1,4 @@
+from datetime import date
 from enum import Enum
 from fileManagers import load_json
 
@@ -31,3 +32,11 @@ class Defaults(Enum):
 
 
 ui_txt = load_json(Defaults.UI_PATH.value, "es.json")["ui"]
+
+
+def sort_key(task):
+    return (
+        getattr(task, "done", False),
+        task.due_date is None,
+        task.due_date or date.max,
+    )

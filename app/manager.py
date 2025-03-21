@@ -1,4 +1,4 @@
-from config import Defaults
+from config import Defaults, sort_key
 import parser_task as task_parse
 from fileManagers import load_csv, sync_csv, add_record_csv, clean_directory
 from heap import Heap
@@ -92,8 +92,8 @@ class TaskManager:
                 searched_tasks.append(task)
 
         enumeration = 1
-        # NOTE añadir el sort
-        for task in searched_tasks:
+        sorted_tasks = list(sorted(searched_tasks, key=sort_key))
+        for task in sorted_tasks:
             self.search_results.append((enumeration, task))
             enumeration += 1
 
@@ -143,8 +143,8 @@ class TaskManager:
 
         self.search_results.clear()
 
-    def make_today(self):
-        for _ in range(min(Defaults.TASK_AMOUNT.value, len(self.tasks))):
+    def make_today(self, amount=Defaults.TASK_AMOUNT.value):
+        for _ in range(min(amount, len(self.tasks))):
             if (task := self.tasks.pop()) and task.done is False:
                 self.today_tasks.add(task)
 
@@ -208,3 +208,9 @@ class TaskManager:
                 fix_tasks.append([new_task.task, old_d, new_task.due_date])
 
         return fix_tasks
+
+    def encore_posible(self):
+        return all([t.done for t in self.today_tasks])
+
+    def encore_today(self, amount):
+        self.make_today(amount=amount)

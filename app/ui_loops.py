@@ -18,8 +18,8 @@ input_ui = load_json(Defaults.UI_PATH.value, "es.json")["ui"]["input"]
 state = context_wrapper()
 
 # TODO:
-# SOlucionar la implementacion de done y update, pues no está sync con today
 # 3. forecast
+# 3.1 if done, not done
 # 6. Configuracion
 # 7. documentacion
 # 4.1 algoritmo para armar día
@@ -69,6 +69,20 @@ def program_loop(manager):
                 state(context="today")
                 print_context(state()["where"], state()["where_name"])
 
+            case Command.ENCORE_TODAY:
+                if manager.encore_posible():
+                    if amount := input("Cuantas tareas mas? Max XXX> "):
+                        if not amount.isdigit():
+                            print("Solo numeros perro")
+                        manager.encore_today(int(amount))
+                    print("--Listo perro")
+                    print_context(manager.today_tasks, "hoy")
+                else:
+                    print("-- pailas, termine lo que mepezo")
+
+            case Command.FORECAST:
+                pass
+
             case Command.SEARCH:
                 manager.search_results.clear()
                 search_loop(manager, True)
@@ -98,6 +112,10 @@ def program_loop(manager):
                 else:
                     print_ui("output", "fix_dates_not", color="green")
                 print()
+
+            case Command.HELP:
+                pass
+
             case _:
                 print_ui("output", "unknown", color="red")
 

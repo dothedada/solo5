@@ -1,6 +1,6 @@
 import shutil
 
-from config import Defaults, ui_txt
+from config import Defaults, ui_txt, sort_key
 from datetime import date
 
 
@@ -67,14 +67,6 @@ def print_ui(*data, **settings):
         print_div(width=len(text) + 2, **settings)
 
 
-def sort_key(task):
-    return {
-        getattr(task, "done", False),
-        task.due_date is None,
-        task.due_date or date.max,
-    }
-
-
 def print_context(context, context_name):
     if len(context) == 0:
         print_ui("printer", "empty_context", append=context_name, color="red")
@@ -95,7 +87,7 @@ def print_context(context, context_name):
             overdue += 1
         print_line(f"- {task.task}", color=color, style=style)
 
-    percent_done = (done * 100) / len(context)
+    percent_done = f"{(done * 100) / len(context)}%"
     print_ui("printer", "total", prepend=tasks_in, top=True)
     if percent_done:
         print_ui("printer", "done", prepend=percent_done, color="green")
@@ -106,7 +98,8 @@ def print_context(context, context_name):
 
 def print_search(tasks, limit, selected=False):
     print_ui("printer", "selected" if selected else "found", both=True)
-    for i, task in list(sorted(tasks, key=lambda t: sort_key(t[1]))):
+
+    for i, task in tasks:
         if limit and i > Defaults.SEARCH_RESULTS.value:
             print_ui("printer", "overflow", color="red")
             break
