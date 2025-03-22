@@ -25,10 +25,6 @@ def main():
         manager.save_tasks_to_csv()
         manager.save_tasks_done()
 
-    print_line()
-    print_ui("main", "exit", bottom=True, color="green", full=True)
-    print_line()
-
 
 if __name__ == "__main__":
     main()

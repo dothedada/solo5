@@ -5,16 +5,12 @@ from ui_elements import (
     print_ui,
     print_line,
     print_div,
+    print_exit,
     screen,
 )
 from context import context_wrapper
 from type_input import Response, Confirm, Command
 from config import Defaults, ui_txt
-import os
-
-
-def clear_console():
-    os.system("cls" if os.name == "nt" else "clear")
 
 
 state = context_wrapper()
@@ -106,6 +102,12 @@ def program_loop(manager):
                 print_ui("output", "save", color="green", div=" ", bottom=True)
 
             case Command.EXIT:
+                screen.exit()
+
+                if manager.today_tasks:
+                    print_exit(manager)
+                print_ui("main", "exit", bottom=True, full=True)
+                print_line()
                 return
 
             case Command.PURGE:
@@ -154,7 +156,7 @@ def resolve_action(manager, command):
 
         update_str = parse_response(
             Response.TEXT_INPUT,
-            input(ui_txt["input"]["new_data"]),
+            input(ui_txt["input"]["update_task"]),
         )
 
         if isinstance(update_str, tuple) and update_str[1] == Command.EXIT:

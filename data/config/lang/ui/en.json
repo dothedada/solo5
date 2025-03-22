@@ -7,7 +7,7 @@
     },
     "command": {
       "in_today": "^today(?: tasks)?$",
-      "in_global": "^all(?: tasks)?$",
+      "in_global": "^global(?: tasks)?$",
       "in_done": "^done(?: tasks)?$",
       "print": "^p(?:rint)?$",
       "add_tasks": "^a(?:dd)?$",
@@ -109,10 +109,12 @@
       "no_effect": "This command has no effect in this context",
       "today_unfinnished": "It is not possible to do EXTRA without finishing today's tasks",
       "forecast": "Forecast",
-      "no_forecast": "No pending tasks"
+      "no_forecast": "No pending tasks",
+      "pending": "of task for today done",
+      "all_done": "Great work!!! nothing left for today <3"
     },
     "input": {
-      "new_data": "Enter the new information:\n"
+      "update_task": "Enter the updated task:\n"
     }
   }
 }

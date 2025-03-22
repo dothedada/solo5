@@ -13,7 +13,8 @@ builtins.input = set_input_counter(screen)
 def print_line(text="", **settings):
     style = make_style(settings.get("style", ""))
     color = make_color(settings.get("color", ""))
-    print(f"{style}{color}{text}{reset_format} | {screen.lines}")
+    print(f"{style}{color}{text}{reset_format}")
+    # print(f"{style}{color}{text}{reset_format} | {screen.lines}")
 
 
 def print_div(**settings):
@@ -24,7 +25,8 @@ def print_div(**settings):
         shutil.get_terminal_size().columns // 2,
         settings.get("width", 0),
     )
-    print(f"{style}{color}{divider * width}{reset_format} | {screen.lines}")
+    print(f"{style}{color}{divider * width}{reset_format}")
+    # print(f"{style}{color}{divider * width}{reset_format} | {screen.lines}")
 
 
 def print_ui(*data, **settings):
@@ -91,6 +93,25 @@ def print_search(tasks, limit, selected=False):
 
     print_ui("printer", "total", prepend=f"{len(tasks)}", top=True)
     print_line()
+
+
+def print_exit(manager):
+
+    if not manager.today_tasks:
+        return False
+
+    done = 0
+    total = 0
+    for task in manager.today_tasks:
+        total += 1
+        if task.done:
+            done += 1
+
+    balance = f"{done}/{total}"
+    if total - done:
+        print_ui("output", "pending", prepend=balance, color="red")
+    else:
+        print_ui("output", "all_done", color="green")
 
 
 reset_format = "\033[0m"

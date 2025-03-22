@@ -109,10 +109,12 @@
       "no_effect": "Este comando no tiene efecto en este contexto",
       "today_unfinnished": "No es posible hacer EXTRA sin terminar las tareas del día",
       "forecast": "prediccion",
-      "no_forecast": "No hay tareas pendientes"
+      "no_forecast": "No hay tareas pendientes",
+      "pending": " de tareas para hoy realizadas",
+      "all_done": "Bueeeeena mi prro!!! nada más por hoy, ahora si a soplar vicio!"
     },
     "input": {
-      "new_data": "Escribe la nueva información:\n"
+      "update_task": "Escribe la tarea actualizada:\n"
     }
   }
 }

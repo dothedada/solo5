@@ -143,7 +143,8 @@ class TaskManager:
     def delete_task(self):
         for _, task in self.search_results:
             self.tasks.remove_task(task)
-            self.today_tasks.remove(task)
+            if task in self.today_tasks:
+                self.today_tasks.remove(task)
 
         self.search_results.clear()
 

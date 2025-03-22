@@ -17,7 +17,8 @@ def set_print_counter(screen_manager):
 
 def set_input_counter(screen_manager):
     def input_counter(prompt=""):
-        screen_manager.add_lines()
+        line_count = prompt.count("\n") + 1
+        screen_manager.add_lines(line_count)
         return sys_input(prompt)
 
     return input_counter
@@ -30,6 +31,13 @@ class ScreenManager:
 
     def add_lines(self, count=1):
         self.lines += count
+
+    def exit(self):
+        if self.lines > 0:
+            for _ in range(self.lines):
+                sys.stdout.write("\033[F\033[K")
+            sys.stdout.flush()
+            self.lines = 0
 
     def clear(self):
         lines_to_clear = max(0, self.lines - self.protected_lines)
