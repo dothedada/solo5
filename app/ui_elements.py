@@ -1,14 +1,36 @@
 import shutil
+import sys
 
 from config import Defaults, ui_txt, sort_key
 from datetime import date
 
 
-def print_line(text, **settings):
+class ScreenManager:
+    def __init__(self, protected_lines=3):
+        self.lines = 0
+        self.protected_lines = protected_lines
+
+    def add_line(self, count=1):
+        self.lines += count
+
+    def clear(self):
+        lines_to_clear = max(0, self.lines - self.protected_lines)
+        if lines_to_clear > 0:
+            for _ in range(lines_to_clear):
+                sys.stdout.write("\033[F\033[K")
+            sys.stdout.flush()
+            self.lines = self.protected_lines
+
+
+screen = ScreenManager()
+
+
+def print_line(text="", **settings):
     style = make_style(settings.get("style", ""))
     color = make_color(settings.get("color", ""))
     reset_format = "\033[0m"
     print(f"{style}{color}{text}{reset_format}")
+    screen.add_line()
 
 
 def print_div(**settings):
@@ -22,6 +44,7 @@ def print_div(**settings):
     reset_format = "\033[0m"
 
     print(f"{style}{color}{divider * width}{reset_format}")
+    screen.add_line()
 
 
 def print_ui(*data, **settings):
@@ -71,7 +94,7 @@ def print_context(context, context_name):
         print_ui("printer", "done", prepend=percent_done, color="green")
     if overdue:
         print_ui("printer", "overdue", prepend=overdue, color="red")
-    print()
+    print_line()
 
 
 def print_search(tasks, limit, selected=False):
@@ -87,7 +110,7 @@ def print_search(tasks, limit, selected=False):
             print_line(f"{i}) {task.task}")
 
     print_ui("printer", "total", prepend=f"{len(tasks)}", top=True)
-    print()
+    print_line()
 
 
 def make_color(color):

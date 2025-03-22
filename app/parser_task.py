@@ -82,7 +82,7 @@ def _from_date(data_dict):
     elif (day := data_dict.get("day")) and day.isnumeric():
         b_day = int(day)
     else:
-        print("Cannot parse the day setted")
+        raise ValueError("CANNOT PARSE THE DAY SETTED")
 
     b_month = _get_month(data_dict)
     b_year = data_dict.get("year", date.today().year)

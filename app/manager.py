@@ -132,8 +132,6 @@ class TaskManager:
         task_updated = task_parse.make_tasks(task_info)[0]
         task_updated.id = id
 
-        print("----asd", self.search_results[0] in self.today_tasks)
-        print("---actualiza hoy")
         self.remove_from_today()
         self.today_tasks.add(task_updated)
 

@@ -32,7 +32,7 @@ def load_csv(filename, path):
             reader = csv.DictReader(csv_file, dialect="unix")
             return list(reader)
     except (IOError, csv.Error) as e:
-        print(f"Cannot read the file at '{filepath}': {e}")
+        raise RuntimeError(f"Cannot read the file at '{filepath}': {e}")
 
 
 def clean_directory(filename_pattern, path):

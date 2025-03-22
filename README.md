@@ -1,10 +1,20 @@
 # Sólo 5 (Just5)
 
-This is a todo list in terminal that helps you to prioritize your tasks and prevent burnout.
+Solo5 es una aplicación de lista de tareas para la terminal que ayuda a organizar y priorizar lo más importante de cada día, evitando la sobrecarga de trabajo. La idea central es enfocarse en solo cinco tareas significativas al día.
 
-## Why another f*cking To-Do list?
+## ¿Por qué otra maldita lista de tareas?
 
-As part of my Python learning journey, I wanted to strengthen my understanding of algorithms—especially linear programming—while adding a unique twist to something that has been done to exhaustion.
+Como parte de mi aprendizaje en Python, quería reforzar mi comprensión de algoritmos mientras le daba un giro a algo que ya se ha hecho hasta el cansancio.
+
+## Características principales
+
+- Procesamiento 100% local: No usa servicios de NLP ni inteligencia artificial. Todo se ejecuta en tu máquina.
+- Multilenguaje: Soporta cualquier idioma con solo agregar un archivo JSON de configuración.
+- Altamente configurable: Personaliza comandos, estructura de datos e interfaz.
+- Gestión flexible de tareas: Agrega, edita, marca como completadas y organiza tareas de manera sencilla.
+- Planificación y reprogramación: Permite revisar tareas futuras, reorganizar prioridades y extender la planificación diaria.
+
+Esta herramienta es un ejercicio académico que explora la gestión de tareas basada en texto, priorización y almacenamiento en CSV.
 
 ## Flow
 

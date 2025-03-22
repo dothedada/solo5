@@ -5,10 +5,16 @@ from ui_elements import (
     print_ui,
     print_line,
     print_div,
+    screen,
 )
 from context import context_wrapper
 from type_input import Response, Confirm, Command
 from config import Defaults, ui_txt
+import os
+
+
+def clear_console():
+    os.system("cls" if os.name == "nt" else "clear")
 
 
 state = context_wrapper()
@@ -18,8 +24,9 @@ def program_loop(manager):
     state(task_manager=manager)
     while True:
         action = parse_response(Response.COMMAND, input(state()["bar"]))
+        screen.add_line()
 
-        print(action)
+        screen.clear()
         if action[0] == Response.ERR:
             print_line(action[1], color="red", style="bold")
             continue
@@ -39,9 +46,10 @@ def program_loop(manager):
 
             case Command.ADD_TASKS:
                 if state()["where"] == manager.done_tasks:
-                    print("ESTE COMANDO NO TIENE EFECTO EN DONE")
+                    print_ui("output", "no_effect", color="red")
                     continue
                 tasks_str = input(state(command=Command.ADD_TASKS)["bar"])
+                screen.add_line()
                 if state()["where"] == manager.today_tasks:
                     manager.add_to_today(tasks_str)
                 else:
@@ -49,14 +57,14 @@ def program_loop(manager):
 
             case Command.UPDATE_TASK:
                 if state()["where"] == manager.done_tasks:
-                    print("ESTE COMANDO NO TIENE EFECTO EN DONE")
+                    print_ui("output", "no_effect", color="red")
                     continue
                 state(command=Command.UPDATE_TASK)
                 action_loop(manager, Command.UPDATE_TASK, True)
 
             case Command.DONE_TASK:
                 if state()["where"] == manager.done_tasks:
-                    print("ESTE COMANDO NO TIENE EFECTO EN DONE")
+                    print_ui("output", "no_effect", color="red")
                     continue
                 state(command=Command.DONE_TASK)
                 action_loop(manager, Command.DONE_TASK, False)
@@ -74,18 +82,19 @@ def program_loop(manager):
                 if manager.encore_posible():
                     if amount := input("Cuantas tareas mas? Max XXX> "):
                         if not amount.isdigit():
-                            print("Solo numeros perro")
+                            print_ui("err", "only_int", color="red")
                         manager.encore_today(int(amount))
-                    print("--Listo perro")
+                    screen.add_line()
+                    print_ui("output", "done", color="green")
                     print_context(manager.today_tasks, "hoy")
                 else:
-                    print("-- pailas, termine lo que mepezo")
+                    print_ui("output", "today_unfinnished", color="red")
 
             case Command.FORECAST:
                 if forecast := manager.get_forecast():
-                    print_context(forecast, "prediccion")
+                    print_context(forecast, ui_txt["output"]["forecast"])
                 else:
-                    print("SIN TAREAS PAL JUTURO")
+                    print_ui("output", "no_forecast")
 
             case Command.SEARCH:
                 manager.search_results.clear()
@@ -120,7 +129,7 @@ def program_loop(manager):
                     )
                 else:
                     print_ui("output", "fix_dates_not", color="green")
-                print()
+                print_line()
 
             case Command.HELP:
                 pass
@@ -150,6 +159,7 @@ def resolve_action(manager, command):
             Response.TEXT_INPUT,
             input(ui_txt["input"]["new_data"]),
         )
+        screen.add_line()
 
         if isinstance(update_str, tuple) and update_str[1] == Command.EXIT:
             return Command.EXIT
@@ -197,6 +207,7 @@ def search_loop(task_manager, single):
             Response.TEXT_INPUT,
             input(state(action="BUSCAR")["bar"]),
         )
+        screen.add_line()
         if search_value == Command.EXIT:
             task_manager.search_results.clear()
             return Command.EXIT
@@ -262,6 +273,7 @@ def selection_loop(manager, single):
 def input_loop(answer_type, *args):
     while True:
         response = parse_response(answer_type, input(state()["bar"]), *args)
+        screen.add_line()
 
         match response:
             case (_, Command.EXIT):

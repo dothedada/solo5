@@ -1,22 +1,23 @@
 import readline
 from manager import TaskManager
 from ui_loops import program_loop
-from ui_elements import print_ui
+from ui_elements import print_ui, print_context, print_line
 from config import Defaults, ui_txt
 
 readline
-ui_layout = ui_txt["layout"]
-ui_txt = ui_txt["main"]
 
 
 def main():
 
-    print_ui("main", "head", top=True, style="bold", full=True)
+    print_ui("main", "head", top=True, style="bold", full=True, color="green")
+    print_line()
     manager = TaskManager()
 
-    # NOTE: Print today
+    if not manager.today_tasks:
+        manager.make_today()
 
-    print("\n")
+    print_context(manager.today_tasks, ui_txt["context"]["today"])
+
     print_ui("main", "tag")
 
     program_loop(manager)
@@ -24,9 +25,9 @@ def main():
         manager.save_tasks_to_csv()
         manager.save_tasks_done()
 
-    print("\n")
+    print_line()
     print_ui("main", "exit", bottom=True, color="green", full=True)
-    print("\n")
+    print_line()
 
 
 if __name__ == "__main__":

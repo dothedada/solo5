@@ -37,8 +37,8 @@
     },
     "main": {
       "head": "solo5 >>>>>>",
-      "tag": "What do you want to do?",
-      "exit": "Bye bb, kisses, mua mua."
+      "tag": "What you want to do?",
+      "exit": "Bye baby, kisses, mua mua."
     },
     "context": {
       "global": "Global",
@@ -105,7 +105,11 @@
       "select_cancel": "Selection canceled",
       "select_reminder": "Select ONLY ONE task",
       "selection": "\nYou selected:",
-      "cancel": "AS YOU WISH, FUCKR..."
+      "cancel": "AS YOU WISH, FUCKR...",
+      "no_effect": "This command has no effect in this context",
+      "today_unfinnished": "It is not possible to do EXTRA without finishing today's tasks",
+      "forecast": "Forecast",
+      "no_forecast": "No pending tasks"
     },
     "input": {
       "new_data": "Enter the new information:\n"

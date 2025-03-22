@@ -105,7 +105,11 @@
       "select_cancel": "Selección cancelada",
       "select_reminder": "Selecciona SÓLO UNA tarea",
       "selection": "\nSeleccionaste:",
-      "cancel": "ok ok ok ok, cancelado."
+      "cancel": "ok ok ok ok, cancelado.",
+      "no_effect": "Este comando no tiene efecto en este contexto",
+      "today_unfinnished": "No es posible hacer EXTRA sin terminar las tareas del día",
+      "forecast": "prediccion",
+      "no_forecast": "No hay tareas pendientes"
     },
     "input": {
       "new_data": "Escribe la nueva información:\n"

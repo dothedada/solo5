@@ -11,7 +11,7 @@
   "task_amount": 5,
   "base_dif": 3,
   "search_results": 10,
-  "context": "today",
+  "context": "global",
   "task_max_length": 140,
   "carpe_diem": "False",
   "save_in_cicle": "False",
