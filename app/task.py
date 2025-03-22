@@ -83,3 +83,8 @@ class DoneTask(Task):
             task_dict = task_dict.to_dict()
 
         super().__init__(task_dict)
+
+        if isinstance(self.done_date, str):
+            self.done_date = date.fromisoformat(self.done_date)
+        if self.due_date and isinstance(self.due_date, str):
+            self.due_date = date.fromisoformat(self.due_date)

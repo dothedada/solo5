@@ -24,7 +24,6 @@ def program_loop(manager):
     state(task_manager=manager)
     while True:
         action = parse_response(Response.COMMAND, input(state()["bar"]))
-        screen.add_line()
 
         screen.clear()
         if action[0] == Response.ERR:
@@ -49,7 +48,6 @@ def program_loop(manager):
                     print_ui("output", "no_effect", color="red")
                     continue
                 tasks_str = input(state(command=Command.ADD_TASKS)["bar"])
-                screen.add_line()
                 if state()["where"] == manager.today_tasks:
                     manager.add_to_today(tasks_str)
                 else:
@@ -84,7 +82,6 @@ def program_loop(manager):
                         if not amount.isdigit():
                             print_ui("err", "only_int", color="red")
                         manager.encore_today(int(amount))
-                    screen.add_line()
                     print_ui("output", "done", color="green")
                     print_context(manager.today_tasks, "hoy")
                 else:
@@ -159,7 +156,6 @@ def resolve_action(manager, command):
             Response.TEXT_INPUT,
             input(ui_txt["input"]["new_data"]),
         )
-        screen.add_line()
 
         if isinstance(update_str, tuple) and update_str[1] == Command.EXIT:
             return Command.EXIT
@@ -207,7 +203,6 @@ def search_loop(task_manager, single):
             Response.TEXT_INPUT,
             input(state(action="BUSCAR")["bar"]),
         )
-        screen.add_line()
         if search_value == Command.EXIT:
             task_manager.search_results.clear()
             return Command.EXIT
@@ -273,7 +268,6 @@ def selection_loop(manager, single):
 def input_loop(answer_type, *args):
     while True:
         response = parse_response(answer_type, input(state()["bar"]), *args)
-        screen.add_line()
 
         match response:
             case (_, Command.EXIT):

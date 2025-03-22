@@ -1,36 +1,19 @@
 import shutil
-import sys
+import builtins
 
+from screen import ScreenManager, set_input_counter, set_print_counter
 from config import Defaults, ui_txt, sort_key
 from datetime import date
 
-
-class ScreenManager:
-    def __init__(self, protected_lines=3):
-        self.lines = 0
-        self.protected_lines = protected_lines
-
-    def add_line(self, count=1):
-        self.lines += count
-
-    def clear(self):
-        lines_to_clear = max(0, self.lines - self.protected_lines)
-        if lines_to_clear > 0:
-            for _ in range(lines_to_clear):
-                sys.stdout.write("\033[F\033[K")
-            sys.stdout.flush()
-            self.lines = self.protected_lines
-
-
 screen = ScreenManager()
+builtins.print = set_print_counter(screen)
+builtins.input = set_input_counter(screen)
 
 
 def print_line(text="", **settings):
     style = make_style(settings.get("style", ""))
     color = make_color(settings.get("color", ""))
-    reset_format = "\033[0m"
-    print(f"{style}{color}{text}{reset_format}")
-    screen.add_line()
+    print(f"{style}{color}{text}{reset_format} | {screen.lines}")
 
 
 def print_div(**settings):
@@ -41,10 +24,7 @@ def print_div(**settings):
         shutil.get_terminal_size().columns // 2,
         settings.get("width", 0),
     )
-    reset_format = "\033[0m"
-
-    print(f"{style}{color}{divider * width}{reset_format}")
-    screen.add_line()
+    print(f"{style}{color}{divider * width}{reset_format} | {screen.lines}")
 
 
 def print_ui(*data, **settings):
@@ -111,6 +91,9 @@ def print_search(tasks, limit, selected=False):
 
     print_ui("printer", "total", prepend=f"{len(tasks)}", top=True)
     print_line()
+
+
+reset_format = "\033[0m"
 
 
 def make_color(color):
