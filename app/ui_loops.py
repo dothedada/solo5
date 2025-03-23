@@ -7,8 +7,10 @@ from ui_elements import (
     print_div,
     print_exit,
     screen,
+    make_config,
 )
 from context import context_wrapper
+from fileManagers import load_txt
 from type_input import Response, Confirm, Command
 from config import Defaults, ui_txt
 
@@ -137,7 +139,14 @@ def program_loop(manager):
                 print_line()
 
             case Command.HELP:
-                pass
+                text = load_txt(
+                    Defaults.HELP_PATH.value,
+                    f"help_{Defaults.LANG.value}.txt",
+                )
+                print_line(text)
+
+            case Command.CONFIG:
+                make_config()
 
             case _:
                 print_ui("output", "unknown", color="red")

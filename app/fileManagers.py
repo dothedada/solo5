@@ -8,6 +8,15 @@ import os
 BASE_DIRECTORY = Path.cwd()
 
 
+def load_txt(path, filename):
+    filepath = BASE_DIRECTORY / path / filename
+    text = ""
+    with open(filepath, "r", encoding="utf-8") as file:
+        text = file.read()
+
+    return text
+
+
 def load_json(path, filename):
     filepath = BASE_DIRECTORY / path / filename
 
@@ -19,6 +28,23 @@ def load_json(path, filename):
             return json.load(f)
     except (IOError, json.JSONDecodeError) as e:
         raise RuntimeError(f"Cannot read the JSON file at '{filepath}': {e}")
+
+
+def write_json(path, filename, data):
+    filepath = BASE_DIRECTORY / path / filename
+
+    with tempfile.NamedTemporaryFile(
+        "w",
+        encoding="utf-8",
+        delete=False,
+    ) as temp_file:
+        json.dump(data, temp_file)
+
+    try:
+        shutil.move(temp_file.name, filepath)
+    except IOError as e:
+        os.unlink(temp_file.name)
+        raise RuntimeError(f"Cannot create json file '{filename}': {e}")
 
 
 def load_csv(filename, path):

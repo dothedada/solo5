@@ -8,6 +8,7 @@ settings = load_json("./data/config", "setup.json")
 class Defaults(Enum):
     DATA_PATH = settings["data_path"]
     RGX_PATH = settings["rgx_path"]
+    HELP_PATH = settings["help_path"]
     UI_PATH = settings["ui_path"]
     TASK_SPLIT = settings["task_split"]
     UND_W = settings["undelayable_weight"]

@@ -2,6 +2,7 @@
   "data_path": "./data/tasks",
   "rgx_path": "./data/config/lang/regex",
   "ui_path": "./data/config/lang/ui",
+  "help_path": "./data/config/lang/help",
   "task_split": "//",
   "undelayable_weight": 2,
   "urgent_weight": 1.2,
