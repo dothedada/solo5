@@ -132,7 +132,7 @@ class TaskManager:
         task_updated = task_parse.make_tasks(task_info)[0]
         task_updated.id = id
 
-        self.remove_from_today()
+        # self.remove_from_today()
         self.today_tasks.add(task_updated)
 
         self.tasks.update_task(task_updated)
@@ -174,7 +174,11 @@ class TaskManager:
 
     def remove_from_today(self):
         for _, task in self.search_results:
-            self.today_tasks.remove(task)
+            if task in self.today_tasks:
+                print("-- esta en today")
+                self.today_tasks.remove(task)
+            else:
+                print("-- NO esta en today")
 
     def purge_done(self):
         today = date.today()

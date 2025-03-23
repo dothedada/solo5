@@ -13,7 +13,6 @@ default_values = {
     "task_max_length": 140,
     "carpe_diem": "False",
     "save_in_cicle": "False",
-    "save_on_exit": "True",
 }
 
 
@@ -36,7 +35,6 @@ class Defaults(Enum):
     TASK_MAX_LENGTH = settings["task_max_length"]
     CARPE_DIEM = settings["carpe_diem"] == "True"
     SAVE_IN_CICLE = settings["save_in_cicle"] == "True"
-    SAVE_ON_EXIT = settings["save_on_exit"] == "True"
 
 
 ui_txt = load_json(Defaults.UI_PATH.value, f"{Defaults.LANG.value}.json")["ui"]
