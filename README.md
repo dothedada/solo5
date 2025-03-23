@@ -10,11 +10,11 @@ Based on this principle, commands were designed to align with natural speech and
 
 ## Contents
 
-1. Why?
-2. Key Features
-3. Installation
-4. Use: Getting Started
-5. Future
+1. [Why another task list?](#why-another-task-list)
+2. [Key Features](#key-features)
+3. [Installation](#installation)
+4. [Use](#use)
+5. [Future](#future)
 
 ## Why another task list?
 
@@ -40,14 +40,15 @@ I wanted to reinforce my understanding of some algorithms while learning Python.
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/your-user/just5.git
-cd just5
+curl -L -o solo5.zip https://github.com/dothedada/solo5/archive/refs/heads/main.zip
+unzip solo5.zip && mv solo5-main solo5
+cd solo5
 ```
 
 2. Run the application:
 
 ```
-./just5
+./solo5
 ```
 
 3. Run the configurator and answer each question:
@@ -66,7 +67,7 @@ Command Line Interface
 The command line is structured to display the following information:
 
 ```
-context > current command > action to perform > Number of affected tasks
+context > current command > action to perform > Number of affected tasks >
 ```
 
 #### Context
@@ -167,13 +168,13 @@ Partiendo de este principio, se diseñaron los comandos para que coincidieran co
 
 ## Contenidos
 
-1. ¿Por que?
-2. Características principales
-3. Instalación
-4. Uso: primeros pasos
-5. Futuro
+1. [¿Por qué otra lista de tareas?](#por-qué-otra-lista-de-tareas)
+2. [Características](#características)
+3. [Instalación](#instalación)
+4. [Uso](#uso)
+5. [Futuro](#futuro)
 
-## ¿Por qué otra maldita lista de tareas?
+## ¿Por qué otra lista de tareas?
 
 Quería reforzar mi comprensión de algunos algoritmos mientras aprendía python, ¿por qué no permitise pensar cómo podría hacerse mejor algo que ya se ha hecho hasta el cansancio?.
 
@@ -198,7 +199,8 @@ Quería reforzar mi comprensión de algunos algoritmos mientras aprendía python
 1. Clona el repositorio:
 
 ```bash
-git clone https://github.com/tu-usuario/solo5.git
+curl -L -o solo5.zip https://github.com/dothedada/solo5/archive/refs/heads/main.zip
+unzip solo5.zip && mv solo5-main solo5
 cd solo5
 ```
 
@@ -211,7 +213,7 @@ cd solo5
 3. ejecuta el configurador y responde cada pregunta:
 
 ```
-> config
+Global> config
 ```
 
 Por defecto, Solo5 viene en inglés y con el paquete de lenguaje para español. Si deseas cambiar por un idioma diferente, ve a al directorio ./data/config/lang/ y cambia los archivos correspondientes dentro del directorio regex y ui. Luego, inicia config y especifica el nuevo idioma (el nombre del archivo sin la extensión)
@@ -225,7 +227,7 @@ La interfase ha sido pensada y desarrollada para ser lo mas sencilla e intuitiva
 la linea de comandos está estructurada para mostrar la siguiente información:
 
 ```
-contexto > comando actual > accion a realizar > Número de tareas que serían afectadas
+Contexto> Comando Actual> Accion a Realizar> Tareas que Serían Afectadas>
 ```
 
 #### contexto
@@ -306,7 +308,7 @@ esto será interpretado de la siguiente forma:
 Se pueden agregar varias tareas en una sola acción al usar "//"
 
 ```
-Global > [a]ñadir > tarea uno // tarea dos // tarea tres
+Global> [a]ñadir> tarea uno // tarea dos // tarea tres
 ```
 
 esto crea tres tareas independientes
