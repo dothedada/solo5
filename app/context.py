@@ -60,6 +60,7 @@ def context_wrapper():
             "bar": f"\033[1m{'> '.join(bar)}> \033[0m",
             "where": where,
             "where_name": state.context,
+            "contexts": context_values,
         }
 
     return context_manager

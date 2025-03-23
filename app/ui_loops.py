@@ -13,9 +13,7 @@ from context import context_wrapper
 from fileManagers import load_txt, write_json
 from type_input import Response, Confirm, Command
 
-
 state = context_wrapper()
-CONTEXTS = ("global", "today")
 
 
 def program_loop(manager):
@@ -147,6 +145,11 @@ def program_loop(manager):
 
             case Command.CONFIG:
                 config_loop()
+
+                screen.exit()
+                print_ui("settings", "shutdown", color="blue", style="bold")
+                print_line()
+                return
 
             case _:
                 print_ui("output", "unknown", color="red")
@@ -301,10 +304,18 @@ def input_loop(answer_type, *args):
 
 def config_loop():
     user_conf = {}
+    contexts = list(state()["contexts"].keys())
+
     print_ui("settings", "start", color="blue", style="bold")
+
     for key, value in default_values.items():
         while True:
             default = default_values[key]
+            if default == "True":
+                default = Confirm.YES.value
+            if default == "False":
+                default = Confirm.NO.value
+
             prompt = ui_txt["settings"].get(key)
             new_value = input(f"{prompt} {default}\n> ").strip()
 
@@ -332,22 +343,21 @@ def config_loop():
                 if new_value[0] == Response.ERR:
                     print_line(new_value[1], color="red")
                     continue
-                new_value = new_value[1]
+                new_value = next(iter(new_value[1]))
 
             elif key == "context":
                 new_value = new_value.lower()
-                if new_value not in CONTEXTS:
-                    print_line("SOLO GLOBAL O TODAY", color="red")
+                if new_value not in contexts:
+                    print_line(
+                        f"'{new_value}' {ui_txt['settings']['context_err']}",
+                        color="red",
+                    )
                     continue
-                else:
-                    print("-- context")
 
             else:
                 new_value = new_value.lower()
 
-            print("-- loop de config")
             user_conf[key] = new_value
             break
 
-    print(user_conf)
     write_json(Defaults.SETUP_PATH.value, "setup.json", user_conf)

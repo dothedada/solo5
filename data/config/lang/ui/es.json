@@ -122,6 +122,20 @@
     },
     "input": {
       "update_task": "Escribe la tarea actualizada:\n"
+    },
+    "settings": {
+      "start": "Iniciando el proceso de configuración...\nDéjalo en blanco para usar el valor por defecto",
+      "lang": "¿Qué idioma?\nRecuerda tener cada archivo de idioma en la carpeta especificada (ui, regex, help)\nIdioma por defecto:",
+      "task_amount": "¿Cuántas tareas por día?\nSolo números\nCantidad por defecto:",
+      "base_dif": "Cuando no se especifique la dificultad, ¿cuál será su valor?\nSolo números del 1 al 5\nValor por defecto:",
+      "search_results": "¿Cantidad máxima de resultados en la búsqueda?\nSolo números\nCantidad por defecto:",
+      "context": "¿Qué contexto se cargará al iniciar?\nContexto por defecto:",
+      "context_err": "El contexto no existe",
+      "task_max_length": "¿Número máximo de caracteres por tarea?\nSolo números\nValor por defecto:",
+      "carpe_diem": "¿Aplicar acción sin confirmación?\n[s]í | [N]o\nComportamiento por defecto:",
+      "save_in_cicle": "¿Guardar al final de cada acción?\n[s]í | [N]o\nComportamiento por defecto:",
+      "save_on_exit": "¿Guardar al salir de Solo5?\n[s]í | [N]o\nComportamiento por defecto:",
+      "shutdown": "Se ha cerrado Solo5, vuelve a iniciar para cargar la nueva configuración"
     }
   }
 }

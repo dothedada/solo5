@@ -1,6 +1,6 @@
 # Sólo 5 (Just5)
 
-[ENG](#tldr-english) | [ESP](#tldr-espanol)
+[ENG](#tldr-english) | [ESP](#tldr-español)
 
 ## TL;DR (english)
 

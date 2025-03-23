@@ -129,11 +129,13 @@
       "task_amount": "How many task at a day?\nonly digits\ndefault amount:",
       "base_dif": "When difficulty is not speccified, whitch will be the value?\nonly digits from 1 to 5\ndefault value:",
       "search_results": "Max amount of serch results?\nonly digits\ndefault amount:",
-      "context": "Wich would be the context loaded on start?\nonly Global or Today\n currently:",
-      "task_max_length": "Max amount of characters for task?\nonly digits\ndefault value:",
-      "carpe_diem": "Confirm every action?\n[y]es | [N]o\ndefault behaviour:",
+      "context": "Wich would be the context loaded on start?\ndefault context:",
+      "context_err": "context does not exist",
+      "task_max_length": "Max characters for task?\nonly digits\ndefault value:",
+      "carpe_diem": "Apply action without confirmation?\n[y]es | [N]o\ndefault behaviour:",
       "save_in_cicle": "Save at the end of every action?\n[y]es | [N]o\ndefault behaviour:",
-      "save_on_exit": "Save on exit Solo5?\n[y]es | [N]o\ndefault behaviour:"
+      "save_on_exit": "Save on exit Solo5?\n[y]es | [N]o\ndefault behaviour:",
+      "shutdown": "Solo5 has been shutdown, start the app again to load the new configuration"
     }
   }
 }
