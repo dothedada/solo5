@@ -32,6 +32,7 @@ def load_json(path, filename):
 
 def write_json(path, filename, data):
     filepath = BASE_DIRECTORY / path / filename
+    os.makedirs(filepath.parent, exist_ok=True)
 
     with tempfile.NamedTemporaryFile(
         "w",
