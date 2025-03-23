@@ -322,12 +322,13 @@ def config_loop():
             if not new_value:
                 new_value = default
 
-            elif key in ["carpe_diem", "save_in_cicle", "save_on_exit"]:
+            elif key in ["carpe_diem", "save_in_cicle"]:
                 new_value = parse_response(Response.CONFIRM, new_value)
                 if new_value[0] == Response.ERR:
                     print_line(new_value[1], color="red")
                     continue
-                new_value = new_value[1] == Confirm.YES
+                new_value = f"{new_value[1].value == 'yes'}"
+                print("--", f"{new_value}")
 
             elif key in [
                 "task_amount",
@@ -360,4 +361,5 @@ def config_loop():
             user_conf[key] = new_value
             break
 
+    print("--", user_conf)
     write_json(Defaults.SETUP_PATH.value, "setup.json", user_conf)

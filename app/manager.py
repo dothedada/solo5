@@ -175,10 +175,7 @@ class TaskManager:
     def remove_from_today(self):
         for _, task in self.search_results:
             if task in self.today_tasks:
-                print("-- esta en today")
                 self.today_tasks.remove(task)
-            else:
-                print("-- NO esta en today")
 
     def purge_done(self):
         today = date.today()
