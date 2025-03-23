@@ -10,39 +10,6 @@ builtins.print = set_print_counter(screen)
 builtins.input = set_input_counter(screen)
 
 
-def make_config():
-    default_values = {
-        "lang": "en",
-        "task_amount": 5,
-        "base_dif": 3,
-        "search_results": 10,
-        "context": "global",
-        "task_max_length": 140,
-        "carpe_diem": "False",
-        "save_in_cicle": "False",
-        "save_on_exit": "True",
-    }
-    user_conf = {}
-    print_ui("settings", "start", color="blue", style="bold")
-    for k, default in default_values.items():
-        prompt = ui_txt["settings"].get(k, k)  # Evita error si falta clave
-        new_value = input(f"{prompt} {default}\n> ")
-
-        # Validar y convertir valores
-        if k in {"carpe_diem", "save_in_cicle", "save_on_exit"}:
-            user_conf[k] = new_value.lower() == "y" if new_value else default
-        elif k in {"task_amount", "base_dif", "search_results", "task_max_length"}:
-            user_conf[k] = int(new_value) if new_value.isdigit() else default
-        elif k == "context":
-            user_conf[k] = (
-                new_value.lower() if new_value in {"global", "today"} else default
-            )
-        else:
-            user_conf[k] = new_value or default
-
-    print(user_conf)
-
-
 def print_line(text="", **settings):
     style = make_style(settings.get("style", ""))
     color = make_color(settings.get("color", ""))

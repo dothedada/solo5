@@ -50,7 +50,7 @@
     },
     "action": {
       "search": "Buscar",
-	  "select": "Seleccionar"
+      "select": "Seleccionar",
       "confirm": "Confirmar"
     },
     "command": {

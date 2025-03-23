@@ -4,16 +4,29 @@ from fileManagers import load_json
 
 settings = load_json("./data/config", "setup.json")
 
+default_values = {
+    "lang": "en",
+    "task_amount": 5,
+    "base_dif": 3,
+    "search_results": 10,
+    "context": "global",
+    "task_max_length": 140,
+    "carpe_diem": "False",
+    "save_in_cicle": "False",
+    "save_on_exit": "True",
+}
+
 
 class Defaults(Enum):
-    DATA_PATH = settings["data_path"]
-    RGX_PATH = settings["rgx_path"]
-    HELP_PATH = settings["help_path"]
-    UI_PATH = settings["ui_path"]
-    TASK_SPLIT = settings["task_split"]
-    UND_W = settings["undelayable_weight"]
-    URG_W = settings["urgent_weight"]
-    DIF_W = settings["diffficulty_weight"]
+    DATA_PATH = "./data/tasks"
+    RGX_PATH = "./data/config/lang/regex"
+    UI_PATH = "./data/config/lang/ui"
+    HELP_PATH = "./data/config/lang/help"
+    SETUP_PATH = "./data/config"
+    TASK_SPLIT = "//"
+    UND_W = 2
+    URG_W = 1.2
+    DIF_W = 1.5
 
     LANG = settings["lang"]
     TASK_AMOUNT = settings["task_amount"]

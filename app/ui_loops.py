@@ -1,3 +1,4 @@
+from config import Defaults, ui_txt, default_values
 from parser_input import parse_response
 from ui_elements import (
     print_search,
@@ -7,15 +8,14 @@ from ui_elements import (
     print_div,
     print_exit,
     screen,
-    make_config,
 )
 from context import context_wrapper
-from fileManagers import load_txt
+from fileManagers import load_txt, write_json
 from type_input import Response, Confirm, Command
-from config import Defaults, ui_txt
 
 
 state = context_wrapper()
+CONTEXTS = ("global", "today")
 
 
 def program_loop(manager):
@@ -146,7 +146,7 @@ def program_loop(manager):
                 print_line(text)
 
             case Command.CONFIG:
-                make_config()
+                config_loop()
 
             case _:
                 print_ui("output", "unknown", color="red")
@@ -297,3 +297,57 @@ def input_loop(answer_type, *args):
                 return Response.ERR
             case _:
                 raise ValueError("Unknown Command")
+
+
+def config_loop():
+    user_conf = {}
+    print_ui("settings", "start", color="blue", style="bold")
+    for key, value in default_values.items():
+        while True:
+            default = default_values[key]
+            prompt = ui_txt["settings"].get(key)
+            new_value = input(f"{prompt} {default}\n> ").strip()
+
+            if not new_value:
+                new_value = default
+
+            elif key in ["carpe_diem", "save_in_cicle", "save_on_exit"]:
+                new_value = parse_response(Response.CONFIRM, new_value)
+                if new_value[0] == Response.ERR:
+                    print_line(new_value[1], color="red")
+                    continue
+                new_value = new_value[1] == Confirm.YES
+
+            elif key in [
+                "task_amount",
+                "base_dif",
+                "search_results",
+                "task_max_length",
+            ]:
+                new_value = parse_response(
+                    Response.SELECTION,
+                    new_value,
+                    5 if key == "base_dif" else float("inf"),
+                )
+                if new_value[0] == Response.ERR:
+                    print_line(new_value[1], color="red")
+                    continue
+                new_value = new_value[1]
+
+            elif key == "context":
+                new_value = new_value.lower()
+                if new_value not in CONTEXTS:
+                    print_line("SOLO GLOBAL O TODAY", color="red")
+                    continue
+                else:
+                    print("-- context")
+
+            else:
+                new_value = new_value.lower()
+
+            print("-- loop de config")
+            user_conf[key] = new_value
+            break
+
+    print(user_conf)
+    write_json(Defaults.SETUP_PATH.value, "setup.json", user_conf)
