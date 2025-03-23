@@ -86,6 +86,7 @@ def add_record_csv(filename, path, tasks, keys):
 
 def sync_csv(filename, path, tasks, keys):
     filepath = BASE_DIRECTORY / path / filename
+    os.makedirs(filepath.parent, exist_ok=True)
 
     with tempfile.NamedTemporaryFile(
         mode="w",
