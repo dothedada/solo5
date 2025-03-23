@@ -6,24 +6,24 @@
       "cancel": "^c(?:ancelar)?$"
     },
     "command": {
-      "in_today": "^h(?:oy)?$",
-      "in_global": "^t(?:odo)?$",
-      "in_done": "^ter(?:minadas)?$",
+      "in_today": "^hoy$",
+      "in_global": "^global$",
+      "in_done": "^terminadas$",
       "print": "^v(er)?$",
       "add_tasks": "^a(?:gregar|[nñ]adir)?$",
       "update_task": "^act(?:uali[sz]ar)?$",
       "done_task": "^r(?:ealizada)?$",
       "delete_tasks": "^borrar$",
-      "make_today": "^p(?:ara hoy)?$",
+      "make_today": "^hacer?$",
       "encore_today": "^extra$",
-      "forecast": "^m(?:a[nñ]ana)?$",
+      "forecast": "^ma[nñ]ana?$",
       "search": "^b(?:uscar)?$",
       "clear": "^l(?:impiar)?$",
       "save": "^g(?:uardar)?$",
       "exit": "^salir$",
       "purge": "^purgar$",
       "fix_dates": "^arreglar$",
-      "config": "^configurar$",
+      "config": "^config(?:urar)?$",
       "help": "^ayuda$"
     },
     "select": {
@@ -48,25 +48,30 @@
       "same": "Ya estás en el contexto deseado",
       "selected": "tarea(s)"
     },
+    "action": {
+      "search": "Buscar",
+	  "select": "Seleccionar"
+      "confirm": "Confirmar"
+    },
     "command": {
       "in_today": "[hoy]",
-      "in_global": "[t]odo",
-      "in_done": "[ter]minadas",
+      "in_global": "[global]",
+      "in_done": "[terminadas]",
       "print": "[v]er",
       "add_tasks": "[a]gregar",
       "update_task": "[act]ualizar",
       "done_task": "[r]ealizada",
       "delete_tasks": "[borrar]",
-      "make_today": "[h]acer hoy",
+      "make_today": "[hacer]",
       "encore_today": "[extra]",
-      "forecast": "[m]añana",
+      "forecast": "[mañana]",
       "search": "[b]uscar",
       "clear": "[l]impiar",
       "save": "[g]uardar",
-      "exit": "[s]alir",
+      "exit": "[salir]",
       "purge": "[purgar]",
       "fix_dates": "[arreglar]",
-      "config": "[configurar]",
+      "config": "[config]urar",
       "help": "[ayuda]"
     },
     "printer": {

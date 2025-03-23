@@ -183,7 +183,7 @@ def action_loop(manager, action, single):
         if Defaults.CARPE_DIEM.value:
             break
 
-        state(action="CONFIRMAR")
+        state(action=ui_txt["action"]["confirm"])
         print_ui("output", "confirmation", style="bold", color="blue")
         confirmation = input_loop(Response.CONFIRM)
 
@@ -209,7 +209,7 @@ def search_loop(task_manager, single):
     while True:
         _, search_value = parse_response(
             Response.TEXT_INPUT,
-            input(state(action="BUSCAR")["bar"]),
+            input(state(action=ui_txt["action"]["search"])["bar"]),
         )
         if search_value == Command.EXIT:
             task_manager.search_results.clear()
@@ -229,7 +229,7 @@ def search_loop(task_manager, single):
             print_line(task_manager.search_results[0][1].task, style="bold")
             print_div()
         else:
-            state(action="SELECCIONAR")
+            state(action=ui_txt["action"]["select"])
 
             selection = selection_loop(task_manager, single)
 

@@ -6,15 +6,15 @@
       "cancel": "^c(?:ancel)?$"
     },
     "command": {
-      "in_today": "^today(?: tasks)?$",
-      "in_global": "^global(?: tasks)?$",
-      "in_done": "^done(?: tasks)?$",
+      "in_today": "^today?$",
+      "in_global": "^global?$",
+      "in_done": "^done?$",
       "print": "^p(?:rint)?$",
       "add_tasks": "^a(?:dd)?$",
       "update_task": "^u(?:pdate)?$",
       "done_task": "^d(?:one)?$",
       "delete_tasks": "^del(?:ete)?$",
-      "make_today": "^for(?: today)?$",
+      "make_today": "^make$",
       "encore_today": "^encore$",
       "forecast": "^tomorrow$",
       "search": "^f(?:ind)?$",
@@ -23,7 +23,7 @@
       "exit": "^exit$",
       "purge": "^purge$",
       "fix_dates": "^fix dates$",
-      "config": "^configure$",
+      "config": "^config(?:ure)?$",
       "help": "^help$"
     },
     "select": {
@@ -86,6 +86,11 @@
       "no_instruction": "No instruction named",
       "out_range": "Out of selection range",
       "only_int": "Only numbers are accepted"
+    },
+    "action": {
+      "search": "Search",
+      "select": "Select",
+      "confirm": "Confirm"
     },
     "output": {
       "added": "Tasks added",

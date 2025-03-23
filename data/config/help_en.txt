@@ -1,0 +1,35 @@
+Solo5 - Task manager for the terminal
+
+Usage:
+  command [options]
+
+Available commands:
+  today                  Change the context to Today (The tasks for today)
+  global                 Change the context to Global (All the tasks)
+  done                   Change the context to Done (All the done tasks)
+  print (p)              Show tasks in the current context (Global, Today, Completed).
+  add (a)                Add one or more tasks. Separate multiple tasks with "//".
+  update (u)             Edit an existing task. Only one task at a time.
+  done (d)               Mark a task as completed (irreversible).
+  delete (del)           Delete a task (irreversible).
+  make                   Generate a list of up to 5 tasks for today.
+  encore                 Add more tasks to the day after completing the initial 5.
+  tomorrow               Show pending tasks for the next day.
+  search (f)             Search for tasks containing a keyword.
+  clear (c)              Clear the current task selection.
+  save (s)               Save the current state of all tasks.
+  exit                   Exit the current action or close the application.
+  purge                  Delete tasks completed more than 30 days ago.
+  fix-dates              Recalculate due dates for tasks.
+  configure (config)     Start the configuration sequence.
+  help                   Show this help message.
+
+Basic examples:
+  add > Buy milk today // run 3 very dificult miles this friday
+
+Advanced options:
+  - Use "//" to add multiple tasks in a single command.
+  - Write dates naturally (e.g., "by Friday").
+  - Add "!3" to set difficulty or "*" to mark as non-negotiable.
+
+For more details, refer to the full documentation.
