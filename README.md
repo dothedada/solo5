@@ -18,7 +18,7 @@ Based on this principle, commands were designed to align with natural speech and
 
 ## Why another task list?
 
-I wanted to reinforce my understanding of some algorithms while learning Python. Why not think about how to improve something that has already been done countless times?
+I wanted to reinforce my understanding of some algorithms and app dessign while some learning Python and its relation with the os, so, why not think about how to improve something that has already been done countless times and feel the pain of regex for parsing dates in natural language??? :)
 
 ## Key Features
 
@@ -176,7 +176,7 @@ Partiendo de este principio, se diseñaron los comandos para que coincidieran co
 
 ## ¿Por qué otra lista de tareas?
 
-Quería reforzar mi comprensión de algunos algoritmos mientras aprendía python, ¿por qué no permitise pensar cómo podría hacerse mejor algo que ya se ha hecho hasta el cansancio?.
+Quería reforzar mi comprensión de algunos algoritmos y diseño de aplicaiones mientras aprendía algo de python, entonces, ¿por qué pensar cómo podría mejorarse algo que ya se ha hecho hasta el cansancio mientras siento el dolor de usar regex para la interpretación de fechas en lenguaje natural?.
 
 ## Características principales
 
