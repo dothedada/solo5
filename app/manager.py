@@ -115,7 +115,7 @@ class TaskManager:
     def add_tasks(self, tasks_string):
         tasks = task_parse.make_tasks(tasks_string)
         self.tasks.push(tasks)
-        return tasks
+        return len(tasks)
 
     def mark_tasks_done(self):
         for _, task in self.search_results:
@@ -170,6 +170,7 @@ class TaskManager:
 
         new_tasks = self.add_tasks(new_tasks_str)
         self.today_tasks.update(new_tasks)
+        return len(new_tasks)
 
     def remove_from_today(self):
         for _, task in self.search_results:

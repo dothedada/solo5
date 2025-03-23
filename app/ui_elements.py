@@ -91,7 +91,7 @@ def print_search(tasks, limit, selected=False):
         else:
             print_line(f"{i}) {task.task}")
 
-    print_ui("printer", "total", prepend=f"{len(tasks)}", top=True)
+    print_ui("printer", "total", prepend=len(tasks), top=True)
     print_line()
 
 

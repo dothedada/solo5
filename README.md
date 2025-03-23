@@ -1,6 +1,16 @@
 # Sólo 5 (Just5)
 
-Solo5 es una aplicación de lista de tareas para la terminal que ayuda a organizar y priorizar lo más importante de cada día, evitando la sobrecarga de trabajo. La idea central es enfocarse en solo cinco tareas significativas al día.
+ENG | ESP
+
+## TL;DR
+
+Solo5 es una aplicación que quiere ayudar a organizar y priorizar lo más importante de cada día teniendo en cuenta las fechas de entrega y dificultad para evitar sobrecargas de trabajo, enfocarse en solo cinco tareas significativas al día.
+
+1. ¿por que?
+2. Características principales
+3. instalación
+4. uso, primeros pasos
+5. futuro
 
 ## ¿Por qué otra maldita lista de tareas?
 
@@ -8,76 +18,64 @@ Como parte de mi aprendizaje en Python, quería reforzar mi comprensión de algo
 
 ## Características principales
 
-- Procesamiento 100% local: No usa servicios de NLP ni inteligencia artificial. Todo se ejecuta en tu máquina.
-- Multilenguaje: Soporta cualquier idioma con solo agregar un archivo JSON de configuración.
-- Altamente configurable: Personaliza comandos, estructura de datos e interfaz.
-- Gestión flexible de tareas: Agrega, edita, marca como completadas y organiza tareas de manera sencilla.
-- Planificación y reprogramación: Permite revisar tareas futuras, reorganizar prioridades y extender la planificación diaria.
+- **Escribe de forma natural**: Escribe como te nazca, la aplicación interpretará la información para priorizarlo.
+- **Procesamiento 100% local**: No utiliza servicios externos ni inteligencia artificial. Todo se ejecuta en tu máquina.
+- **Multilenguaje**: Soporta cualquier idioma con solo agregar un archivo JSON de configuración, inicialmente en español e inglés. (Si realizas una traducción, compártela <3 )
+- **Altamente configurable**: Personaliza los comandos, estructura de datos y la forma en que la aplicación interpreta lo que escribes.
+- **Gestión flexible de tareas**: Agrega, edita, marca como completadas y organiza tareas de manera sencilla.
+- **Planificación y reprogramación**: Revisa tareas futuras, reorganiza prioridades y extiende la planificación diaria.
 
-Esta herramienta es un ejercicio académico que explora la gestión de tareas basada en texto, priorización y almacenamiento en CSV.
+## Instalación
 
-## Flow
+### Requisitos
 
-### add
+- Python 3.7 o superior.
 
-1. prompt in terminal
-2. parse regular text to build a token
-3.
+- Terminal compatible con secuencias de escape ANSI (la mayoría de las terminales modernas lo son).
 
-## to-do of the to-do
+### Pasos para instalar
 
-- [-] Infrastructure design
-- [-] Task Token class
-        - Basic task properties
-- [-] Task class
-  - Inherit from token and adds priority
-  - update task, print
-- [-] Input parser
-  - Regex parade
-  - ~NLP for parsing the input and create the token for the tasks object
-- [-] the regex factory
-- [-] THE F*CKING date parser
-- [-] Task heap
-  - priorization euristics
-- [-] ToDo manager class
-  - invoke task methods (Update, mark done, mark not done)
-  - delete task
-  - arrange tasks
-  - search tasks
-  - import - export task batches
-- [-] in manager, set taks for today ->
-      - get 5 by priority
-      - based on energy,
-      - put asside the able ones to delay
-      - add the next in line with the appropiate dificulty
-- [-] CSV manager
-  - Create, read, write task in CSV
-- [-] Interfase printer
-  - set day
-  - check (day, next day, all)
-  - search task for: done,update, remove
-  - add task
-  - mark done
-  - edit task
-  - remove task
-- [] Make package (inside program and single line commands in CLI)
-- [] Make documentation
+1. Clona el repositorio:
 
-## Parsing date structure
+```bash
+git clone https://github.com/tu-usuario/solo5.git
+cd solo5
+```
 
-(- from -)  
-from        -> establece inicio de cálculo. de, este, de este, el
-day         -> numero del día de calendario
-today_rel   -> hoy, mañana, pasado mañana
-weekday     -> nombre del día de la semana("lunes", "martes", ...)
-month_num   -> numero del mes en el calendario
-month_name  -> nombre del mes en el calendario
-year        -> año (opcional, asume actual/siguiente)
-date        -> fecha absoluta sin calulos adicionales
-(- modifier -)
-modifier    -> de, de este, dentro de, próximo, siguiente
-amount      -> cantidad numérica para incremento, si no int o none es 1
-unit_day    -> dias
-unit_week   -> semana
-unit_month  -> mes
-unit_year   -> año
+2. Ejecuta la aplicación:
+
+```bash
+./solo5
+```
+
+3. ejecuta el configurador:
+
+```
+> config
+```
+
+Por defecto, Solo5 viene en inglés y con el paquete para español. Si deseas cambiar por un idioma diferente, ve a al directorio ./data/config/lang/ y cambia los archivos correspondientes dentro del directorio regex y ui. Luego, inicia config y especifica el nuevo idioma (el nombre del archivo sin la extensión)
+
+## Uso
+
+La interfase ha sido pensada y desarrollada para ser lo mas sencilla e intuitiva de manejar.
+
+### Línea de comandos
+
+la linea de comandos está estructurada para mostrar la siguiente información:
+
+```
+contexto > comando actual > accion a realizar > tareas que serán afectadas
+```
+
+#### contexto
+
+Es en qué lista estamos trabajando y las tareas que tenemos disponibles para manipular.
+
+- Global, todas las tareas activas a la fecha
+- Hoy, es un subset de Global con las tareas del día
+- Terminadas, es una lista diferente con todas las tareas realizadas rusante los ultimos 30 días
+
+EL contexto puede afectar el comportamiento de algunas acciones, por ejemplo, al agregar cuando se está en Hoy, ademas de crear la tarea, la agrega a Hoy, aunque supere las 5 acciones, o, acciones como Done o Update no se pueden ejecutar en Terminadas.
+
+#### Comando actual

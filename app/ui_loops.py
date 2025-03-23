@@ -44,10 +44,16 @@ def program_loop(manager):
                     print_ui("output", "no_effect", color="red")
                     continue
                 tasks_str = input(state(command=Command.ADD_TASKS)["bar"])
+                amount = 0
                 if state()["where"] == manager.today_tasks:
-                    manager.add_to_today(tasks_str)
+                    amount = manager.add_to_today(tasks_str)
                 else:
-                    manager.add_tasks(tasks_str)
+                    amount = manager.add_tasks(tasks_str)
+
+                if amount:
+                    print_ui("output", "added", prepend=amount, color="blue")
+                else:
+                    print_ui("output", "not_added", color="red")
 
             case Command.UPDATE_TASK:
                 if state()["where"] == manager.done_tasks:

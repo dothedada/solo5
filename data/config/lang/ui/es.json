@@ -88,6 +88,8 @@
       "only_int": "Solo se aceptan números"
     },
     "output": {
+      "added": "Tareas añadidas",
+      "not_added": "No se añadieron nuevas tareas",
       "save": "Todas las tareas han sido guardadas :)",
       "purge": "Se han eliminado las tareas marcadas como Terminadas",
       "fix_dates": "Fechas de finalización recalculadas",

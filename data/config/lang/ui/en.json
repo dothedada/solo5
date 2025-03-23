@@ -88,6 +88,8 @@
       "only_int": "Only numbers are accepted"
     },
     "output": {
+      "added": "Tasks added",
+      "not_added": "No new tasks were added",
       "save": "All tasks have been saved :)",
       "purge": "Tasks marked as completed have been deleted",
       "fix_dates": "Completion dates recalculated",
