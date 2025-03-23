@@ -93,7 +93,7 @@ The command line always displays the command that will be executed on the select
 \[upd\]ate -> Update a selected task (only one at a time)  
 \[d\]one -> Mark a task as completed (cannot be undone)  
 \[del\]ete -> Delete a task (cannot be undone)  
-\[do-today\] -> If tasks are not automatically scheduled for today, use this command  
+\[make\] -> Generate a list of up to 5 tasks for today
 \[extra\] -> Once the day's tasks are completed, add more if needed  
 \[tmrw\] -> Show pending tasks scheduled for the next day  
 \[s\]earch -> Find a task based on characters in its description  
@@ -253,7 +253,7 @@ En la línea de comandos siempre se verá el comando que se va a ejecutar sobre 
 \[act\]ualizar -> Actualiza la tarea seleccionada, sólo se puede actualizar una tarea a la vez
 \[r\]ealizada -> Marca la tarea como realizada o terminada, no se puede deshacer esta acción.
 \[borrar\] -> Borra la tarea, no se puede deshacer esta acción.
-\[h\]acer hoy -> En caso de no generar Hoy de forma automatica, puedes generar el Hoy con este comando
+\[hacer\] -> Genera una lista de hasta 5 tareas para hoy
 \[extra\] -> Una vez realizadas las tareas del día, puedes adicionar más tareas al día.
 \[m\]añana -> Muestra las tareas pendientes que serían programadas para el próximo día.
 \[b\]uscar -> Busca una tarea a partir de los caracteres que tenga la tarea, para luego ejecutar en ella alguno de los comandos posibles
