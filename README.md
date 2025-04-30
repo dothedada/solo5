@@ -176,7 +176,7 @@ Partiendo de este principio, se diseñaron los comandos para que coincidieran co
 
 ## ¿Por qué otra lista de tareas?
 
-Quería reforzar mi comprensión de algunos algoritmos y diseño de aplicaiones mientras aprendía algo de python, entonces, ¿por qué pensar cómo podría mejorarse algo que ya se ha hecho hasta el cansancio mientras siento el dolor de usar regex para la interpretación de fechas en lenguaje natural?.
+Quería reforzar mi comprensión de algunos algoritmos y diseño de aplicaiones mientras aprendía algo de python, entonces, ¿por qué pensar cómo podría mejorarse algo que ya se ha hecho hasta el cansancio mientras siento el dolor de usar regex para la interpretación y cálculo de fechas escritas en lenguaje natural?.
 
 ## Características principales
 

@@ -1,11 +1,1 @@
-{
-  "lang": "en",
-  "task_amount": 5,
-  "base_dif": 3,
-  "search_results": 10,
-  "context": "global",
-  "task_max_length": 140,
-  "carpe_diem": "no",
-  "save_in_cicle": "no"
-}
-
+{"lang": "es", "task_amount": 5, "base_dif": 3, "search_results": 10, "context": "global", "task_max_length": 140, "carpe_diem": "no", "save_in_cicle": "no"}
